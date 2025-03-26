@@ -1,0 +1,47 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            31:02:36:c6:96:6d:28:82:33:06:c1:20:13:42:02:00:f6:13:01:d5
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=test
+        Validity
+            Not Before: Mar 25 14:30:43 2025 GMT
+            Not After : Apr 24 14:30:43 2025 GMT
+        Subject: CN=CA
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (768 bit)
+                Modulus:
+                    00:b9:ed:a9:29:36:61:59:e1:35:a9:40:8a:40:36:
+                    b6:e4:8e:bc:75:0a:55:22:65:aa:32:a6:ce:55:0f:
+                    23:e8:10:17:20:56:c6:dc:90:77:07:a9:23:ce:ed:
+                    97:c1:16:d6:29:f6:22:23:9e:37:8f:56:f8:eb:55:
+                    3a:50:62:33:1c:2a:8b:f0:5c:06:5b:53:6d:b4:ab:
+                    95:1a:68:48:a3:87:e9:5e:f3:21:7b:df:b2:a8:f0:
+                    5a:c0:e2:df:b5:75:c5
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: 
+                Digital Signature
+            X509v3 Subject Key Identifier: 
+                58:F3:13:F7:AE:F3:0B:CA:C3:36:F6:68:E0:F0:E7:60:BE:D2:02:D5
+            X509v3 Authority Key Identifier: 
+                B4:11:33:F1:D7:E2:5E:F7:53:9E:20:22:10:4F:86:06:BF:1F:C9:5E
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        92:58:b1:ae:97:29:7e:82:0a:a5:e7:a3:45:e7:a7:2f:95:fc:
+        12:65:c9:78:48:04:6a:7b:24:59:16:c7:96:c7:d4:d5:7c:ec:
+        b6:66:85:c0:c7:23:fb:d5:31:f0:c3:b1:6d:73:42:a3:5f:d0:
+        af:fe:6e:ef:10:4a:5d:b9:7e:1a:bf:7d:15:bb:45:e6:ed:79:
+        87:c6:82:3d:c3:f0:b1:2f:03:d5:f4:55:3d:6e:5c:fa:82:a1:
+        fd:36:7f:f2:ea:79:38:0c:4b:be:9d:66:0a:ed:33:4b:77:d7:
+        e5:00:a3:3d:ca:db:6f:59:61:29:e2:aa:44:56:4c:4e:f4:e6:
+        39:62:1a:e7:e1:86:1a:a5:69:5d:5e:58:ab:4c:47:80:09:b6:
+        4c:5b:bd:a3:1e:d3:8b:df:48:eb:d1:72:c8:b6:53:83:7d:c7:
+        dc:4a:f8:43:ce:aa:0a:d2:1f:b9:2a:e7:f6:6a:47:c4:cb:0a:
+        14:ad:67:f5:a4:a0:23:1f:48:1d:61:18:bc:27:4f:9e:14:f3:
+        56:38:8e:0d:65:ca:29:c5:b7:5b:0b:cd:a3:a4:2b:ef:93:e9:
+        f8:86:3f:fe:e0:a4:a5:18:78:58:3b:60:0b:fb:48:5f:7d:86:
+        2f:3a:b0:f5:55:4c:ec:b6:37:83:c0:02:a7:a1:7e:0a:94:4c:
+        34:8b:23:e0

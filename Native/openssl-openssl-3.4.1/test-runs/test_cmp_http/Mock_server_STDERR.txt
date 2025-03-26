@@ -1,0 +1,1904 @@
+Warning: certificate from 'signer_issuing.crt' with subject '/O=openssl_cmp' is not a CA cert
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: trying to build chain for own CMP signer cert
+CMP DEBUG: success building chain for own CMP signer cert
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: )
+cmp: cannot parse HTTP header: missing end of line
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /publicweb/cmp/example HTTP/1.0
+cmp_server:apps/cmp.c:3193:CMP error: expecting empty path or 'pkix/' but got 'publicweb/cmp/example'
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix///// HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix///// HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pKiX/ HTTP/1.0
+cmp_server:apps/cmp.c:3193:CMP error: expecting empty path or 'pkix/' but got 'pKiX/'
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /PKIX/ HTTP/1.0
+cmp_server:apps/cmp.c:3193:CMP error: expecting empty path or 'pkix/' but got 'PKIX/'
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated PBM-based CMP message protection
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated PBM-based CMP message protection
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated PBM-based CMP message protection
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP warning: verifying PBM-based CMP message protection failed
+CMP error: wrong pbm value
+CMP error: error validating protection
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP warning: verifying PBM-based CMP message protection failed
+CMP error: wrong pbm value
+CMP error: error validating protection
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP error: missing protection
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: request not accepted:wrong certificate to revoke
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending RP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: request not accepted:wrong certificate to revoke
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: request not accepted:wrong certificate to revoke
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received RR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: request not accepted:wrong certificate to revoke
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: unknown crl issuer
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: unknown crl issuer
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received GENM
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending GENP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: unexpected certprofile
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP error: unexpected pkibody
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated PBM-based CMP message protection
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: popo raverified not accepted
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: popo missing
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: unsupported popo method
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP info: certificate rejected by client with PKIStatus: rejection
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP info: certificate rejected by client with PKIStatus: rejection
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP info: certificate rejected by client with PKIStatus: rejection
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: popo raverified not accepted
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received P10CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received IR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending IP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending CP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received KUR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending KUP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received KUR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending KUP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received KUR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP error: wrong certid
+CMP DEBUG: sending ERROR
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received KUR
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending KUP
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting next request ...
+cmp: received request, 1st line: POST /pkix/ HTTP/1.0
+CMP DEBUG: received CERTCONF
+CMP DEBUG: validating CMP message
+CMP DEBUG: successfully validated signature-based CMP message protection using trust store
+CMP DEBUG: sending PKICONF
+cmp: sending response, 1st line: HTTP/1.0 200 OK
+cmp: awaiting new connection on port 58780 ...
