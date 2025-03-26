@@ -1,0 +1,34 @@
+menuconfig LIBOPENSSL
+	bool "Openssl libraries"
+	default y
+	select LIBPTHREAD_EMBEDDED
+
+if LIBOPENSSL
+config LIBSSL
+	bool "ssl - Client and server-side implementations for SSLv3 and TLS"
+	default y
+	select LIBNOLIBC if !HAVE_LIBC
+	select LIBUKDEBUG
+	select LIBUKALLOC
+	select LIBCRYPTO
+if LIBSSL
+endif
+
+config LIBCRYPTO
+	bool "crypto - General cryptographic and X.509 support"
+	default y
+	select LIBNOLIBC if !HAVE_LIBC
+	select LIBUKDEBUG
+	select LIBUKALLOC
+	select LIBLWIP
+	select LWIP_IPV6
+	select LIBPOSIX_USER
+	select LIBPOSIX_LIBDL
+	select LIBSYSCALL_SHIM
+	select LIBUKRANDOM
+	select LIBUKRANDOM_DEVFS
+if LIBCRYPTO
+endif
+
+endif
+

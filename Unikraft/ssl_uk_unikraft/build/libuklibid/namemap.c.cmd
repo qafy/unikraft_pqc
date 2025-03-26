@@ -1,0 +1,1 @@
+awk -f /home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/lib/uklibid/namemap.awk        /home/chio/Documents/projects/pqc-vs-unikernel/02_unikernel/ssl_uk_unikraft/build/libuklibid/libraries.in > /home/chio/Documents/projects/pqc-vs-unikernel/02_unikernel/ssl_uk_unikraft/build/libuklibid/namemap.c

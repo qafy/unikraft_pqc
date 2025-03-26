@@ -1,0 +1,5 @@
+# Auto generated file. DO NOT EDIT
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/xen/9p/Config.uk"
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/xen/blk/Config.uk"
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/xen/net/Config.uk"
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/xen/xenbus/Config.uk"

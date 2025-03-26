@@ -1,0 +1,4 @@
+# Auto generated file. DO NOT EDIT
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/uktty/Config.uk"
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/virtio/Config.uk"
+source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/drivers/Config.uk"

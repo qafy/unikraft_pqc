@@ -1,0 +1,1 @@
+awk -f /home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/lib/syscall_shim/uk_syscall_name.awk        /home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/lib/syscall_shim/arch/x86_64/syscall.h.in > /home/chio/Documents/projects/pqc-vs-unikernel/02_unikernel/ssl_uk_unikraft/build/libsyscall_shim/uk_syscall_name.c
