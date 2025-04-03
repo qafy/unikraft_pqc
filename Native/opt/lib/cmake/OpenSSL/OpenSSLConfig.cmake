@@ -49,6 +49,8 @@ if(_ossl_prefix STREQUAL "/")
 endif()
 
 
+set(_ossl_use_static_libs True)
+
 if(OPENSSL_USE_STATIC_LIBS)
   set(_ossl_use_static_libs True)
 elseif(DEFINED OPENSSL_USE_STATIC_LIBS)
@@ -87,7 +89,7 @@ if(_ossl_use_static_libs)
   add_library(OpenSSL::SSL STATIC IMPORTED)
 
   set(OPENSSL_LIBCRYPTO_STATIC "${OPENSSL_LIBRARY_DIR}/libcrypto.a")
-  set(OPENSSL_LIBCRYPTO_DEPENDENCIES )
+  set(OPENSSL_LIBCRYPTO_DEPENDENCIES -ldl -pthread)
   set_target_properties(OpenSSL::Crypto PROPERTIES
     IMPORTED_LINK_INTERFACE_LANGUAGES "C"
     IMPORTED_LOCATION ${OPENSSL_LIBCRYPTO_STATIC})
@@ -111,27 +113,7 @@ if(_ossl_use_static_libs)
 
 else()
 
-  add_library(OpenSSL::Crypto SHARED IMPORTED)
-  add_library(OpenSSL::SSL SHARED IMPORTED)
-
-  # Dependencies are assumed to be implied in the shared libraries
-  set(OPENSSL_LIBCRYPTO_SHARED "${OPENSSL_LIBRARY_DIR}/libcrypto.dylib")
-  set_target_properties(OpenSSL::Crypto PROPERTIES
-    IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-    IMPORTED_LOCATION ${OPENSSL_LIBCRYPTO_SHARED})
-
-  set(OPENSSL_LIBSSL_SHARED "${OPENSSL_LIBRARY_DIR}/libssl.dylib")
-  set_target_properties(OpenSSL::SSL PROPERTIES
-    IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-    IMPORTED_LOCATION ${OPENSSL_LIBSSL_SHARED})
-
-  # Directories and names compatible with CMake's FindOpenSSL.cmake
-  set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_LIBCRYPTO_SHARED})
-  set(OPENSSL_CRYPTO_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
-  set(OPENSSL_SSL_LIBRARY ${OPENSSL_LIBSSL_SHARED})
-  set(OPENSSL_SSL_LIBRARIES ${OPENSSL_SSL_LIBRARY})
-  set(OPENSSL_LIBRARIES ${OPENSSL_SSL_LIBRARIES})
-
+  # Shared libraries are UNSUPPORTED in this configuration
 
 endif()
 

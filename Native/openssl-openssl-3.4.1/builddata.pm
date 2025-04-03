@@ -18,29 +18,29 @@ our @EXPORT = qw(
     $VERSION @LDLIBS
 );
 
-our @PREFIX                     = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1' );
-our @libdir                     = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1' );
-our @BINDIR                     = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/apps' );
+our @PREFIX                     = ( '/workspace/Native/openssl-openssl-3.4.1' );
+our @libdir                     = ( '/workspace/Native/openssl-openssl-3.4.1' );
+our @BINDIR                     = ( '/workspace/Native/openssl-openssl-3.4.1/apps' );
 our @BINDIR_REL_PREFIX          = ( 'apps' );
-our @LIBDIR                     = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1' );
+our @LIBDIR                     = ( '/workspace/Native/openssl-openssl-3.4.1' );
 our @LIBDIR_REL_PREFIX          = ( '' );
-our @INCLUDEDIR                 = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/include', '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/include' );
+our @INCLUDEDIR                 = ( '/workspace/Native/openssl-openssl-3.4.1/include', '/workspace/Native/openssl-openssl-3.4.1/include' );
 our @INCLUDEDIR_REL_PREFIX      = ( 'include', './include' );
-our @APPLINKDIR                 = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/ms' );
+our @APPLINKDIR                 = ( '/workspace/Native/openssl-openssl-3.4.1/ms' );
 our @APPLINKDIR_REL_PREFIX      = ( 'ms' );
-our @ENGINESDIR                 = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/engines' );
+our @ENGINESDIR                 = ( '/workspace/Native/openssl-openssl-3.4.1/engines' );
 our @ENGINESDIR_REL_LIBDIR      = ( 'engines' );
-our @MODULESDIR                 = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1/providers' );
+our @MODULESDIR                 = ( '/workspace/Native/openssl-openssl-3.4.1/providers' );
 our @MODULESDIR_REL_LIBDIR      = ( 'providers' );
-our @PKGCONFIGDIR               = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1' );
+our @PKGCONFIGDIR               = ( '/workspace/Native/openssl-openssl-3.4.1' );
 our @PKGCONFIGDIR_REL_LIBDIR    = ( '.' );
-our @CMAKECONFIGDIR             = ( '/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1' );
+our @CMAKECONFIGDIR             = ( '/workspace/Native/openssl-openssl-3.4.1' );
 our @CMAKECONFIGDIR_REL_LIBDIR  = ( '.' );
 our $VERSION                    = '3.4.1';
 our @LDLIBS                     =
     # Unix and Windows use space separation, VMS uses comma separation
     $^O eq 'VMS'
-    ? split(/ *, */, ' ')
-    : split(/ +/, ' ');
+    ? split(/ *, */, '-ldl -pthread ')
+    : split(/ +/, '-ldl -pthread ');
 
 1;

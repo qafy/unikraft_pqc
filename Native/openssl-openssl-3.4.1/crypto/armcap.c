@@ -66,11 +66,9 @@ uint32_t OPENSSL_rdtsc(void)
 void OPENSSL_cpuid_setup(void) __attribute__ ((constructor));
 # endif
 
-# if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
-#  if __GLIBC_PREREQ(2, 16)
+# if 1
 #   include <sys/auxv.h>
 #   define OSSL_IMPLEMENT_GETAUXVAL
-#  endif
 # elif defined(__ANDROID_API__)
 /* see https://developer.android.google.cn/ndk/guides/cpu-features */
 #  if __ANDROID_API__ >= 18

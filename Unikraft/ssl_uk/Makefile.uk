@@ -1,13 +1,15 @@
 $(eval $(call addlib,appopenssl))
 
+APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/libcrypto.a
 APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/sha256_test.c
 #APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/_archive/ssl_keygen_2048.c
 
-
+APPOPENSSL_CINCLUDES += -I/workspace/Native/opt/include/
 # ----- experimental -----
+
 #APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/libs/openssl-3.3.0/libssl.a
 #APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/libs/openssl-3.3.0/libcrypto.a
-#APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/libs/openssl-3.3.0/include/
+
 #APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/lib-pthread-embedded/include/
 #APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/external_libs/include/
 

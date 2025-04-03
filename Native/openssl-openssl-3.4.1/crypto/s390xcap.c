@@ -25,10 +25,10 @@
 # include <unistd.h>
 #endif
 
-#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
-# if __GLIBC_PREREQ(2, 16)
+#if 1
+# if 1
 #  include <sys/auxv.h>
-#  if defined(HWCAP_S390_STFLE) && defined(HWCAP_S390_VX)
+#  if defined(HWCAP_S390_STFLE) && defined(HWCAP_S390_VXRS)
 #   define OSSL_IMPLEMENT_GETAUXVAL
 #  endif
 # endif
@@ -129,7 +129,7 @@ void OPENSSL_cpuid_setup(void)
             OPENSSL_s390x_facilities();
 
         /* protection against disabled vector facility */
-        if (!(hwcap & HWCAP_S390_VX)) {
+        if (!(hwcap & HWCAP_S390_VXRS)) {
             OPENSSL_s390xcap_P.stfle[2] &= ~(S390X_CAPBIT(S390X_VX)
                                              | S390X_CAPBIT(S390X_VXD)
                                              | S390X_CAPBIT(S390X_VXE));

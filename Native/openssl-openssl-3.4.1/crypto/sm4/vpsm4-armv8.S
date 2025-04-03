@@ -14,13 +14,13 @@
 // $output is the last argument if it looks like a file (it has an extension)
 // $flavour is the first argument if it doesn't look like a file
 #include "arm_arch.h"
-
+.arch	armv8-a
 .text
 
-
+.type	_vpsm4_consts,%object
 .align	7
 _vpsm4_consts:
-Lsbox:
+.Lsbox:
 .byte	0xD6,0x90,0xE9,0xFE,0xCC,0xE1,0x3D,0xB7,0x16,0xB6,0x14,0xC2,0x28,0xFB,0x2C,0x05
 .byte	0x2B,0x67,0x9A,0x76,0x2A,0xBE,0x04,0xC3,0xAA,0x44,0x13,0x26,0x49,0x86,0x06,0x99
 .byte	0x9C,0x42,0x50,0xF4,0x91,0xEF,0x98,0x7A,0x33,0x54,0x0B,0x43,0xED,0xCF,0xAC,0x62
@@ -37,7 +37,7 @@ Lsbox:
 .byte	0x0A,0xC1,0x31,0x88,0xA5,0xCD,0x7B,0xBD,0x2D,0x74,0xD0,0x12,0xB8,0xE5,0xB4,0xB0
 .byte	0x89,0x69,0x97,0x4A,0x0C,0x96,0x77,0x7E,0x65,0xB9,0xF1,0x09,0xC5,0x6E,0xC6,0x84
 .byte	0x18,0xF0,0x7D,0xEC,0x3A,0xDC,0x4D,0x20,0x79,0xEE,0x5F,0x3E,0xD7,0xCB,0x39,0x48
-Lck:
+.Lck:
 .long	0x00070E15, 0x1C232A31, 0x383F464D, 0x545B6269
 .long	0x70777E85, 0x8C939AA1, 0xA8AFB6BD, 0xC4CBD2D9
 .long	0xE0E7EEF5, 0xFC030A11, 0x181F262D, 0x343B4249
@@ -46,20 +46,20 @@ Lck:
 .long	0x30373E45, 0x4C535A61, 0x686F767D, 0x848B9299
 .long	0xA0A7AEB5, 0xBCC3CAD1, 0xD8DFE6ED, 0xF4FB0209
 .long	0x10171E25, 0x2C333A41, 0x484F565D, 0x646B7279
-Lfk:
+.Lfk:
 .quad	0x56aa3350a3b1bac6,0xb27022dc677d9197
-Lshuffles:
+.Lshuffles:
 .quad	0x0B0A090807060504,0x030201000F0E0D0C
-Lxts_magic:
+.Lxts_magic:
 .quad	0x0101010101010187,0x0101010101010101
 
-
-
+.size	_vpsm4_consts,.-_vpsm4_consts
+.type	_vpsm4_set_key,%function
 .align	4
 _vpsm4_set_key:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v5.4s},[x0]
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -67,13 +67,13 @@ _vpsm4_set_key:
 #ifndef __AARCH64EB__
 	rev32	v5.16b,v5.16b
 #endif
-	adr	x5,Lshuffles
+	adr	x5,.Lshuffles
 	ld1	{v7.2d},[x5]
-	adr	x5,Lfk
+	adr	x5,.Lfk
 	ld1	{v6.2d},[x5]
 	eor	v5.16b,v5.16b,v6.16b
 	mov	x6,#32
-	adr	x5,Lck
+	adr	x5,.Lck
 	movi	v0.16b,#64
 	cbnz	w2,1f
 	add	x1,x1,124
@@ -110,8 +110,8 @@ _vpsm4_set_key:
 	subs	x6,x6,#1
 	b.ne	1b
 	ret
-
-
+.size	_vpsm4_set_key,.-_vpsm4_set_key
+.type	_vpsm4_enc_4blks,%function
 .align	4
 _vpsm4_enc_4blks:
 	AARCH64_VALID_CALL_TARGET
@@ -274,8 +274,8 @@ _vpsm4_enc_4blks:
 	mov	v0.16b,v7.16b
 #endif
 	ret
-
-
+.size	_vpsm4_enc_4blks,.-_vpsm4_enc_4blks
+.type	_vpsm4_enc_8blks,%function
 .align	4
 _vpsm4_enc_8blks:
 	AARCH64_VALID_CALL_TARGET
@@ -566,11 +566,11 @@ _vpsm4_enc_8blks:
 	mov	v4.16b,v11.16b
 #endif
 	ret
-
-.globl	_vpsm4_set_encrypt_key
-
+.size	_vpsm4_enc_8blks,.-_vpsm4_enc_8blks
+.globl	vpsm4_set_encrypt_key
+.type	vpsm4_set_encrypt_key,%function
 .align	5
-_vpsm4_set_encrypt_key:
+vpsm4_set_encrypt_key:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x29,x30,[sp,#-16]!
 	mov	w2,1
@@ -578,11 +578,11 @@ _vpsm4_set_encrypt_key:
 	ldp	x29,x30,[sp],#16
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_set_decrypt_key
-
+.size	vpsm4_set_encrypt_key,.-vpsm4_set_encrypt_key
+.globl	vpsm4_set_decrypt_key
+.type	vpsm4_set_decrypt_key,%function
 .align	5
-_vpsm4_set_decrypt_key:
+vpsm4_set_decrypt_key:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x29,x30,[sp,#-16]!
 	mov	w2,0
@@ -590,14 +590,14 @@ _vpsm4_set_decrypt_key:
 	ldp	x29,x30,[sp],#16
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_encrypt
-
+.size	vpsm4_set_decrypt_key,.-vpsm4_set_decrypt_key
+.globl	vpsm4_encrypt
+.type	vpsm4_encrypt,%function
 .align	5
-_vpsm4_encrypt:
+vpsm4_encrypt:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v4.4s},[x0]
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -750,14 +750,14 @@ _vpsm4_encrypt:
 #endif
 	st1	{v4.4s},[x1]
 	ret
-
-.globl	_vpsm4_decrypt
-
+.size	vpsm4_encrypt,.-vpsm4_encrypt
+.globl	vpsm4_decrypt
+.type	vpsm4_decrypt,%function
 .align	5
-_vpsm4_decrypt:
+vpsm4_decrypt:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v4.4s},[x0]
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -910,11 +910,11 @@ _vpsm4_decrypt:
 #endif
 	st1	{v4.4s},[x1]
 	ret
-
-.globl	_vpsm4_ecb_encrypt
-
+.size	vpsm4_decrypt,.-vpsm4_decrypt
+.globl	vpsm4_ecb_encrypt
+.type	vpsm4_ecb_encrypt,%function
 .align	5
-_vpsm4_ecb_encrypt:
+vpsm4_ecb_encrypt:
 	AARCH64_SIGN_LINK_REGISTER
 	// convert length into blocks
 	lsr	x2,x2,4
@@ -923,14 +923,14 @@ _vpsm4_ecb_encrypt:
 	stp	d12,d13,[sp,#32]
 	stp	d14,d15,[sp,#48]
 	stp	x29,x30,[sp,#64]
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
 	ld1	{v28.16b,v29.16b,v30.16b,v31.16b},[x10]
-Lecb_8_blocks_process:
+.Lecb_8_blocks_process:
 	cmp	w2,#8
-	b.lt	Lecb_4_blocks_process
+	b.lt	.Lecb_4_blocks_process
 	ld4	{v4.4s,v5.4s,v6.4s,v7.4s},[x0],#64
 	ld4	{v8.4s,v9.4s,v10.4s,v11.4s},[x0],#64
 #ifndef __AARCH64EB__
@@ -961,9 +961,9 @@ Lecb_8_blocks_process:
 	st4	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	st4	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	w2,w2,#8
-	b.gt	Lecb_8_blocks_process
+	b.gt	.Lecb_8_blocks_process
 	b	100f
-Lecb_4_blocks_process:
+.Lecb_4_blocks_process:
 	cmp	w2,#4
 	b.lt	1f
 	ld4	{v4.4s,v5.4s,v6.4s,v7.4s},[x0],#64
@@ -1182,21 +1182,21 @@ Lecb_4_blocks_process:
 	ldp	d8,d9,[sp],#80
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_cbc_encrypt
-
+.size	vpsm4_ecb_encrypt,.-vpsm4_ecb_encrypt
+.globl	vpsm4_cbc_encrypt
+.type	vpsm4_cbc_encrypt,%function
 .align	5
-_vpsm4_cbc_encrypt:
+vpsm4_cbc_encrypt:
 	AARCH64_VALID_CALL_TARGET
 	lsr	x2,x2,4
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
 	ld1	{v28.16b,v29.16b,v30.16b,v31.16b},[x10]
-	cbz	w5,Ldec
+	cbz	w5,.Ldec
 	ld1	{v3.4s},[x4]
-Lcbc_4_blocks_enc:
+.Lcbc_4_blocks_enc:
 	cmp	w2,#4
 	b.lt	1f
 	ld1	{v4.4s,v5.4s,v6.4s,v7.4s},[x0],#64
@@ -1787,7 +1787,7 @@ Lcbc_4_blocks_enc:
 	orr	v3.16b,v7.16b,v7.16b
 	st1	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	w2,w2,#4
-	b.ne	Lcbc_4_blocks_enc
+	b.ne	.Lcbc_4_blocks_enc
 	b	2f
 1:
 	subs	w2,w2,#1
@@ -1946,7 +1946,7 @@ Lcbc_4_blocks_enc:
 	st1	{v3.4s},[x4]
 	ret
 
-Ldec:
+.Ldec:
 	// decryption mode starts
 	AARCH64_SIGN_LINK_REGISTER
 	stp	d8,d9,[sp,#-80]!
@@ -1954,7 +1954,7 @@ Ldec:
 	stp	d12,d13,[sp,#32]
 	stp	d14,d15,[sp,#48]
 	stp	x29,x30,[sp,#64]
-Lcbc_8_blocks_dec:
+.Lcbc_8_blocks_dec:
 	cmp	w2,#8
 	b.lt	1f
 	ld4	{v4.4s,v5.4s,v6.4s,v7.4s},[x0]
@@ -2019,11 +2019,11 @@ Lcbc_8_blocks_dec:
 	st1	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	st1	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	w2,w2,#8
-	b.gt	Lcbc_8_blocks_dec
+	b.gt	.Lcbc_8_blocks_dec
 	b.eq	100f
 1:
 	ld1	{v15.4s},[x4]
-Lcbc_4_blocks_dec:
+.Lcbc_4_blocks_dec:
 	cmp	w2,#4
 	b.lt	1f
 	ld4	{v4.4s,v5.4s,v6.4s,v7.4s},[x0]
@@ -2056,7 +2056,7 @@ Lcbc_4_blocks_dec:
 	eor	v3.16b,v3.16b,v6.16b
 	st1	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	subs	w2,w2,#4
-	b.gt	Lcbc_4_blocks_dec
+	b.gt	.Lcbc_4_blocks_dec
 	// save back IV
 	st1	{v7.4s}, [x4]
 	b	100f
@@ -2289,17 +2289,17 @@ Lcbc_4_blocks_dec:
 	ldp	d8,d9,[sp],#80
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_ctr32_encrypt_blocks
-
+.size	vpsm4_cbc_encrypt,.-vpsm4_cbc_encrypt
+.globl	vpsm4_ctr32_encrypt_blocks
+.type	vpsm4_ctr32_encrypt_blocks,%function
 .align	5
-_vpsm4_ctr32_encrypt_blocks:
+vpsm4_ctr32_encrypt_blocks:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v3.4s},[x4]
 #ifndef __AARCH64EB__
 	rev32	v3.16b,v3.16b
 #endif
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -2465,7 +2465,7 @@ _vpsm4_ctr32_encrypt_blocks:
 	mov	w13,v3.s[1]
 	mov	w14,v3.s[2]
 	mov	w5,v3.s[3]
-Lctr32_4_blocks_process:
+.Lctr32_4_blocks_process:
 	cmp	w2,#4
 	b.lt	1f
 	dup	v4.4s,w12
@@ -2480,7 +2480,7 @@ Lctr32_4_blocks_process:
 	mov	v7.s[3],w5
 	add	w5,w5,#1
 	cmp	w2,#8
-	b.ge	Lctr32_8_blocks_process
+	b.ge	.Lctr32_8_blocks_process
 	bl	_vpsm4_enc_4blks
 	ld4	{v12.4s,v13.4s,v14.4s,v15.4s},[x0],#64
 	eor	v0.16b,v0.16b,v12.16b
@@ -2489,9 +2489,9 @@ Lctr32_4_blocks_process:
 	eor	v3.16b,v3.16b,v15.16b
 	st4	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	subs	w2,w2,#4
-	b.ne	Lctr32_4_blocks_process
+	b.ne	.Lctr32_4_blocks_process
 	b	100f
-Lctr32_8_blocks_process:
+.Lctr32_8_blocks_process:
 	dup	v8.4s,w12
 	dup	v9.4s,w13
 	dup	v10.4s,w14
@@ -2517,7 +2517,7 @@ Lctr32_8_blocks_process:
 	st4	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	st4	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	w2,w2,#8
-	b.ne	Lctr32_4_blocks_process
+	b.ne	.Lctr32_4_blocks_process
 	b	100f
 1:	//	last block processing
 	subs	w2,w2,#1
@@ -2714,11 +2714,11 @@ Lctr32_8_blocks_process:
 	ldp	d8,d9,[sp],#80
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_xts_encrypt_gb
-
+.size	vpsm4_ctr32_encrypt_blocks,.-vpsm4_ctr32_encrypt_blocks
+.globl	vpsm4_xts_encrypt_gb
+.type	vpsm4_xts_encrypt_gb,%function
 .align	5
-_vpsm4_xts_encrypt_gb:
+vpsm4_xts_encrypt_gb:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x15, x16, [sp, #-0x10]!
 	stp	x17, x18, [sp, #-0x10]!
@@ -2737,7 +2737,7 @@ _vpsm4_xts_encrypt_gb:
 	mov	w28,w6
 	ld1	{v8.4s}, [x5]
 	mov	x3,x27
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -2946,9 +2946,9 @@ _vpsm4_xts_encrypt_gb:
 	extr	x27,x25,x24,#63
 	and	w8,w7,w9,asr#31
 	eor	x26,x8,x24,lsl#1
-Lxts_8_blocks_process_gb:
+.Lxts_8_blocks_process_gb:
 	cmp	x2,#8
-	b.lt	Lxts_4_blocks_process_gb
+	b.lt	.Lxts_4_blocks_process_gb
 	mov	v0.d[0],x12
 	mov	v0.d[1],x13
 #ifdef __AARCH64EB__
@@ -3158,9 +3158,9 @@ Lxts_8_blocks_process_gb:
 	st1	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	st1	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	x2,x2,#8
-	b.gt	Lxts_8_blocks_process_gb
+	b.gt	.Lxts_8_blocks_process_gb
 	b	100f
-Lxts_4_blocks_process_gb:
+.Lxts_4_blocks_process_gb:
 	mov	v8.d[0],x12
 	mov	v8.d[1],x13
 #ifdef __AARCH64EB__
@@ -3491,7 +3491,7 @@ Lxts_4_blocks_process_gb:
 	rev32	v8.16b,v8.16b
 #endif
 	rbit	v2.16b,v8.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v9.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
@@ -3499,7 +3499,7 @@ Lxts_4_blocks_process_gb:
 	eor	v9.16b, v9.16b, v1.16b
 	rbit	v9.16b,v9.16b
 	rbit	v2.16b,v9.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v10.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
@@ -3517,7 +3517,7 @@ Lxts_4_blocks_process_gb:
 	rev32	v9.16b,v9.16b
 #endif
 	rbit	v2.16b,v9.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v10.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
@@ -3866,11 +3866,11 @@ Lxts_4_blocks_process_gb:
 	ldp	x15, x16, [sp], #0x10
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-.globl	_vpsm4_xts_encrypt
-
+.size	vpsm4_xts_encrypt_gb,.-vpsm4_xts_encrypt_gb
+.globl	vpsm4_xts_encrypt
+.type	vpsm4_xts_encrypt,%function
 .align	5
-_vpsm4_xts_encrypt:
+vpsm4_xts_encrypt:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x15, x16, [sp, #-0x10]!
 	stp	x17, x18, [sp, #-0x10]!
@@ -3889,7 +3889,7 @@ _vpsm4_xts_encrypt:
 	mov	w28,w6
 	ld1	{v8.4s}, [x5]
 	mov	x3,x27
-	adr	x10,Lsbox
+	adr	x10,.Lsbox
 	ld1	{v16.16b,v17.16b,v18.16b,v19.16b},[x10],#64
 	ld1	{v20.16b,v21.16b,v22.16b,v23.16b},[x10],#64
 	ld1	{v24.16b,v25.16b,v26.16b,v27.16b},[x10],#64
@@ -4097,9 +4097,9 @@ _vpsm4_xts_encrypt:
 	extr	x27,x25,x24,#63
 	and	w8,w7,w9,asr#31
 	eor	x26,x8,x24,lsl#1
-Lxts_8_blocks_process:
+.Lxts_8_blocks_process:
 	cmp	x2,#8
-	b.lt	Lxts_4_blocks_process
+	b.lt	.Lxts_4_blocks_process
 	mov	v0.d[0],x12
 	mov	v0.d[1],x13
 #ifdef __AARCH64EB__
@@ -4301,9 +4301,9 @@ Lxts_8_blocks_process:
 	st1	{v0.4s,v1.4s,v2.4s,v3.4s},[x1],#64
 	st1	{v4.4s,v5.4s,v6.4s,v7.4s},[x1],#64
 	subs	x2,x2,#8
-	b.gt	Lxts_8_blocks_process
+	b.gt	.Lxts_8_blocks_process
 	b	100f
-Lxts_4_blocks_process:
+.Lxts_4_blocks_process:
 	mov	v8.d[0],x12
 	mov	v8.d[1],x13
 #ifdef __AARCH64EB__
@@ -4624,14 +4624,14 @@ Lxts_4_blocks_process:
 	rev32	v8.16b,v8.16b
 #endif
 	mov	v2.16b,v8.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v9.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
 	mul	v1.16b, v1.16b, v0.16b
 	eor	v9.16b, v9.16b, v1.16b
 	mov	v2.16b,v9.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v10.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
@@ -4648,7 +4648,7 @@ Lxts_4_blocks_process:
 	rev32	v9.16b,v9.16b
 #endif
 	mov	v2.16b,v9.16b
-	ldr	q0, Lxts_magic
+	ldr	q0, .Lxts_magic
 	shl	v10.16b, v2.16b, #1
 	ext	v1.16b, v2.16b, v2.16b,#15
 	ushr	v1.16b, v1.16b, #7
@@ -4996,4 +4996,4 @@ Lxts_4_blocks_process:
 	ldp	x15, x16, [sp], #0x10
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
+.size	vpsm4_xts_encrypt,.-vpsm4_xts_encrypt

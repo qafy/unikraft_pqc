@@ -1,9 +1,9 @@
-WITH_OPENSSL    ?= y
-WITH_LWIP		?= y
+WITH_OPENSSL    ?= n
+WITH_LWIP		?= n 
 WITH_MUSL		?= y
 WITH_UKRANDOM	?= n
 
-UK_ROOT  ?= $(PWD)/unikraft-0.17.0
+UK_ROOT  ?= /workspace/Unikraft/unikraft-0.17.0
 UK_LIBS  ?= $(PWD)/libs
 UK_BUILD ?= $(PWD)/build
 UK_PLATS ?= $(PWD)/plats

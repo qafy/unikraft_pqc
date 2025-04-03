@@ -1,0 +1,43 @@
+FROM ubuntu:jammy
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN set -e ;\
+    apt-get update -q=2 ;\
+    apt-get install -q=2 --yes \
+        qemu-system-aarch64 \
+        nano \
+        python3 \
+        python-is-python3 \
+        pip \
+        expect \
+        curl \
+        flex \
+        bison \
+        wget \
+        patch \
+        gdb \
+        patch \
+        gcc \
+        make \
+        cmake ;\
+    rm -rf /var/lib/apt/lists/* ;
+
+RUN set -e ;\
+    pip3 install \
+    pytest \
+    pytest-xdist \
+    pytest-html \
+    pyyaml
+
+COPY ./container-files/install-kraft.sh /tmp
+RUN chmod a+x /tmp/install-kraft.sh
+RUN bash /tmp/install-kraft.sh -y
+
+RUN sed -i \
+    's/#force_color_prompt=yes/force_color_prompt=yes/g' \
+    /root/.bashrc
+
+WORKDIR "/workspace"
+CMD ["/bin/bash"]
+

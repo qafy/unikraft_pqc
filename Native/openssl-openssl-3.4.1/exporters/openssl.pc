@@ -1,4 +1,4 @@
-prefix=/Users/moritzbeckel/Desktop/IDP/src/opt
+prefix=/workspace/Native/opt
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include 

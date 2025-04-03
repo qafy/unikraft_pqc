@@ -1,14 +1,14 @@
 #include "arm_arch.h"
 
 #if __ARM_MAX_ARCH__>=8
-
+.arch	armv8-a+crypto
 .text
-.globl	_aes_gcm_enc_128_kernel
-
+.globl	aes_gcm_enc_128_kernel
+.type	aes_gcm_enc_128_kernel,%function
 .align	4
-_aes_gcm_enc_128_kernel:
+aes_gcm_enc_128_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L128_enc_ret
+	cbz	x1, .L128_enc_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -219,7 +219,7 @@ _aes_gcm_enc_128_kernel:
 	aese	v1.16b, v27.16b                                      //AES block 1 - round 9
 
 	aese	v3.16b, v27.16b                                      //AES block 3 - round 9
-	b.ge	L128_enc_tail                                    //handle tail
+	b.ge	.L128_enc_tail                                    //handle tail
 
 	ldp	x6, x7, [x0, #0]            //AES block 0 - load plaintext
 #ifdef __AARCH64EB__
@@ -301,9 +301,9 @@ _aes_gcm_enc_128_kernel:
 
 	eor	v7.16b, v7.16b, v3.16b                          //AES block 3 - result
 	st1	{ v7.16b}, [x2], #16                     //AES block 3 - store result
-	b.ge	L128_enc_prepretail                              //do prepretail
+	b.ge	.L128_enc_prepretail                              //do prepretail
 
-L128_enc_main_loop:	//main	loop start
+.L128_enc_main_loop:	//main	loop start
 	ldp	x23, x24, [x0, #48]           //AES block 4k+3 - load plaintext
 #ifdef __AARCH64EB__
 	rev	x23, x23
@@ -493,7 +493,7 @@ L128_enc_main_loop:	//main	loop start
 
 	aese	v3.16b, v24.16b
 	aesmc	v3.16b, v3.16b          //AES block 4k+7 - round 6
-	cmp	x0, x5                   //LOOP CONTROL
+	cmp	x0, x5                   //.LOOP CONTROL
 
 	aese	v1.16b, v26.16b
 	aesmc	v1.16b, v1.16b          //AES block 4k+5 - round 8
@@ -556,9 +556,9 @@ L128_enc_main_loop:	//main	loop start
 
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
 	st1	{ v7.16b}, [x2], #16                     //AES block 4k+3 - store result
-	b.lt	L128_enc_main_loop
+	b.lt	.L128_enc_main_loop
 
-L128_enc_prepretail:	//PREPRETAIL
+.L128_enc_prepretail:	//PREPRETAIL
 	rev64	v4.16b, v4.16b                                    //GHASH block 4k (only t0 is free)
 	fmov	d3, x10                               //CTR block 4k+3
 	rev64	v5.16b, v5.16b                                    //GHASH block 4k+1 (t0 and t1 free)
@@ -747,7 +747,7 @@ L128_enc_prepretail:	//PREPRETAIL
 	eor	v11.16b, v11.16b, v10.16b
 
 	aese	v2.16b, v27.16b                                      //AES block 4k+6 - round 9
-L128_enc_tail:	//TAIL
+.L128_enc_tail:	//TAIL
 
 	sub	x5, x4, x0   //main_end_input_ptr is number of bytes left to process
 	ldp	x6, x7, [x0], #16           //AES block 4k+4 - load plaintext
@@ -767,7 +767,7 @@ L128_enc_tail:	//TAIL
 
 	eor	v5.16b, v4.16b, v0.16b                          //AES block 4k+4 - result
 
-	b.gt	L128_enc_blocks_more_than_3
+	b.gt	.L128_enc_blocks_more_than_3
 
 	sub	w12, w12, #1
 	movi	v11.8b, #0
@@ -778,17 +778,17 @@ L128_enc_tail:	//TAIL
 	movi	v9.8b, #0
 
 	movi	v10.8b, #0
-	b.gt	L128_enc_blocks_more_than_2
+	b.gt	.L128_enc_blocks_more_than_2
 
 	mov	v3.16b, v1.16b
 	cmp	x5, #16
 
 	sub	w12, w12, #1
-	b.gt	L128_enc_blocks_more_than_1
+	b.gt	.L128_enc_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L128_enc_blocks_less_than_1
-L128_enc_blocks_more_than_3:	//blocks	left >  3
+	b	.L128_enc_blocks_less_than_1
+.L128_enc_blocks_more_than_3:	//blocks	left >  3
 	st1	{ v5.16b}, [x2], #16                     //AES final-3 block  - store result
 
 	ldp	x6, x7, [x0], #16           //AES final-2 block - load input low & high
@@ -818,7 +818,7 @@ L128_enc_blocks_more_than_3:	//blocks	left >  3
 	eor	v22.8b, v22.8b, v4.8b                      //GHASH final-3 block - mid
 
 	pmull	v10.1q, v22.1d, v10.1d                    //GHASH final-3 block - mid
-L128_enc_blocks_more_than_2:	//blocks	left >  2
+.L128_enc_blocks_more_than_2:	//blocks	left >  2
 
 	st1	{ v5.16b}, [x2], #16                     //AES final-2 block - store result
 
@@ -855,7 +855,7 @@ L128_enc_blocks_more_than_2:	//blocks	left >  2
 	movi	v8.8b, #0                                        //suppress further partial tag feed in
 
 	eor	v10.16b, v10.16b, v22.16b                       //GHASH final-2 block - mid
-L128_enc_blocks_more_than_1:	//blocks	left >  1
+.L128_enc_blocks_more_than_1:	//blocks	left >  1
 
 	st1	{ v5.16b}, [x2], #16                     //AES final-1 block - store result
 
@@ -893,7 +893,7 @@ L128_enc_blocks_more_than_1:	//blocks	left >  1
 
 	eor	v10.16b, v10.16b, v22.16b                       //GHASH final-1 block - mid
 	movi	v8.8b, #0                                        //suppress further partial tag feed in
-L128_enc_blocks_less_than_1:	//blocks	left <= 1
+.L128_enc_blocks_less_than_1:	//blocks	left <= 1
 
 	and	x1, x1, #127                    //bit_length %= 128
 	mvn	x13, xzr                                      //rk10_l = 0xffffffffffffffff
@@ -982,16 +982,16 @@ L128_enc_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L128_enc_ret:
+.L128_enc_ret:
 	mov	w0, #0x0
 	ret
-
-.globl	_aes_gcm_dec_128_kernel
-
+.size	aes_gcm_enc_128_kernel,.-aes_gcm_enc_128_kernel
+.globl	aes_gcm_dec_128_kernel
+.type	aes_gcm_dec_128_kernel,%function
 .align	4
-_aes_gcm_dec_128_kernel:
+aes_gcm_dec_128_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L128_dec_ret
+	cbz	x1, .L128_dec_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -1198,7 +1198,7 @@ _aes_gcm_dec_128_kernel:
 
 	aese	v1.16b, v27.16b                                      //AES block 1 - round 9
 	eor	v17.16b, v17.16b, v9.16b                  //h4k | h3k
-	b.ge	L128_dec_tail                                    //handle tail
+	b.ge	.L128_dec_tail                                    //handle tail
 
 	ld1	{v4.16b, v5.16b}, [x0], #32               //AES block 0 - load ciphertext; AES block 1 - load ciphertext
 
@@ -1258,9 +1258,9 @@ _aes_gcm_dec_128_kernel:
 	stp	x6, x7, [x2], #16        //AES block 0 - store result
 
 	stp	x19, x20, [x2], #16        //AES block 1 - store result
-	b.ge	L128_dec_prepretail                              //do prepretail
+	b.ge	.L128_dec_prepretail                              //do prepretail
 
-L128_dec_main_loop:	//main	loop start
+.L128_dec_main_loop:	//main	loop start
 	eor	v3.16b, v7.16b, v3.16b                            //AES block 4k+3 - result
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
 	mov	x21, v2.d[0]                            //AES block 4k+2 - mov low
@@ -1497,7 +1497,7 @@ L128_dec_main_loop:	//main	loop start
 
 	aese	v3.16b, v27.16b                                      //AES block 4k+7 - round 9
 	fmov	d1, x10                               //CTR block 4k+9
-	cmp	x0, x5                   //LOOP CONTROL
+	cmp	x0, x5                   //.LOOP CONTROL
 
 	rev64	v4.16b, v4.16b                                    //GHASH block 4k+4
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
@@ -1519,9 +1519,9 @@ L128_dec_main_loop:	//main	loop start
 	stp	x19, x20, [x2], #16        //AES block 4k+5 - store result
 
 	orr	x9, x11, x9, lsl #32            //CTR block 4k+10
-	b.lt	L128_dec_main_loop
+	b.lt	.L128_dec_main_loop
 
-L128_dec_prepretail:	//PREPRETAIL
+.L128_dec_prepretail:	//PREPRETAIL
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
 	mov	x21, v2.d[0]                            //AES block 4k+2 - mov low
 	mov	d30, v5.d[1]                                  //GHASH block 4k+1 - mid
@@ -1732,7 +1732,7 @@ L128_dec_prepretail:	//PREPRETAIL
 
 	aese	v3.16b, v27.16b                                      //AES block 4k+7 - round 9
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
-L128_dec_tail:	//TAIL
+.L128_dec_tail:	//TAIL
 
 	sub	x5, x4, x0   //main_end_input_ptr is number of bytes left to process
 	ld1	{ v5.16b}, [x0], #16                      //AES block 4k+4 - load ciphertext
@@ -1754,7 +1754,7 @@ L128_dec_tail:	//TAIL
 #ifdef __AARCH64EB__
 	rev	x6, x6
 #endif
-	b.gt	L128_dec_blocks_more_than_3
+	b.gt	.L128_dec_blocks_more_than_3
 
 	mov	v3.16b, v2.16b
 	sub	w12, w12, #1
@@ -1765,17 +1765,17 @@ L128_dec_tail:	//TAIL
 
 	movi	v10.8b, #0
 	cmp	x5, #32
-	b.gt	L128_dec_blocks_more_than_2
+	b.gt	.L128_dec_blocks_more_than_2
 
 	cmp	x5, #16
 
 	mov	v3.16b, v1.16b
 	sub	w12, w12, #1
-	b.gt	L128_dec_blocks_more_than_1
+	b.gt	.L128_dec_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L128_dec_blocks_less_than_1
-L128_dec_blocks_more_than_3:	//blocks	left >  3
+	b	.L128_dec_blocks_less_than_1
+.L128_dec_blocks_more_than_3:	//blocks	left >  3
 	rev64	v4.16b, v5.16b                                    //GHASH final-3 block
 	ld1	{ v5.16b}, [x0], #16                      //AES final-2 block - load ciphertext
 
@@ -1805,7 +1805,7 @@ L128_dec_blocks_more_than_3:	//blocks	left >  3
 #ifdef __AARCH64EB__
 	rev	x6, x6
 #endif
-L128_dec_blocks_more_than_2:	//blocks	left >  2
+.L128_dec_blocks_more_than_2:	//blocks	left >  2
 
 	rev64	v4.16b, v5.16b                                    //GHASH final-2 block
 	ld1	{ v5.16b}, [x0], #16                      //AES final-1 block - load ciphertext
@@ -1842,7 +1842,7 @@ L128_dec_blocks_more_than_2:	//blocks	left >  2
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-L128_dec_blocks_more_than_1:	//blocks	left >  1
+.L128_dec_blocks_more_than_1:	//blocks	left >  1
 
 	rev64	v4.16b, v5.16b                                    //GHASH final-1 block
 
@@ -1880,7 +1880,7 @@ L128_dec_blocks_more_than_1:	//blocks	left >  1
 	rev	x6, x6
 #endif
 	eor	v10.16b, v10.16b, v22.16b                       //GHASH final-1 block - mid
-L128_dec_blocks_less_than_1:	//blocks	left <= 1
+.L128_dec_blocks_less_than_1:	//blocks	left <= 1
 
 	mvn	x14, xzr                                      //rk10_h = 0xffffffffffffffff
 	and	x1, x1, #127                    //bit_length %= 128
@@ -1975,16 +1975,16 @@ L128_dec_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L128_dec_ret:
+.L128_dec_ret:
 	mov	w0, #0x0
 	ret
-
-.globl	_aes_gcm_enc_192_kernel
-
+.size	aes_gcm_dec_128_kernel,.-aes_gcm_dec_128_kernel
+.globl	aes_gcm_enc_192_kernel
+.type	aes_gcm_enc_192_kernel,%function
 .align	4
-_aes_gcm_enc_192_kernel:
+aes_gcm_enc_192_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L192_enc_ret
+	cbz	x1, .L192_enc_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -2221,7 +2221,7 @@ _aes_gcm_enc_192_kernel:
 	add	w12, w12, #1                           //CTR block 3
 
 	aese	v3.16b, v29.16b                                    //AES block 3 - round 11
-	b.ge	L192_enc_tail                                   //handle tail
+	b.ge	.L192_enc_tail                                   //handle tail
 
 	rev	w9, w12                                //CTR block 4
 	ldp	x6, x7, [x0, #0]           //AES block 0 - load plaintext
@@ -2306,9 +2306,9 @@ _aes_gcm_enc_192_kernel:
 
 	eor	v7.16b, v7.16b, v3.16b                         //AES block 3 - result
 	st1	{ v7.16b}, [x2], #16                    //AES block 3 - store result
-	b.ge	L192_enc_prepretail                             //do prepretail
+	b.ge	.L192_enc_prepretail                             //do prepretail
 
-L192_enc_main_loop:	//main	loop start
+.L192_enc_main_loop:	//main	loop start
 	aese	v2.16b, v18.16b
 	aesmc	v2.16b, v2.16b         //AES block 4k+6 - round 0
 	rev64	v5.16b, v5.16b                                   //GHASH block 4k+1 (t0 and t1 free)
@@ -2483,7 +2483,7 @@ L192_enc_main_loop:	//main	loop start
 	eor	v11.16b, v11.16b, v6.16b                        //GHASH block 4k+3 - low
 
 	pmull	v30.1q, v30.1d, v16.1d                         //GHASH block 4k+3 - mid
-	cmp	x0, x5                  //LOOP CONTROL
+	cmp	x0, x5                  //.LOOP CONTROL
 	fmov	d4, x6                              //AES block 4k+4 - mov low
 
 	aese	v2.16b, v24.16b
@@ -2584,9 +2584,9 @@ L192_enc_main_loop:	//main	loop start
 
 	eor	v7.16b, v7.16b, v3.16b                         //AES block 4k+3 - result
 	st1	{ v7.16b}, [x2], #16                    //AES block 4k+3 - store result
-	b.lt	L192_enc_main_loop
+	b.lt	.L192_enc_main_loop
 
-L192_enc_prepretail:	//PREPRETAIL
+.L192_enc_prepretail:	//PREPRETAIL
 	aese	v0.16b, v18.16b
 	aesmc	v0.16b, v0.16b         //AES block 4k+4 - round 0
 	rev64	v4.16b, v4.16b                                   //GHASH block 4k (only t0 is free)
@@ -2798,7 +2798,7 @@ L192_enc_prepretail:	//PREPRETAIL
 
 	aese	v1.16b, v29.16b                                    //AES block 4k+5 - round 11
 	eor	v11.16b, v11.16b, v10.16b
-L192_enc_tail:	//TAIL
+.L192_enc_tail:	//TAIL
 
 	sub	x5, x4, x0  //main_end_input_ptr is number of bytes left to process
 	ldp	x6, x7, [x0], #16          //AES block 4k+4 - load plaintext
@@ -2817,7 +2817,7 @@ L192_enc_tail:	//TAIL
 	eor	v5.16b, v4.16b, v0.16b                         //AES block 4k+4 - result
 
 	ext	v8.16b, v11.16b, v11.16b, #8                    //prepare final partial tag
-	b.gt	L192_enc_blocks_more_than_3
+	b.gt	.L192_enc_blocks_more_than_3
 
 	sub	w12, w12, #1
 	movi	v10.8b, #0
@@ -2828,17 +2828,17 @@ L192_enc_tail:	//TAIL
 
 	mov	v2.16b, v1.16b
 	movi	v11.8b, #0
-	b.gt	L192_enc_blocks_more_than_2
+	b.gt	.L192_enc_blocks_more_than_2
 
 	sub	w12, w12, #1
 
 	mov	v3.16b, v1.16b
 	cmp	x5, #16
-	b.gt	L192_enc_blocks_more_than_1
+	b.gt	.L192_enc_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L192_enc_blocks_less_than_1
-L192_enc_blocks_more_than_3:	//blocks	left >  3
+	b	.L192_enc_blocks_less_than_1
+.L192_enc_blocks_more_than_3:	//blocks	left >  3
 	st1	{ v5.16b}, [x2], #16                    //AES final-3 block  - store result
 
 	ldp	x6, x7, [x0], #16          //AES final-2 block - load input low & high
@@ -2870,7 +2870,7 @@ L192_enc_blocks_more_than_3:	//blocks	left >  3
 
 	pmull	v10.1q, v22.1d, v10.1d                   //GHASH final-3 block - mid
 	eor	v5.16b, v5.16b, v1.16b                           //AES final-2 block - result
-L192_enc_blocks_more_than_2:	//blocks	left >  2
+.L192_enc_blocks_more_than_2:	//blocks	left >  2
 
 	st1	{ v5.16b}, [x2], #16                    //AES final-2 block - store result
 
@@ -2905,7 +2905,7 @@ L192_enc_blocks_more_than_2:	//blocks	left >  2
 	eor	v5.16b, v5.16b, v2.16b                           //AES final-1 block - result
 
 	eor	v10.16b, v10.16b, v22.16b                      //GHASH final-2 block - mid
-L192_enc_blocks_more_than_1:	//blocks	left >  1
+.L192_enc_blocks_more_than_1:	//blocks	left >  1
 
 	st1	{ v5.16b}, [x2], #16                    //AES final-1 block - store result
 
@@ -2942,7 +2942,7 @@ L192_enc_blocks_more_than_1:	//blocks	left >  1
 	eor	v11.16b, v11.16b, v21.16b                           //GHASH final-1 block - low
 
 	eor	v10.16b, v10.16b, v22.16b                      //GHASH final-1 block - mid
-L192_enc_blocks_less_than_1:	//blocks	left <= 1
+.L192_enc_blocks_less_than_1:	//blocks	left <= 1
 
 	ld1	{ v18.16b}, [x2]                           //load existing bytes where the possibly partial last block is to be stored
 #ifndef __AARCH64EB__
@@ -3033,16 +3033,16 @@ L192_enc_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L192_enc_ret:
+.L192_enc_ret:
 	mov	w0, #0x0
 	ret
-
-.globl	_aes_gcm_dec_192_kernel
-
+.size	aes_gcm_enc_192_kernel,.-aes_gcm_enc_192_kernel
+.globl	aes_gcm_dec_192_kernel
+.type	aes_gcm_dec_192_kernel,%function
 .align	4
-_aes_gcm_dec_192_kernel:
+aes_gcm_dec_192_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L192_dec_ret
+	cbz	x1, .L192_dec_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -3274,7 +3274,7 @@ _aes_gcm_dec_192_kernel:
 	eor	v17.16b, v17.16b, v9.16b                  //h4k | h3k
 
 	aese	v0.16b, v29.16b                                     //AES block 0 - round 11
-	b.ge	L192_dec_tail                                    //handle tail
+	b.ge	.L192_dec_tail                                    //handle tail
 
 	ld1	{v4.16b, v5.16b}, [x0], #32               //AES block 0,1 - load ciphertext
 
@@ -3330,9 +3330,9 @@ _aes_gcm_dec_192_kernel:
 
 	add	w12, w12, #1                            //CTR block 6
 	eor	v2.16b, v6.16b, v2.16b                            //AES block 2 - result
-	b.ge	L192_dec_prepretail                              //do prepretail
+	b.ge	.L192_dec_prepretail                              //do prepretail
 
-L192_dec_main_loop:	//main	loop start
+.L192_dec_main_loop:	//main	loop start
 	aese	v1.16b, v18.16b
 	aesmc	v1.16b, v1.16b          //AES block 4k+5 - round 0
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
@@ -3547,7 +3547,7 @@ L192_dec_main_loop:	//main	loop start
 	aesmc	v2.16b, v2.16b          //AES block 4k+6 - round 9
 	eor	v10.16b, v10.16b, v9.16b                         //MODULO - fold into mid
 
-	cmp	x0, x5                   //LOOP CONTROL
+	cmp	x0, x5                   //.LOOP CONTROL
 
 	eor	v0.16b, v4.16b, v0.16b                            //AES block 4k+4 - result
 	eor	x24, x24, x14                   //AES block 4k+3 - round 12 high
@@ -3617,9 +3617,9 @@ L192_dec_main_loop:	//main	loop start
 
 	aese	v3.16b, v29.16b                                     //AES block 4k+7 - round 11
 	stp	x19, x20, [x2], #16        //AES block 4k+5 - store result
-	b.lt	L192_dec_main_loop
+	b.lt	.L192_dec_main_loop
 
-L192_dec_prepretail:	//PREPRETAIL
+.L192_dec_prepretail:	//PREPRETAIL
 	mov	x22, v2.d[1]                            //AES block 4k+2 - mov high
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
 	eor	v3.16b, v7.16b, v3.16b                            //AES block 4k+3 - result
@@ -3857,7 +3857,7 @@ L192_dec_prepretail:	//PREPRETAIL
 	aese	v3.16b, v29.16b
 
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
-L192_dec_tail:	//TAIL
+.L192_dec_tail:	//TAIL
 
 	sub	x5, x4, x0   //main_end_input_ptr is number of bytes left to process
 	ld1	{ v5.16b}, [x0], #16                      //AES block 4k+4 - load ciphertext
@@ -3880,7 +3880,7 @@ L192_dec_tail:	//TAIL
 #ifdef __AARCH64EB__
 	rev	x6, x6
 #endif
-	b.gt	L192_dec_blocks_more_than_3
+	b.gt	.L192_dec_blocks_more_than_3
 
 	movi	v11.8b, #0
 	movi	v9.8b, #0
@@ -3891,17 +3891,17 @@ L192_dec_tail:	//TAIL
 
 	movi	v10.8b, #0
 	cmp	x5, #32
-	b.gt	L192_dec_blocks_more_than_2
+	b.gt	.L192_dec_blocks_more_than_2
 
 	mov	v3.16b, v1.16b
 	cmp	x5, #16
 	sub	w12, w12, #1
 
-	b.gt	L192_dec_blocks_more_than_1
+	b.gt	.L192_dec_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L192_dec_blocks_less_than_1
-L192_dec_blocks_more_than_3:	//blocks	left >  3
+	b	.L192_dec_blocks_less_than_1
+.L192_dec_blocks_more_than_3:	//blocks	left >  3
 	rev64	v4.16b, v5.16b                                    //GHASH final-3 block
 	ld1	{ v5.16b}, [x0], #16                      //AES final-2 block - load ciphertext
 
@@ -3933,7 +3933,7 @@ L192_dec_blocks_more_than_3:	//blocks	left >  3
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-L192_dec_blocks_more_than_2:	//blocks	left >  2
+.L192_dec_blocks_more_than_2:	//blocks	left >  2
 
 	rev64	v4.16b, v5.16b                                    //GHASH final-2 block
 	ld1	{ v5.16b}, [x0], #16                      //AES final-1 block - load ciphertext
@@ -3970,7 +3970,7 @@ L192_dec_blocks_more_than_2:	//blocks	left >  2
 	rev	x6, x6
 #endif
 	eor	v10.16b, v10.16b, v22.16b                       //GHASH final-2 block - mid
-L192_dec_blocks_more_than_1:	//blocks	left >  1
+.L192_dec_blocks_more_than_1:	//blocks	left >  1
 
 	rev64	v4.16b, v5.16b                                    //GHASH final-1 block
 
@@ -4007,7 +4007,7 @@ L192_dec_blocks_more_than_1:	//blocks	left >  1
 	rev	x6, x6
 #endif
 	eor	v10.16b, v10.16b, v22.16b                       //GHASH final-1 block - mid
-L192_dec_blocks_less_than_1:	//blocks	left <= 1
+.L192_dec_blocks_less_than_1:	//blocks	left <= 1
 
 	mvn	x13, xzr                                      //rk12_l = 0xffffffffffffffff
 	ldp	x4, x5, [x2]  //load existing bytes we need to not overwrite
@@ -4101,16 +4101,16 @@ L192_dec_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L192_dec_ret:
+.L192_dec_ret:
 	mov	w0, #0x0
 	ret
-
-.globl	_aes_gcm_enc_256_kernel
-
+.size	aes_gcm_dec_192_kernel,.-aes_gcm_dec_192_kernel
+.globl	aes_gcm_enc_256_kernel
+.type	aes_gcm_enc_256_kernel,%function
 .align	4
-_aes_gcm_enc_256_kernel:
+aes_gcm_enc_256_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L256_enc_ret
+	cbz	x1, .L256_enc_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -4367,7 +4367,7 @@ _aes_gcm_enc_256_kernel:
 
 	aese	v3.16b, v31.16b                                     //AES block 3 - round 13
 	eor	v16.16b, v16.16b, v8.16b                     //h2k | h1k
-	b.ge	L256_enc_tail                                    //handle tail
+	b.ge	.L256_enc_tail                                    //handle tail
 
 	ldp	x19, x20, [x0, #16]           //AES block 1 - load plaintext
 #ifdef __AARCH64EB__
@@ -4450,9 +4450,9 @@ _aes_gcm_enc_256_kernel:
 
 	eor	v7.16b, v7.16b, v3.16b                          //AES block 3 - result
 	st1	{ v7.16b}, [x2], #16                     //AES block 3 - store result
-	b.ge	L256_enc_prepretail                               //do prepretail
+	b.ge	.L256_enc_prepretail                               //do prepretail
 
-L256_enc_main_loop:	//main	loop start
+.L256_enc_main_loop:	//main	loop start
 	aese	v0.16b, v18.16b
 	aesmc	v0.16b, v0.16b          //AES block 4k+4 - round 0
 	rev64	v4.16b, v4.16b                                    //GHASH block 4k (only t0 is free)
@@ -4707,7 +4707,7 @@ L256_enc_main_loop:	//main	loop start
 	fmov	v5.d[1], x20                           //AES block 4k+5 - mov high
 
 	fmov	d6, x21                               //AES block 4k+6 - mov low
-	cmp	x0, x5                   //LOOP CONTROL
+	cmp	x0, x5                   //.LOOP CONTROL
 
 	fmov	v6.d[1], x22                           //AES block 4k+6 - mov high
 
@@ -4752,9 +4752,9 @@ L256_enc_main_loop:	//main	loop start
 
 	eor	v7.16b, v7.16b, v3.16b                          //AES block 4k+7 - result
 	st1	{ v7.16b}, [x2], #16                     //AES block 4k+7 - store result
-	b.lt	L256_enc_main_loop
+	b.lt	.L256_enc_main_loop
 
-L256_enc_prepretail:	//PREPRETAIL
+.L256_enc_prepretail:	//PREPRETAIL
 	aese	v1.16b, v18.16b
 	aesmc	v1.16b, v1.16b          //AES block 4k+5 - round 0
 	rev64	v6.16b, v6.16b                                    //GHASH block 4k+2 (t0, t1, and t2 free)
@@ -4992,7 +4992,7 @@ L256_enc_prepretail:	//PREPRETAIL
 
 	aese	v2.16b, v31.16b                                     //AES block 4k+6 - round 13
 	eor	v11.16b, v11.16b, v10.16b
-L256_enc_tail:	//TAIL
+.L256_enc_tail:	//TAIL
 
 	ext	v8.16b, v11.16b, v11.16b, #8                     //prepare final partial tag
 	sub	x5, x4, x0   //main_end_input_ptr is number of bytes left to process
@@ -5010,7 +5010,7 @@ L256_enc_tail:	//TAIL
 	fmov	v4.d[1], x7                           //AES block 4k+4 - mov high
 
 	eor	v5.16b, v4.16b, v0.16b                          //AES block 4k+4 - result
-	b.gt	L256_enc_blocks_more_than_3
+	b.gt	.L256_enc_blocks_more_than_3
 
 	cmp	x5, #32
 	mov	v3.16b, v2.16b
@@ -5021,17 +5021,17 @@ L256_enc_tail:	//TAIL
 
 	mov	v2.16b, v1.16b
 	movi	v10.8b, #0
-	b.gt	L256_enc_blocks_more_than_2
+	b.gt	.L256_enc_blocks_more_than_2
 
 	mov	v3.16b, v1.16b
 	sub	w12, w12, #1
 	cmp	x5, #16
 
-	b.gt	L256_enc_blocks_more_than_1
+	b.gt	.L256_enc_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L256_enc_blocks_less_than_1
-L256_enc_blocks_more_than_3:	//blocks	left >  3
+	b	.L256_enc_blocks_less_than_1
+.L256_enc_blocks_more_than_3:	//blocks	left >  3
 	st1	{ v5.16b}, [x2], #16                    //AES final-3 block  - store result
 
 	ldp	x6, x7, [x0], #16          //AES final-2 block - load input low & high
@@ -5062,7 +5062,7 @@ L256_enc_blocks_more_than_3:	//blocks	left >  3
 
 	pmull	v10.1q, v22.1d, v10.1d                   //GHASH final-3 block - mid
 	eor	v5.16b, v5.16b, v1.16b                           //AES final-2 block - result
-L256_enc_blocks_more_than_2:	//blocks	left >  2
+.L256_enc_blocks_more_than_2:	//blocks	left >  2
 
 	st1	{ v5.16b}, [x2], #16                    //AES final-2 block - store result
 
@@ -5099,7 +5099,7 @@ L256_enc_blocks_more_than_2:	//blocks	left >  2
 	eor	v11.16b, v11.16b, v21.16b                           //GHASH final-2 block - low
 
 	eor	v10.16b, v10.16b, v22.16b                      //GHASH final-2 block - mid
-L256_enc_blocks_more_than_1:	//blocks	left >  1
+.L256_enc_blocks_more_than_1:	//blocks	left >  1
 
 	st1	{ v5.16b}, [x2], #16                    //AES final-1 block - store result
 
@@ -5137,7 +5137,7 @@ L256_enc_blocks_more_than_1:	//blocks	left >  1
 	eor	v10.16b, v10.16b, v22.16b                      //GHASH final-1 block - mid
 
 	eor	v11.16b, v11.16b, v21.16b                           //GHASH final-1 block - low
-L256_enc_blocks_less_than_1:	//blocks	left <= 1
+.L256_enc_blocks_less_than_1:	//blocks	left <= 1
 
 	and	x1, x1, #127                   //bit_length %= 128
 
@@ -5226,16 +5226,16 @@ L256_enc_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L256_enc_ret:
+.L256_enc_ret:
 	mov	w0, #0x0
 	ret
-
-.globl	_aes_gcm_dec_256_kernel
-
+.size	aes_gcm_enc_256_kernel,.-aes_gcm_enc_256_kernel
+.globl	aes_gcm_dec_256_kernel
+.type	aes_gcm_dec_256_kernel,%function
 .align	4
-_aes_gcm_dec_256_kernel:
+aes_gcm_dec_256_kernel:
 	AARCH64_VALID_CALL_TARGET
-	cbz	x1, L256_dec_ret
+	cbz	x1, .L256_dec_ret
 	stp	x19, x20, [sp, #-112]!
 	mov	x16, x4
 	mov	x8, x5
@@ -5503,7 +5503,7 @@ _aes_gcm_dec_256_kernel:
 	aese	v3.16b, v31.16b                                     //AES block 3 - round 13
 
 	aese	v0.16b, v31.16b                                     //AES block 0 - round 13
-	b.ge	L256_dec_tail                                    //handle tail
+	b.ge	.L256_dec_tail                                    //handle tail
 
 	ld1	{v4.16b, v5.16b}, [x0], #32               //AES block 0,1 - load ciphertext
 
@@ -5563,9 +5563,9 @@ _aes_gcm_dec_256_kernel:
 
 	eor	v2.16b, v6.16b, v2.16b                            //AES block 2 - result
 	cmp	x0, x5                   //check if we have <= 8 blocks
-	b.ge	L256_dec_prepretail                              //do prepretail
+	b.ge	.L256_dec_prepretail                              //do prepretail
 
-L256_dec_main_loop:	//main	loop start
+.L256_dec_main_loop:	//main	loop start
 	mov	x21, v2.d[0]                            //AES block 4k+2 - mov low
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
 	eor	v3.16b, v7.16b, v3.16b                            //AES block 4k+3 - result
@@ -5826,7 +5826,7 @@ L256_dec_main_loop:	//main	loop start
 
 	aese	v2.16b, v31.16b                                     //AES block 4k+6 - round 13
 	orr	x9, x11, x9, lsl #32            //CTR block 4k+9
-	cmp	x0, x5                   //LOOP CONTROL
+	cmp	x0, x5                   //.LOOP CONTROL
 
 	add	w12, w12, #1                            //CTR block 4k+9
 
@@ -5871,10 +5871,10 @@ L256_dec_main_loop:	//main	loop start
 
 	rev64	v4.16b, v4.16b                                    //GHASH block 4k+4
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
-	b.lt	L256_dec_main_loop
+	b.lt	.L256_dec_main_loop
 
 
-L256_dec_prepretail:	//PREPRETAIL
+.L256_dec_prepretail:	//PREPRETAIL
 	ext	v11.16b, v11.16b, v11.16b, #8                     //PRE 0
 	mov	x21, v2.d[0]                            //AES block 4k+2 - mov low
 	eor	v3.16b, v7.16b, v3.16b                            //AES block 4k+3 - result
@@ -6130,7 +6130,7 @@ L256_dec_prepretail:	//PREPRETAIL
 
 	aese	v2.16b, v31.16b                                     //AES block 4k+6 - round 13
 	eor	v11.16b, v11.16b, v10.16b                         //MODULO - fold into low
-L256_dec_tail:	//TAIL
+.L256_dec_tail:	//TAIL
 
 	sub	x5, x4, x0   //main_end_input_ptr is number of bytes left to process
 	ld1	{ v5.16b}, [x0], #16                      //AES block 4k+4 - load ciphertext
@@ -6153,7 +6153,7 @@ L256_dec_tail:	//TAIL
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-	b.gt	L256_dec_blocks_more_than_3
+	b.gt	.L256_dec_blocks_more_than_3
 
 	sub	w12, w12, #1
 	mov	v3.16b, v2.16b
@@ -6164,17 +6164,17 @@ L256_dec_tail:	//TAIL
 
 	movi	v9.8b, #0
 	mov	v2.16b, v1.16b
-	b.gt	L256_dec_blocks_more_than_2
+	b.gt	.L256_dec_blocks_more_than_2
 
 	sub	w12, w12, #1
 
 	mov	v3.16b, v1.16b
 	cmp	x5, #16
-	b.gt	L256_dec_blocks_more_than_1
+	b.gt	.L256_dec_blocks_more_than_1
 
 	sub	w12, w12, #1
-	b	L256_dec_blocks_less_than_1
-L256_dec_blocks_more_than_3:	//blocks	left >  3
+	b	.L256_dec_blocks_less_than_1
+.L256_dec_blocks_more_than_3:	//blocks	left >  3
 	rev64	v4.16b, v5.16b                                   //GHASH final-3 block
 	ld1	{ v5.16b}, [x0], #16                     //AES final-2 block - load ciphertext
 
@@ -6209,7 +6209,7 @@ L256_dec_blocks_more_than_3:	//blocks	left >  3
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-L256_dec_blocks_more_than_2:	//blocks	left >  2
+.L256_dec_blocks_more_than_2:	//blocks	left >  2
 
 	rev64	v4.16b, v5.16b                                   //GHASH final-2 block
 	ld1	{ v5.16b}, [x0], #16                     //AES final-1 block - load ciphertext
@@ -6245,7 +6245,7 @@ L256_dec_blocks_more_than_2:	//blocks	left >  2
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-L256_dec_blocks_more_than_1:	//blocks	left >  1
+.L256_dec_blocks_more_than_1:	//blocks	left >  1
 
 	stp	x6, x7, [x2], #16       //AES final-1 block  - store result
 	rev64	v4.16b, v5.16b                                   //GHASH final-1 block
@@ -6284,7 +6284,7 @@ L256_dec_blocks_more_than_1:	//blocks	left >  1
 #ifdef __AARCH64EB__
 	rev	x7, x7
 #endif
-L256_dec_blocks_less_than_1:	//blocks	left <= 1
+.L256_dec_blocks_less_than_1:	//blocks	left <= 1
 
 	and	x1, x1, #127                   //bit_length %= 128
 	mvn	x14, xzr                                     //rk14_h = 0xffffffffffffffff
@@ -6385,10 +6385,10 @@ L256_dec_blocks_less_than_1:	//blocks	left <= 1
 	ldp	x19, x20, [sp], #112
 	ret
 
-L256_dec_ret:
+.L256_dec_ret:
 	mov	w0, #0x0
 	ret
-
+.size	aes_gcm_dec_256_kernel,.-aes_gcm_dec_256_kernel
 .byte	71,72,65,83,72,32,102,111,114,32,65,82,77,118,56,44,32,67,82,89,80,84,79,71,65,77,83,32,98,121,32,60,97,112,112,114,111,64,111,112,101,110,115,115,108,46,111,114,103,62,0
 .align	2
 .align	2

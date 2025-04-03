@@ -58,7 +58,7 @@ VirtualLock(
 # if defined(OPENSSL_SYS_LINUX)
 #  include <sys/syscall.h>
 #  if defined(SYS_mlock2)
-#   include <linux/mman.h>
+//#   include <linux/mman.h>
 #   include <errno.h>
 #  endif
 #  include <sys/param.h>

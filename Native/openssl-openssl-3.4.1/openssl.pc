@@ -1,4 +1,4 @@
-prefix=/Users/moritzbeckel/Desktop/IDP/src/openssl-openssl-3.4.1
+prefix=/workspace/Native/openssl-openssl-3.4.1
 exec_prefix=${prefix}
 libdir=${exec_prefix}
 includedir=${prefix}/include ${prefix}/./include 

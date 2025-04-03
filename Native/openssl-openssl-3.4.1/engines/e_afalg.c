@@ -24,7 +24,13 @@
 #include "internal/nelem.h"
 
 #include <sys/socket.h>
-#include <linux/version.h>
+//#include <linux/version.h>
+#define LINUX_VERSION_CODE 395276
+#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
+#define LINUX_VERSION_MAJOR 6
+#define LINUX_VERSION_PATCHLEVEL 8
+#define LINUX_VERSION_SUBLEVEL 12
+
 #define K_MAJ   4
 #define K_MIN1  1
 #define K_MIN2  0

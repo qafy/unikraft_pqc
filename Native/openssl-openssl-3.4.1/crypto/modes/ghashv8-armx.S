@@ -1,12 +1,12 @@
 #include "arm_arch.h"
 
 #if __ARM_MAX_ARCH__>=7
-
+.arch	armv8-a+crypto
 .text
-.globl	_gcm_init_v8
-
+.globl	gcm_init_v8
+.type	gcm_init_v8,%function
 .align	4
-_gcm_init_v8:
+gcm_init_v8:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v17.2d},[x1]		//load input H
 	movi	v19.16b,#0xe1
@@ -181,11 +181,11 @@ _gcm_init_v8:
 	ext	v30.16b,v16.16b,v17.16b,#8		//pack Karatsuba pre-processed
 	st1	{v29.2d,v30.2d,v31.2d},[x0]		//store Htable[9..11]
 	ret
-
-.globl	_gcm_gmult_v8
-
+.size	gcm_init_v8,.-gcm_init_v8
+.globl	gcm_gmult_v8
+.type	gcm_gmult_v8,%function
 .align	4
-_gcm_gmult_v8:
+gcm_gmult_v8:
 	AARCH64_VALID_CALL_TARGET
 	ld1	{v17.2d},[x0]		//load Xi
 	movi	v19.16b,#0xe1
@@ -223,14 +223,14 @@ _gcm_gmult_v8:
 	st1	{v0.2d},[x0]		//write out Xi
 
 	ret
-
-.globl	_gcm_ghash_v8
-
+.size	gcm_gmult_v8,.-gcm_gmult_v8
+.globl	gcm_ghash_v8
+.type	gcm_ghash_v8,%function
 .align	4
-_gcm_ghash_v8:
+gcm_ghash_v8:
 	AARCH64_VALID_CALL_TARGET
 	cmp	x3,#64
-	b.hs	Lgcm_ghash_v8_4x
+	b.hs	.Lgcm_ghash_v8_4x
 	ld1	{v0.2d},[x0]		//load [rotated] Xi
 						//"[rotated]" means that
 						//loaded value would have
@@ -259,7 +259,7 @@ _gcm_ghash_v8:
 	rev64	v0.16b,v0.16b
 #endif
 	ext	v3.16b,v16.16b,v16.16b,#8		//rotate I[0]
-	b.lo	Lodd_tail_v8		//x3 was less than 32
+	b.lo	.Lodd_tail_v8		//x3 was less than 32
 	ld1	{v17.2d},[x2],x12	//load [rotated] I[1]
 #ifndef __AARCH64EB__
 	rev64	v17.16b,v17.16b
@@ -269,10 +269,10 @@ _gcm_ghash_v8:
 	pmull	v4.1q,v20.1d,v7.1d		//H·Ii+1
 	eor	v17.16b,v17.16b,v7.16b		//Karatsuba pre-processing
 	pmull2	v6.1q,v20.2d,v7.2d
-	b	Loop_mod2x_v8
+	b	.Loop_mod2x_v8
 
 .align	4
-Loop_mod2x_v8:
+.Loop_mod2x_v8:
 	ext	v18.16b,v3.16b,v3.16b,#8
 	subs	x3,x3,#32		//is there more data?
 	pmull	v0.1q,v22.1d,v3.1d		//H^2.lo·Xi.lo
@@ -316,14 +316,14 @@ Loop_mod2x_v8:
 	eor	v17.16b,v17.16b,v7.16b		//Karatsuba pre-processing
 	eor	v3.16b,v3.16b,v0.16b
 	pmull2	v6.1q,v20.2d,v7.2d
-	b.hs	Loop_mod2x_v8		//there was at least 32 more bytes
+	b.hs	.Loop_mod2x_v8		//there was at least 32 more bytes
 
 	eor	v2.16b,v2.16b,v18.16b
 	ext	v3.16b,v16.16b,v16.16b,#8		//re-construct v3.16b
 	adds	x3,x3,#32		//re-construct x3
 	eor	v0.16b,v0.16b,v2.16b		//re-construct v0.16b
-	b.eq	Ldone_v8		//is x3 zero?
-Lodd_tail_v8:
+	b.eq	.Ldone_v8		//is x3 zero?
+.Lodd_tail_v8:
 	ext	v18.16b,v0.16b,v0.16b,#8
 	eor	v3.16b,v3.16b,v0.16b		//inp^=Xi
 	eor	v17.16b,v16.16b,v18.16b		//v17.16b is rotated inp^Xi
@@ -348,7 +348,7 @@ Lodd_tail_v8:
 	eor	v18.16b,v18.16b,v2.16b
 	eor	v0.16b,v0.16b,v18.16b
 
-Ldone_v8:
+.Ldone_v8:
 #ifndef __AARCH64EB__
 	rev64	v0.16b,v0.16b
 #endif
@@ -356,11 +356,11 @@ Ldone_v8:
 	st1	{v0.2d},[x0]		//write out Xi
 
 	ret
-
-
+.size	gcm_ghash_v8,.-gcm_ghash_v8
+.type	gcm_ghash_v8_4x,%function
 .align	4
 gcm_ghash_v8_4x:
-Lgcm_ghash_v8_4x:
+.Lgcm_ghash_v8_4x:
 	ld1	{v0.2d},[x0]		//load [rotated] Xi
 	ld1	{v20.2d,v21.2d,v22.2d},[x1],#48	//load twisted H, ..., H^2
 	movi	v19.16b,#0xe1
@@ -403,12 +403,12 @@ Lgcm_ghash_v8_4x:
 	eor	v30.16b,v30.16b,v5.16b
 
 	subs	x3,x3,#128
-	b.lo	Ltail4x
+	b.lo	.Ltail4x
 
-	b	Loop4x
+	b	.Loop4x
 
 .align	4
-Loop4x:
+.Loop4x:
 	eor	v16.16b,v4.16b,v0.16b
 	ld1	{v4.2d,v5.2d,v6.2d,v7.2d},[x2],#64
 	ext	v3.16b,v16.16b,v16.16b,#8
@@ -468,9 +468,9 @@ Loop4x:
 	eor	v30.16b,v30.16b,v5.16b
 
 	subs	x3,x3,#64
-	b.hs	Loop4x
+	b.hs	.Loop4x
 
-Ltail4x:
+.Ltail4x:
 	eor	v16.16b,v4.16b,v0.16b
 	ext	v3.16b,v16.16b,v16.16b,#8
 
@@ -484,12 +484,12 @@ Ltail4x:
 	eor	v1.16b,v1.16b,v30.16b
 
 	adds	x3,x3,#64
-	b.eq	Ldone4x
+	b.eq	.Ldone4x
 
 	cmp	x3,#32
-	b.lo	Lone
-	b.eq	Ltwo
-Lthree:
+	b.lo	.Lone
+	b.eq	.Ltwo
+.Lthree:
 	ext	v17.16b,v0.16b,v2.16b,#8		//Karatsuba post-processing
 	eor	v18.16b,v0.16b,v2.16b
 	eor	v1.16b,v1.16b,v17.16b
@@ -538,10 +538,10 @@ Lthree:
 	eor	v0.16b,v0.16b,v29.16b
 	eor	v2.16b,v2.16b,v31.16b
 	eor	v1.16b,v1.16b,v30.16b
-	b	Ldone4x
+	b	.Ldone4x
 
 .align	4
-Ltwo:
+.Ltwo:
 	ext	v17.16b,v0.16b,v2.16b,#8		//Karatsuba post-processing
 	eor	v18.16b,v0.16b,v2.16b
 	eor	v1.16b,v1.16b,v17.16b
@@ -581,10 +581,10 @@ Ltwo:
 	eor	v0.16b,v0.16b,v29.16b
 	eor	v2.16b,v2.16b,v31.16b
 	eor	v1.16b,v1.16b,v30.16b
-	b	Ldone4x
+	b	.Ldone4x
 
 .align	4
-Lone:
+.Lone:
 	ext	v17.16b,v0.16b,v2.16b,#8		//Karatsuba post-processing
 	eor	v18.16b,v0.16b,v2.16b
 	eor	v1.16b,v1.16b,v17.16b
@@ -613,7 +613,7 @@ Lone:
 	pmull2	v2.1q,v20.2d,v3.2d
 	pmull	v1.1q,v21.1d,v16.1d
 
-Ldone4x:
+.Ldone4x:
 	ext	v17.16b,v0.16b,v2.16b,#8		//Karatsuba post-processing
 	eor	v18.16b,v0.16b,v2.16b
 	eor	v1.16b,v1.16b,v17.16b
@@ -636,7 +636,7 @@ Ldone4x:
 	st1	{v0.2d},[x0]		//write out Xi
 
 	ret
-
+.size	gcm_ghash_v8_4x,.-gcm_ghash_v8_4x
 .byte	71,72,65,83,72,32,102,111,114,32,65,82,77,118,56,44,32,67,82,89,80,84,79,71,65,77,83,32,98,121,32,60,97,112,112,114,111,64,111,112,101,110,115,115,108,46,111,114,103,62,0
 .align	2
 .align	2

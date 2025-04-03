@@ -1,26 +1,26 @@
 #include "arm_arch.h"
-
+.arch	armv8-a
 .text
 
 .align	5
 // The polynomial p
-Lpoly:
+.Lpoly:
 .quad	0xffffffffffffffff,0xffffffff00000000,0xffffffffffffffff,0xfffffffeffffffff
 // The order of polynomial n
-Lord:
+.Lord:
 .quad	0x53bbf40939d54123,0x7203df6b21c6052b,0xffffffffffffffff,0xfffffffeffffffff
 // (p + 1) / 2
-Lpoly_div_2:
+.Lpoly_div_2:
 .quad	0x8000000000000000,0xffffffff80000000,0xffffffffffffffff,0x7fffffff7fffffff
 // (n + 1) / 2
-Lord_div_2:
+.Lord_div_2:
 .quad	0xa9ddfa049ceaa092,0xb901efb590e30295,0xffffffffffffffff,0x7fffffff7fffffff
 
 // void bn_rshift1(BN_ULONG *a);
-.globl	_bn_rshift1
-
+.globl	bn_rshift1
+.type	bn_rshift1,%function
 .align	5
-_bn_rshift1:
+bn_rshift1:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x0]
@@ -37,13 +37,13 @@ _bn_rshift1:
 	stp	x9,x10,[x0,#16]
 
 	ret
-
+.size	bn_rshift1,.-bn_rshift1
 
 // void bn_sub(BN_ULONG *r, const BN_ULONG *a, const BN_ULONG *b);
-.globl	_bn_sub
-
+.globl	bn_sub
+.type	bn_sub,%function
 .align	5
-_bn_sub:
+bn_sub:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -62,13 +62,13 @@ _bn_sub:
 	stp	x9,x10,[x0,#16]
 
 	ret
-
+.size	bn_sub,.-bn_sub
 
 // void ecp_sm2p256_div_by_2(BN_ULONG *r,const BN_ULONG *a);
-.globl	_ecp_sm2p256_div_by_2
-
+.globl	ecp_sm2p256_div_by_2
+.type	ecp_sm2p256_div_by_2,%function
 .align	5
-_ecp_sm2p256_div_by_2:
+ecp_sm2p256_div_by_2:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -84,7 +84,7 @@ _ecp_sm2p256_div_by_2:
 	lsr	x10,x10,#1
 
 	// Load mod
-	adr	x2,Lpoly_div_2
+	adr	x2,.Lpoly_div_2
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 
@@ -105,13 +105,13 @@ _ecp_sm2p256_div_by_2:
 	stp	x7,x8,[x0]
 	stp	x9,x10,[x0,#16]
 	ret
-
+.size	ecp_sm2p256_div_by_2,.-ecp_sm2p256_div_by_2
 
 // void ecp_sm2p256_div_by_2_mod_ord(BN_ULONG *r,const BN_ULONG *a);
-.globl	_ecp_sm2p256_div_by_2_mod_ord
-
+.globl	ecp_sm2p256_div_by_2_mod_ord
+.type	ecp_sm2p256_div_by_2_mod_ord,%function
 .align	5
-_ecp_sm2p256_div_by_2_mod_ord:
+ecp_sm2p256_div_by_2_mod_ord:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -127,7 +127,7 @@ _ecp_sm2p256_div_by_2_mod_ord:
 	lsr	x10,x10,#1
 
 	// Load mod
-	adr	x2,Lord_div_2
+	adr	x2,.Lord_div_2
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 
@@ -148,13 +148,13 @@ _ecp_sm2p256_div_by_2_mod_ord:
 	stp	x7,x8,[x0]
 	stp	x9,x10,[x0,#16]
 	ret
-
+.size	ecp_sm2p256_div_by_2_mod_ord,.-ecp_sm2p256_div_by_2_mod_ord
 
 // void ecp_sm2p256_mul_by_3(BN_ULONG *r,const BN_ULONG *a);
-.globl	_ecp_sm2p256_mul_by_3
-
+.globl	ecp_sm2p256_mul_by_3
+.type	ecp_sm2p256_mul_by_3,%function
 .align	5
-_ecp_sm2p256_mul_by_3:
+ecp_sm2p256_mul_by_3:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -173,7 +173,7 @@ _ecp_sm2p256_mul_by_3:
 	mov	x6,x10
 
 	// Sub polynomial
-	adr	x2,Lpoly
+	adr	x2,.Lpoly
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 	subs	x7,x7,x11
@@ -203,7 +203,7 @@ _ecp_sm2p256_mul_by_3:
 	mov	x6,x10
 
 	// Sub polynomial
-	adr	x2,Lpoly
+	adr	x2,.Lpoly
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 	subs	x7,x7,x11
@@ -222,13 +222,13 @@ _ecp_sm2p256_mul_by_3:
 	stp	x9,x10,[x0,#16]
 
 	ret
-
+.size	ecp_sm2p256_mul_by_3,.-ecp_sm2p256_mul_by_3
 
 // void ecp_sm2p256_add(BN_ULONG *r,const BN_ULONG *a,const BN_ULONG *b);
-.globl	_ecp_sm2p256_add
-
+.globl	ecp_sm2p256_add
+.type	ecp_sm2p256_add,%function
 .align	5
-_ecp_sm2p256_add:
+ecp_sm2p256_add:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -244,7 +244,7 @@ _ecp_sm2p256_add:
 	adc	x15,xzr,xzr
 
 	// Load polynomial
-	adr	x2,Lpoly
+	adr	x2,.Lpoly
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 
@@ -271,13 +271,13 @@ _ecp_sm2p256_add:
 	stp	x7,x8,[x0]
 	stp	x9,x10,[x0,#16]
 	ret
-
+.size	ecp_sm2p256_add,.-ecp_sm2p256_add
 
 // void ecp_sm2p256_sub(BN_ULONG *r,const BN_ULONG *a,const BN_ULONG *b);
-.globl	_ecp_sm2p256_sub
-
+.globl	ecp_sm2p256_sub
+.type	ecp_sm2p256_sub,%function
 .align	5
-_ecp_sm2p256_sub:
+ecp_sm2p256_sub:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -293,7 +293,7 @@ _ecp_sm2p256_sub:
 	sbc	x15,xzr,xzr
 
 	// Load polynomial
-	adr	x2,Lpoly
+	adr	x2,.Lpoly
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 
@@ -320,13 +320,13 @@ _ecp_sm2p256_sub:
 	stp	x7,x8,[x0]
 	stp	x9,x10,[x0,#16]
 	ret
-
+.size	ecp_sm2p256_sub,.-ecp_sm2p256_sub
 
 // void ecp_sm2p256_sub_mod_ord(BN_ULONG *r,const BN_ULONG *a,const BN_ULONG *b);
-.globl	_ecp_sm2p256_sub_mod_ord
-
+.globl	ecp_sm2p256_sub_mod_ord
+.type	ecp_sm2p256_sub_mod_ord,%function
 .align	5
-_ecp_sm2p256_sub_mod_ord:
+ecp_sm2p256_sub_mod_ord:
 	AARCH64_VALID_CALL_TARGET
 	// Load inputs
 	ldp	x7,x8,[x1]
@@ -342,7 +342,7 @@ _ecp_sm2p256_sub_mod_ord:
 	sbc	x15,xzr,xzr
 
 	// Load polynomial
-	adr	x2,Lord
+	adr	x2,.Lord
 	ldp	x11,x12,[x2]
 	ldp	x13,x14,[x2,#16]
 
@@ -369,7 +369,7 @@ _ecp_sm2p256_sub_mod_ord:
 	stp	x7,x8,[x0]
 	stp	x9,x10,[x0,#16]
 	ret
-
+.size	ecp_sm2p256_sub_mod_ord,.-ecp_sm2p256_sub_mod_ord
 
 .macro	RDC
 	// a = |  s7   | ... | s0  |, where si are 64-bit quantities
@@ -520,7 +520,7 @@ _ecp_sm2p256_sub_mod_ord:
 	mov	x13,x9
 	mov	x14,x10
 
-	adr	x3,Lpoly
+	adr	x3,.Lpoly
 	ldp	x4,x5,[x3]
 	ldp	x6,x15,[x3,#16]
 
@@ -540,10 +540,10 @@ _ecp_sm2p256_sub_mod_ord:
 .endm
 
 // void ecp_sm2p256_mul(BN_ULONG *r, const BN_ULONG *a, const BN_ULONG *b);
-.globl	_ecp_sm2p256_mul
-
+.globl	ecp_sm2p256_mul
+.type	ecp_sm2p256_mul,%function
 .align	5
-_ecp_sm2p256_mul:
+ecp_sm2p256_mul:
 	AARCH64_SIGN_LINK_REGISTER
 	// Store scalar registers
 	stp	x29,x30,[sp,#-80]!
@@ -695,14 +695,14 @@ _ecp_sm2p256_mul:
 
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
+.size	ecp_sm2p256_mul,.-ecp_sm2p256_mul
 
 // void ecp_sm2p256_sqr(BN_ULONG *r, const BN_ULONG *a);
-.globl	_ecp_sm2p256_sqr
-
+.globl	ecp_sm2p256_sqr
+.type	ecp_sm2p256_sqr,%function
 .align	5
 
-_ecp_sm2p256_sqr:
+ecp_sm2p256_sqr:
 	AARCH64_SIGN_LINK_REGISTER
 	// Store scalar registers
 	stp	x29,x30,[sp,#-80]!
@@ -823,4 +823,4 @@ _ecp_sm2p256_sqr:
 
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
+.size	ecp_sm2p256_sqr,.-ecp_sm2p256_sqr

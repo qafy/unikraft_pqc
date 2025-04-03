@@ -1,4 +1,0 @@
-openssl-3.3.0
-lib-pthread-embedded
-.config*
-.unikraft/*

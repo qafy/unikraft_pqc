@@ -1,7 +1,7 @@
 #include "arm_arch.h"
 #ifndef	__KERNEL__
 
-.private_extern	_OPENSSL_armcap_P
+.hidden	OPENSSL_armcap_P
 
 
 #endif
@@ -9,35 +9,35 @@
 .text
 
 .align	5
-Lsigma:
+.Lsigma:
 .quad	0x3320646e61707865,0x6b20657479622d32		// endian-neutral
-Lone:
+.Lone:
 .long	1,2,3,4
-Lrot24:
+.Lrot24:
 .long	0x02010003,0x06050407,0x0a09080b,0x0e0d0c0f
 .byte	67,104,97,67,104,97,50,48,32,102,111,114,32,65,82,77,118,56,44,32,67,82,89,80,84,79,71,65,77,83,32,98,121,32,64,100,111,116,45,97,115,109,0
 .align	2
 
-.globl	_ChaCha20_ctr32_dflt
-
+.globl	ChaCha20_ctr32_dflt
+.type	ChaCha20_ctr32_dflt,%function
 .align	5
-_ChaCha20_ctr32_dflt:
+ChaCha20_ctr32_dflt:
 	AARCH64_SIGN_LINK_REGISTER
 	cmp	x2,#192
-	b.lo	Lshort
+	b.lo	.Lshort
 #ifndef	__KERNEL__
-	adrp	x17,_OPENSSL_armcap_P@PAGE
-	ldr	w17,[x17,_OPENSSL_armcap_P@PAGEOFF]
-Lcheck_neon:
+	adrp	x17,OPENSSL_armcap_P
+	ldr	w17,[x17,#:lo12:OPENSSL_armcap_P]
+.Lcheck_neon:
 	tst	w17,#ARMV7_NEON
-	b.ne	LChaCha20_neon
+	b.ne	.LChaCha20_neon
 #endif
 
-Lshort:
+.Lshort:
 	stp	x29,x30,[sp,#-96]!
 	add	x29,sp,#0
 
-	adr	x5,Lsigma
+	adr	x5,.Lsigma
 	stp	x19,x20,[sp,#16]
 	stp	x21,x22,[sp,#32]
 	stp	x23,x24,[sp,#48]
@@ -58,7 +58,7 @@ Lshort:
 	ror	x30,x30,#32
 #endif
 
-Loop_outer:
+.Loop_outer:
 	mov	w5,w22			// unpack key block
 	lsr	x6,x22,#32
 	mov	w7,w23
@@ -78,7 +78,7 @@ Loop_outer:
 
 	mov	x4,#10
 	subs	x2,x2,#64
-Loop:
+.Loop:
 	sub	x4,x4,#1
 	add	w5,w5,w9
 	add	w6,w6,w10
@@ -176,7 +176,7 @@ Loop:
 	ror	w11,w11,#25
 	ror	w12,w12,#25
 	ror	w9,w9,#25
-	cbnz	x4,Loop
+	cbnz	x4,.Loop
 
 	add	w5,w5,w22		// accumulate key block
 	add	x6,x6,x22,lsr#32
@@ -195,7 +195,7 @@ Loop:
 	add	w20,w20,w30
 	add	x21,x21,x30,lsr#32
 
-	b.lo	Ltail
+	b.lo	.Ltail
 
 	add	x5,x5,x6,lsl#32	// pack
 	add	x7,x7,x8,lsl#32
@@ -236,7 +236,7 @@ Loop:
 	stp	x17,x20,[x0,#48]
 	add	x0,x0,#64
 
-	b.hi	Loop_outer
+	b.hi	.Loop_outer
 
 	ldp	x19,x20,[x29,#16]
 	add	sp,sp,#64
@@ -245,14 +245,14 @@ Loop:
 	ldp	x25,x26,[x29,#64]
 	ldp	x27,x28,[x29,#80]
 	ldp	x29,x30,[sp],#96
-Labort:
+.Labort:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 
 .align	4
-Ltail:
+.Ltail:
 	add	x2,x2,#64
-Less_than_64:
+.Less_than_64:
 	sub	x0,x0,#1
 	add	x1,x1,x2
 	add	x0,x0,x2
@@ -282,13 +282,13 @@ Less_than_64:
 	stp	x13,x15,[sp,#32]
 	stp	x17,x20,[sp,#48]
 
-Loop_tail:
+.Loop_tail:
 	ldrb	w10,[x1,x2]
 	ldrb	w11,[x4,x2]
 	add	x2,x2,#1
 	eor	w10,w10,w11
 	strb	w10,[x0,x2]
-	cbnz	x2,Loop_tail
+	cbnz	x2,.Loop_tail
 
 	stp	xzr,xzr,[sp,#0]
 	stp	xzr,xzr,[sp,#16]
@@ -304,21 +304,21 @@ Loop_tail:
 	ldp	x29,x30,[sp],#96
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
+.size	ChaCha20_ctr32_dflt,.-ChaCha20_ctr32_dflt
 
-
-.globl	_ChaCha20_ctr32
-
+.globl	ChaCha20_ctr32
+.type	ChaCha20_ctr32,%function
 .align	5
-_ChaCha20_ctr32:
+ChaCha20_ctr32:
 	AARCH64_SIGN_LINK_REGISTER
-	cbz	x2,Labort
+	cbz	x2,.Labort
 	cmp	x2,#192
-	b.lo	Lshort
+	b.lo	.Lshort
 #ifndef	__KERNEL__
-	adrp	x17,_OPENSSL_armcap_P@PAGE
-	ldr	w17,[x17,_OPENSSL_armcap_P@PAGEOFF]
+	adrp	x17,OPENSSL_armcap_P
+	ldr	w17,[x17,#:lo12:OPENSSL_armcap_P]
 	tst	w17,#ARMV8_SVE
-	b.eq	Lcheck_neon
+	b.eq	.Lcheck_neon
 	stp	x29,x30,[sp,#-16]!
 	sub	sp,sp,#16
 	// SVE handling will inevitably increment the counter
@@ -329,37 +329,37 @@ _ChaCha20_ctr32:
 	ldp	x5,x6,[x4]
 	stp	x5,x6,[sp]
 	mov	x4,sp
-	bl	_ChaCha20_ctr32_sve
+	bl	ChaCha20_ctr32_sve
 	cbz	x2,1f
-	bl	_ChaCha20_ctr32_dflt
+	bl	ChaCha20_ctr32_dflt
 1:
 	add	sp,sp,#16
 	ldp	x29,x30,[sp],#16
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 #endif
-	b	Lshort
-
+	b	.Lshort
+.size	ChaCha20_ctr32,.-ChaCha20_ctr32
 
 #ifdef	__KERNEL__
-.globl	_ChaCha20_neon
+.globl	ChaCha20_neon
 #endif
-
+.type	ChaCha20_neon,%function
 .align	5
-_ChaCha20_neon:
+ChaCha20_neon:
 	AARCH64_SIGN_LINK_REGISTER
-LChaCha20_neon:
+.LChaCha20_neon:
 	stp	x29,x30,[sp,#-96]!
 	add	x29,sp,#0
 
-	adr	x5,Lsigma
+	adr	x5,.Lsigma
 	stp	x19,x20,[sp,#16]
 	stp	x21,x22,[sp,#32]
 	stp	x23,x24,[sp,#48]
 	stp	x25,x26,[sp,#64]
 	stp	x27,x28,[sp,#80]
 	cmp	x2,#512
-	b.hs	L512_or_more_neon
+	b.hs	.L512_or_more_neon
 
 	sub	sp,sp,#64
 
@@ -382,7 +382,7 @@ LChaCha20_neon:
 	ror	x30,x30,#32
 #endif
 
-Loop_outer_neon:
+.Loop_outer_neon:
 	dup	v16.4s,v0.s[0]			// unpack key block
 	mov	w5,w22
 	dup	v20.4s,v0.s[1]
@@ -419,7 +419,7 @@ Loop_outer_neon:
 
 	mov	x4,#10
 	subs	x2,x2,#320
-Loop_neon:
+.Loop_neon:
 	sub	x4,x4,#1
 	add	v16.4s,v16.4s,v17.4s
 	add	w5,w5,w9
@@ -629,7 +629,7 @@ Loop_neon:
 	sli	v25.4s,v5.4s,#7
 	sli	v29.4s,v6.4s,#7
 	sli	v17.4s,v7.4s,#7
-	cbnz	x4,Loop_neon
+	cbnz	x4,.Loop_neon
 
 	add	v19.4s,v19.4s,v8.4s
 
@@ -685,7 +685,7 @@ Loop_neon:
 	zip2	v31.2d,v6.2d,v7.2d
 	add	x21,x21,x30,lsr#32
 
-	b.lo	Ltail_neon
+	b.lo	.Ltail_neon
 
 	add	x5,x5,x6,lsl#32	// pack
 	add	x7,x7,x8,lsl#32
@@ -772,7 +772,7 @@ Loop_neon:
 	eor	v31.16b,v31.16b,v23.16b
 	st1	{v28.16b,v29.16b,v30.16b,v31.16b},[x0],#64
 
-	b.hi	Loop_outer_neon
+	b.hi	.Loop_outer_neon
 
 	ldp	d8,d9,[sp]			// meet ABI requirements
 
@@ -787,11 +787,11 @@ Loop_neon:
 	ret
 
 .align	4
-Ltail_neon:
+.Ltail_neon:
 	add	x2,x2,#320
 	ldp	d8,d9,[sp]			// meet ABI requirements
 	cmp	x2,#64
-	b.lo	Less_than_64
+	b.lo	.Less_than_64
 
 	add	x5,x5,x6,lsl#32	// pack
 	add	x7,x7,x8,lsl#32
@@ -834,10 +834,10 @@ Ltail_neon:
 	stp	x17,x20,[x0,#48]
 	add	v19.4s,v19.4s,v3.4s
 	add	x0,x0,#64
-	b.eq	Ldone_neon
+	b.eq	.Ldone_neon
 	sub	x2,x2,#64
 	cmp	x2,#64
-	b.lo	Last_neon
+	b.lo	.Last_neon
 
 	ld1	{v4.16b,v5.16b,v6.16b,v7.16b},[x1],#64
 	eor	v16.16b,v16.16b,v4.16b
@@ -845,7 +845,7 @@ Ltail_neon:
 	eor	v18.16b,v18.16b,v6.16b
 	eor	v19.16b,v19.16b,v7.16b
 	st1	{v16.16b,v17.16b,v18.16b,v19.16b},[x0],#64
-	b.eq	Ldone_neon
+	b.eq	.Ldone_neon
 
 	add	v16.4s,v20.4s,v0.4s
 	add	v17.4s,v21.4s,v1.4s
@@ -853,7 +853,7 @@ Ltail_neon:
 	add	v18.4s,v22.4s,v2.4s
 	cmp	x2,#64
 	add	v19.4s,v23.4s,v3.4s
-	b.lo	Last_neon
+	b.lo	.Last_neon
 
 	ld1	{v4.16b,v5.16b,v6.16b,v7.16b},[x1],#64
 	eor	v20.16b,v16.16b,v4.16b
@@ -861,7 +861,7 @@ Ltail_neon:
 	eor	v22.16b,v18.16b,v6.16b
 	eor	v23.16b,v19.16b,v7.16b
 	st1	{v20.16b,v21.16b,v22.16b,v23.16b},[x0],#64
-	b.eq	Ldone_neon
+	b.eq	.Ldone_neon
 
 	add	v16.4s,v24.4s,v0.4s
 	add	v17.4s,v25.4s,v1.4s
@@ -869,7 +869,7 @@ Ltail_neon:
 	add	v18.4s,v26.4s,v2.4s
 	cmp	x2,#64
 	add	v19.4s,v27.4s,v3.4s
-	b.lo	Last_neon
+	b.lo	.Last_neon
 
 	ld1	{v4.16b,v5.16b,v6.16b,v7.16b},[x1],#64
 	eor	v24.16b,v16.16b,v4.16b
@@ -877,7 +877,7 @@ Ltail_neon:
 	eor	v26.16b,v18.16b,v6.16b
 	eor	v27.16b,v19.16b,v7.16b
 	st1	{v24.16b,v25.16b,v26.16b,v27.16b},[x0],#64
-	b.eq	Ldone_neon
+	b.eq	.Ldone_neon
 
 	add	v16.4s,v28.4s,v0.4s
 	add	v17.4s,v29.4s,v1.4s
@@ -885,7 +885,7 @@ Ltail_neon:
 	add	v19.4s,v31.4s,v3.4s
 	sub	x2,x2,#64
 
-Last_neon:
+.Last_neon:
 	st1	{v16.16b,v17.16b,v18.16b,v19.16b},[sp]
 
 	sub	x0,x0,#1
@@ -894,20 +894,20 @@ Last_neon:
 	add	x4,sp,x2
 	neg	x2,x2
 
-Loop_tail_neon:
+.Loop_tail_neon:
 	ldrb	w10,[x1,x2]
 	ldrb	w11,[x4,x2]
 	add	x2,x2,#1
 	eor	w10,w10,w11
 	strb	w10,[x0,x2]
-	cbnz	x2,Loop_tail_neon
+	cbnz	x2,.Loop_tail_neon
 
 	stp	xzr,xzr,[sp,#0]
 	stp	xzr,xzr,[sp,#16]
 	stp	xzr,xzr,[sp,#32]
 	stp	xzr,xzr,[sp,#48]
 
-Ldone_neon:
+.Ldone_neon:
 	ldp	x19,x20,[x29,#16]
 	add	sp,sp,#64
 	ldp	x21,x22,[x29,#32]
@@ -917,22 +917,22 @@ Ldone_neon:
 	ldp	x29,x30,[sp],#96
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
-
+.size	ChaCha20_neon,.-ChaCha20_neon
+.type	ChaCha20_512_neon,%function
 .align	5
 ChaCha20_512_neon:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x29,x30,[sp,#-96]!
 	add	x29,sp,#0
 
-	adr	x5,Lsigma
+	adr	x5,.Lsigma
 	stp	x19,x20,[sp,#16]
 	stp	x21,x22,[sp,#32]
 	stp	x23,x24,[sp,#48]
 	stp	x25,x26,[sp,#64]
 	stp	x27,x28,[sp,#80]
 
-L512_or_more_neon:
+.L512_or_more_neon:
 	sub	sp,sp,#128+64
 
 	eor	v7.16b,v7.16b,v7.16b
@@ -944,7 +944,7 @@ L512_or_more_neon:
 	ldp	x28,x30,[x4]		// load counter
 	ld1	{v3.4s},[x4]
 	ld1	{v7.s}[0],[x5]
-	add	x3,x5,#16			// Lrot24
+	add	x3,x5,#16			// .Lrot24
 #ifdef	__AARCH64EB__
 	rev64	v0.4s,v0.4s
 	ror	x24,x24,#32
@@ -970,7 +970,7 @@ L512_or_more_neon:
 
 	sub	x2,x2,#512			// not typo
 
-Loop_outer_512_neon:
+.Loop_outer_512_neon:
 	mov	v8.16b,v0.16b
 	mov	v12.16b,v0.16b
 	mov	v16.16b,v0.16b
@@ -1017,7 +1017,7 @@ Loop_outer_512_neon:
 	mov	x4,#5
 	ld1	{v6.4s},[x3]
 	subs	x2,x2,#512
-Loop_upper_neon:
+.Loop_upper_neon:
 	sub	x4,x4,#1
 	add	v8.4s,v8.4s,v9.4s
 	add	w5,w5,w9
@@ -1415,7 +1415,7 @@ Loop_upper_neon:
 	ext	v21.16b,v21.16b,v21.16b,#12
 	ext	v25.16b,v25.16b,v25.16b,#12
 	ext	v29.16b,v29.16b,v29.16b,#12
-	cbnz	x4,Loop_upper_neon
+	cbnz	x4,.Loop_upper_neon
 
 	add	w5,w5,w22		// accumulate key block
 	add	x6,x6,x22,lsr#32
@@ -1490,7 +1490,7 @@ Loop_upper_neon:
 	lsr	x21,x30,#32
 
 	mov	x4,#5
-Loop_lower_neon:
+.Loop_lower_neon:
 	sub	x4,x4,#1
 	add	v8.4s,v8.4s,v9.4s
 	add	w5,w5,w9
@@ -1888,7 +1888,7 @@ Loop_lower_neon:
 	ext	v21.16b,v21.16b,v21.16b,#12
 	ext	v25.16b,v25.16b,v25.16b,#12
 	ext	v29.16b,v29.16b,v29.16b,#12
-	cbnz	x4,Loop_lower_neon
+	cbnz	x4,.Loop_lower_neon
 
 	add	w5,w5,w22		// accumulate key block
 	ldp	q0,q1,[sp,#0]
@@ -2025,7 +2025,7 @@ Loop_lower_neon:
 	add	v5.4s,v5.4s,v8.4s
 	add	v6.4s,v6.4s,v8.4s
 
-	b.hs	Loop_outer_512_neon
+	b.hs	.Loop_outer_512_neon
 
 	adds	x2,x2,#512
 	ushr	v7.4s,v7.4s,#1			// 4 -> 2
@@ -2038,14 +2038,14 @@ Loop_lower_neon:
 	stp	q0,q0,[sp,#32]
 	stp	q0,q0,[sp,#64]
 
-	b.eq	Ldone_512_neon
+	b.eq	.Ldone_512_neon
 
-	sub	x3,x3,#16			// Lone
+	sub	x3,x3,#16			// .Lone
 	cmp	x2,#192
 	add	sp,sp,#128
 	sub	v3.4s,v3.4s,v7.4s		// -= 2
 	ld1	{v8.4s,v9.4s},[x3]
-	b.hs	Loop_outer_neon
+	b.hs	.Loop_outer_neon
 
 	ldp	d8,d9,[sp,#0]			// meet ABI requirements
 	eor	v1.16b,v1.16b,v1.16b
@@ -2054,9 +2054,9 @@ Loop_lower_neon:
 	eor	v4.16b,v4.16b,v4.16b
 	eor	v5.16b,v5.16b,v5.16b
 	eor	v6.16b,v6.16b,v6.16b
-	b	Loop_outer
+	b	.Loop_outer
 
-Ldone_512_neon:
+.Ldone_512_neon:
 	ldp	d8,d9,[sp,#128+0]		// meet ABI requirements
 	ldp	x19,x20,[x29,#16]
 	add	sp,sp,#128+64
@@ -2067,4 +2067,4 @@ Ldone_512_neon:
 	ldp	x29,x30,[sp],#96
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
-
+.size	ChaCha20_512_neon,.-ChaCha20_512_neon

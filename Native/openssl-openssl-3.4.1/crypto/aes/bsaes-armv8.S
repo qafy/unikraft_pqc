@@ -30,7 +30,7 @@
 
 
 
-
+.type	_bsaes_decrypt8,%function
 .align	4
 // On entry:
 //   x9 -> key (previously expanded using _bsaes_key_convert)
@@ -44,7 +44,7 @@
 //   other SIMD registers corrupted
 _bsaes_decrypt8:
 	ldr	q8, [x9], #16
-	adr	x11, LM0ISR
+	adr	x11, .LM0ISR
 	movi	v9.16b, #0x55
 	ldr	q10, [x11], #16
 	movi	v16.16b, #0x33
@@ -138,9 +138,9 @@ _bsaes_decrypt8:
 	eor	v2.16b, v2.16b, v9.16b
 	eor	v1.16b, v1.16b, v10.16b
 	eor	v0.16b, v0.16b, v16.16b
-	b	Ldec_sbox
+	b	.Ldec_sbox
 .align	4
-Ldec_loop:
+.Ldec_loop:
 	ld1	{v16.16b, v17.16b, v18.16b, v19.16b}, [x9], #64
 	ldp	q8, q9, [x9], #32
 	eor	v0.16b, v16.16b, v0.16b
@@ -161,7 +161,7 @@ Ldec_loop:
 	tbl	v5.16b, {v5.16b}, v28.16b
 	tbl	v6.16b, {v6.16b}, v28.16b
 	tbl	v7.16b, {v7.16b}, v28.16b
-Ldec_sbox:
+.Ldec_sbox:
 	eor	v1.16b, v1.16b, v4.16b
 	eor	v3.16b, v3.16b, v4.16b
 	subs	x10, x10, #1
@@ -293,10 +293,10 @@ Ldec_sbox:
 	eor	v3.16b, v4.16b, v7.16b
 	eor	v4.16b, v7.16b, v0.16b
 	eor	v7.16b, v8.16b, v3.16b
-	bcc	Ldec_done
+	bcc	.Ldec_done
 	ext	v8.16b, v0.16b, v0.16b, #8
 	ext	v9.16b, v1.16b, v1.16b, #8
-	ldr	q28, [x11]                  // load from LISR in common case (x10 > 0)
+	ldr	q28, [x11]                  // load from .LISR in common case (x10 > 0)
 	ext	v10.16b, v6.16b, v6.16b, #8
 	ext	v16.16b, v3.16b, v3.16b, #8
 	ext	v17.16b, v5.16b, v5.16b, #8
@@ -368,11 +368,11 @@ Ldec_sbox:
 	eor	v6.16b, v2.16b, v19.16b
 	eor	v4.16b, v21.16b, v17.16b
 	eor	v2.16b, v10.16b, v9.16b
-	bne	Ldec_loop
-	ldr	q28, [x11, #16]!            // load from LISRM0 on last round (x10 == 0)
-	b	Ldec_loop
+	bne	.Ldec_loop
+	ldr	q28, [x11, #16]!            // load from .LISRM0 on last round (x10 == 0)
+	b	.Ldec_loop
 .align	4
-Ldec_done:
+.Ldec_done:
 	ushr	v8.2d, v0.2d, #1
 	movi	v9.16b, #0x55
 	ldr	q10, [x9]
@@ -458,9 +458,9 @@ Ldec_done:
 	eor	v1.16b, v1.16b, v10.16b
 	eor	v0.16b, v0.16b, v10.16b
 	ret
+.size	_bsaes_decrypt8,.-_bsaes_decrypt8
 
-
-
+.type	_bsaes_const,%object
 .align	6
 _bsaes_const:
 // InvShiftRows constants
@@ -468,11 +468,11 @@ _bsaes_const:
 // .LM0ISR used with round 0 key
 // .LISR   used with middle round keys
 // .LISRM0 used with final round key
-LM0ISR:
+.LM0ISR:
 .quad	0x0a0e0206070b0f03, 0x0004080c0d010509
-LISR:
+.LISR:
 .quad	0x0504070602010003, 0x0f0e0d0c080b0a09
-LISRM0:
+.LISRM0:
 .quad	0x01040b0e0205080f, 0x0306090c00070a0d
 
 // ShiftRows constants
@@ -480,27 +480,27 @@ LISRM0:
 // .LM0SR used with round 0 key
 // .LSR   used with middle round keys
 // .LSRM0 used with final round key
-LM0SR:
+.LM0SR:
 .quad	0x0a0e02060f03070b, 0x0004080c05090d01
-LSR:
+.LSR:
 .quad	0x0504070600030201, 0x0f0e0d0c0a09080b
-LSRM0:
+.LSRM0:
 .quad	0x0304090e00050a0f, 0x01060b0c0207080d
 
-LM0_bigendian:
+.LM0_bigendian:
 .quad	0x02060a0e03070b0f, 0x0004080c0105090d
-LM0_littleendian:
+.LM0_littleendian:
 .quad	0x0105090d0004080c, 0x03070b0f02060a0e
 
 // Used in ossl_bsaes_ctr32_encrypt_blocks, prior to dropping into
 // _bsaes_encrypt8_alt, for round 0 key in place of .LM0SR
-LREVM0SR:
+.LREVM0SR:
 .quad	0x090d01050c000408, 0x03070b0f060a0e02
 
 .align	6
+.size	_bsaes_const,.-_bsaes_const
 
-
-
+.type	_bsaes_encrypt8,%function
 .align	4
 // On entry:
 //   x9 -> key (previously expanded using _bsaes_key_convert)
@@ -514,7 +514,7 @@ LREVM0SR:
 //   other SIMD registers corrupted
 _bsaes_encrypt8:
 	ldr	q8, [x9], #16
-	adr	x11, LM0SR
+	adr	x11, .LM0SR
 	ldr	q9, [x11], #16
 _bsaes_encrypt8_alt:
 	eor	v0.16b, v0.16b, v8.16b
@@ -609,9 +609,9 @@ _bsaes_encrypt8_alt:
 	eor	v2.16b, v2.16b, v9.16b
 	eor	v1.16b, v1.16b, v10.16b
 	eor	v0.16b, v0.16b, v16.16b
-	b	Lenc_sbox
+	b	.Lenc_sbox
 .align	4
-Lenc_loop:
+.Lenc_loop:
 	ld1	{v16.16b, v17.16b, v18.16b, v19.16b}, [x9], #64
 	ldp	q8, q9, [x9], #32
 	eor	v0.16b, v16.16b, v0.16b
@@ -632,7 +632,7 @@ Lenc_loop:
 	tbl	v5.16b, {v5.16b}, v28.16b
 	tbl	v6.16b, {v6.16b}, v28.16b
 	tbl	v7.16b, {v7.16b}, v28.16b
-Lenc_sbox:
+.Lenc_sbox:
 	eor	v5.16b, v5.16b, v6.16b
 	eor	v3.16b, v3.16b, v0.16b
 	subs	x10, x10, #1
@@ -763,7 +763,7 @@ Lenc_sbox:
 	eor	v1.16b, v4.16b, v8.16b
 	eor	v4.16b, v9.16b, v5.16b
 	eor	v6.16b, v6.16b, v3.16b
-	bcc	Lenc_done
+	bcc	.Lenc_done
 	ext	v8.16b, v0.16b, v0.16b, #12
 	ext	v9.16b, v4.16b, v4.16b, #12
 	ldr	q28, [x11]
@@ -808,11 +808,11 @@ Lenc_sbox:
 	eor	v7.16b, v21.16b, v20.16b
 	eor	v6.16b, v2.16b, v19.16b
 	eor	v2.16b, v22.16b, v9.16b
-	bne	Lenc_loop
-	ldr	q28, [x11, #16]!            // load from LSRM0 on last round (x10 == 0)
-	b	Lenc_loop
+	bne	.Lenc_loop
+	ldr	q28, [x11, #16]!            // load from .LSRM0 on last round (x10 == 0)
+	b	.Lenc_loop
 .align	4
-Lenc_done:
+.Lenc_done:
 	ushr	v8.2d, v0.2d, #1
 	movi	v9.16b, #0x55
 	ldr	q10, [x9]
@@ -898,9 +898,9 @@ Lenc_done:
 	eor	v1.16b, v1.16b, v10.16b
 	eor	v0.16b, v0.16b, v10.16b
 	ret
+.size	_bsaes_encrypt8,.-_bsaes_encrypt8
 
-
-
+.type	_bsaes_key_convert,%function
 .align	4
 // On entry:
 //   x9 -> input key (big-endian)
@@ -918,15 +918,15 @@ Lenc_done:
 //   other SIMD registers corrupted
 _bsaes_key_convert:
 #ifdef __AARCH64EL__
-	adr	x11, LM0_littleendian
+	adr	x11, .LM0_littleendian
 #else
-	adr	x11, LM0_bigendian
+	adr	x11, .LM0_bigendian
 #endif
 	ldr	q0, [x9], #16               // load round 0 key
-	ldr	q1, [x11]                   // LM0
+	ldr	q1, [x11]                   // .LM0
 	ldr	q15, [x9], #16              // load round 1 key
 
-	movi	v7.16b, #0x63               // compose L63
+	movi	v7.16b, #0x63               // compose .L63
 	movi	v16.16b, #0x01              // bit masks
 	movi	v17.16b, #0x02
 	movi	v18.16b, #0x04
@@ -943,7 +943,7 @@ _bsaes_key_convert:
 	str	q0, [x17], #16              // save round 0 key
 
 .align	4
-Lkey_loop:
+.Lkey_loop:
 	tbl	v0.16b, {v15.16b}, v1.16b
 	ldr	q15, [x9], #16              // load next round key
 
@@ -959,18 +959,18 @@ Lkey_loop:
 	sub	x10, x10, #1
 	st1	{v24.16b,v25.16b,v26.16b,v27.16b}, [x17], #64 // write bit-sliced round key
 	st1	{v28.16b,v29.16b,v30.16b,v31.16b}, [x17], #64
-	cbnz	x10, Lkey_loop
+	cbnz	x10, .Lkey_loop
 
         // don't save last round key
 #ifdef __AARCH64EL__
 	rev32	v15.16b, v15.16b
-	adr	x11, LM0_bigendian
+	adr	x11, .LM0_bigendian
 #endif
 	ret
+.size	_bsaes_key_convert,.-_bsaes_key_convert
 
-
-.globl	_ossl_bsaes_cbc_encrypt
-
+.globl	ossl_bsaes_cbc_encrypt
+.type	ossl_bsaes_cbc_encrypt,%function
 .align	4
 // On entry:
 //   x0 -> input ciphertext
@@ -983,12 +983,12 @@ Lkey_loop:
 //   Output plaintext filled in
 //   Initialisation vector overwritten with last quadword of ciphertext
 //   No output registers, usual AAPCS64 register preservation
-_ossl_bsaes_cbc_encrypt:
+ossl_bsaes_cbc_encrypt:
 	AARCH64_VALID_CALL_TARGET
 	cmp	x2, #128
-	bhs	Lcbc_do_bsaes
-	b	_AES_cbc_encrypt
-Lcbc_do_bsaes:
+	bhs	.Lcbc_do_bsaes
+	b	AES_cbc_encrypt
+.Lcbc_do_bsaes:
 
         // it is up to the caller to make sure we are called with enc == 0
 
@@ -1015,12 +1015,12 @@ Lcbc_do_bsaes:
 	str	q6, [sp]
 
 	ldr	q15, [x4]                   // load IV
-	b	Lcbc_dec_loop
+	b	.Lcbc_dec_loop
 
 .align	4
-Lcbc_dec_loop:
+.Lcbc_dec_loop:
 	subs	x2, x2, #0x8
-	bmi	Lcbc_dec_loop_finish
+	bmi	.Lcbc_dec_loop_finish
 
 	ldr	q0, [x0], #16               // load input
 	mov	x9, sp                      // pass the key
@@ -1060,29 +1060,29 @@ Lcbc_dec_loop:
 	str	q1, [x1], #16
 	str	q0, [x1], #16
 
-	b	Lcbc_dec_loop
+	b	.Lcbc_dec_loop
 
-Lcbc_dec_loop_finish:
+.Lcbc_dec_loop_finish:
 	adds	x2, x2, #8
-	beq	Lcbc_dec_done
+	beq	.Lcbc_dec_done
 
 	ldr	q0, [x0], #16               // load input
 	cmp	x2, #2
-	blo	Lcbc_dec_one
+	blo	.Lcbc_dec_one
 	ldr	q1, [x0], #16
 	mov	x9, sp                      // pass the key
 	mov	x10, x15
-	beq	Lcbc_dec_two
+	beq	.Lcbc_dec_two
 	ldr	q2, [x0], #16
 	cmp	x2, #4
-	blo	Lcbc_dec_three
+	blo	.Lcbc_dec_three
 	ldr	q3, [x0], #16
-	beq	Lcbc_dec_four
+	beq	.Lcbc_dec_four
 	ldr	q4, [x0], #16
 	cmp	x2, #6
-	blo	Lcbc_dec_five
+	blo	.Lcbc_dec_five
 	ldr	q5, [x0], #16
-	beq	Lcbc_dec_six
+	beq	.Lcbc_dec_six
 	ldr	q6, [x0], #-6*16
 
 	bl	_bsaes_decrypt8
@@ -1108,9 +1108,9 @@ Lcbc_dec_loop_finish:
 	str	q2, [x1], #16
 	str	q0, [x1], #16
 	str	q1, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_six:
+.Lcbc_dec_six:
 	sub	x0, x0, #0x60
 	bl	_bsaes_decrypt8
 	ldr	q3, [x0], #16               // reload input
@@ -1131,9 +1131,9 @@ Lcbc_dec_six:
 	str	q4, [x1], #16
 	str	q2, [x1], #16
 	str	q0, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_five:
+.Lcbc_dec_five:
 	sub	x0, x0, #0x50
 	bl	_bsaes_decrypt8
 	ldr	q3, [x0], #16               // reload input
@@ -1151,9 +1151,9 @@ Lcbc_dec_five:
 	str	q1, [x1], #16
 	str	q3, [x1], #16
 	str	q0, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_four:
+.Lcbc_dec_four:
 	sub	x0, x0, #0x40
 	bl	_bsaes_decrypt8
 	ldr	q2, [x0], #16               // reload input
@@ -1168,9 +1168,9 @@ Lcbc_dec_four:
 	str	q0, [x1], #16
 	str	q1, [x1], #16
 	str	q2, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_three:
+.Lcbc_dec_three:
 	sub	x0, x0, #0x30
 	bl	_bsaes_decrypt8
 	ldr	q2, [x0], #16               // reload input
@@ -1182,9 +1182,9 @@ Lcbc_dec_three:
 	eor	v1.16b, v6.16b, v3.16b
 	str	q0, [x1], #16
 	str	q1, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_two:
+.Lcbc_dec_two:
 	sub	x0, x0, #0x20
 	bl	_bsaes_decrypt8
 	ldr	q2, [x0], #16               // reload input
@@ -1193,16 +1193,16 @@ Lcbc_dec_two:
 	str	q0, [x1], #16               // write output
 	eor	v0.16b, v1.16b, v2.16b
 	str	q0, [x1]
-	b	Lcbc_dec_done
+	b	.Lcbc_dec_done
 .align	4
-Lcbc_dec_one:
+.Lcbc_dec_one:
 	sub	x0, x0, #0x10
 	stp	x1, x4, [sp, #-32]!
 	str	x14, [sp, #16]
 	mov	v8.16b, v15.16b
 	mov	v15.16b, v0.16b
 	mov	x2, x3
-	bl	_AES_decrypt
+	bl	AES_decrypt
 	ldr	x14, [sp, #16]
 	ldp	x1, x4, [sp], #32
 	ldr	q0, [x1]                    // load result
@@ -1210,22 +1210,22 @@ Lcbc_dec_one:
 	str	q0, [x1]                    // write output
 
 .align	4
-Lcbc_dec_done:
+.Lcbc_dec_done:
 	movi	v0.16b, #0
 	movi	v1.16b, #0
-Lcbc_dec_bzero:	//	wipe key schedule [if any]
+.Lcbc_dec_bzero:	//	wipe key schedule [if any]
 	stp	q0, q1, [sp], #32
 	cmp	sp, x14
-	bne	Lcbc_dec_bzero
+	bne	.Lcbc_dec_bzero
 	str	q15, [x4]                   // return IV
 	ldp	d8, d9, [sp, #16]
 	ldp	d10, d15, [sp, #32]
 	ldp	x29, x30, [sp], #48
 	ret
+.size	ossl_bsaes_cbc_encrypt,.-ossl_bsaes_cbc_encrypt
 
-
-.globl	_ossl_bsaes_ctr32_encrypt_blocks
-
+.globl	ossl_bsaes_ctr32_encrypt_blocks
+.type	ossl_bsaes_ctr32_encrypt_blocks,%function
 .align	4
 // On entry:
 //   x0 -> input text (whole 16-byte blocks)
@@ -1236,10 +1236,10 @@ Lcbc_dec_bzero:	//	wipe key schedule [if any]
 // On exit:
 //   Output text filled in
 //   No output registers, usual AAPCS64 register preservation
-_ossl_bsaes_ctr32_encrypt_blocks:
+ossl_bsaes_ctr32_encrypt_blocks:
 	AARCH64_VALID_CALL_TARGET
 	cmp	x2, #8                      // use plain AES for
-	blo	Lctr_enc_short             // small sizes
+	blo	.Lctr_enc_short             // small sizes
 
 	stp	x29, x30, [sp, #-80]!
 	stp	d8, d9, [sp, #16]
@@ -1263,7 +1263,7 @@ _ossl_bsaes_ctr32_encrypt_blocks:
 	str	q7, [x17]                   // save last round key
 
 	ldr	q0, [x4]                    // load counter
-	add	x13, x11, #LREVM0SR-LM0_bigendian
+	add	x13, x11, #.LREVM0SR-.LM0_bigendian
 	ldr	q4, [sp]                    // load round0 key
 
 	movi	v8.4s, #1                   // compose 1<<96
@@ -1276,21 +1276,21 @@ _ossl_bsaes_ctr32_encrypt_blocks:
 	str	q4, [sp]                    // save adjusted round0 key
 	add	v13.4s, v11.4s, v12.4s      // compose 3<<96
 	add	v14.4s, v12.4s, v12.4s      // compose 4<<96
-	b	Lctr_enc_loop
+	b	.Lctr_enc_loop
 
 .align	4
-Lctr_enc_loop:
+.Lctr_enc_loop:
         // Intermix prologue from _bsaes_encrypt8 to use the opportunity
         // to flip byte order in 32-bit counter
 
 	add	v1.4s, v15.4s, v11.4s       // +1
 	add	x9, sp, #0x10               // pass next round key
 	add	v2.4s, v15.4s, v12.4s       // +2
-	ldr	q9, [x13]                   // LREVM0SR
+	ldr	q9, [x13]                   // .LREVM0SR
 	ldr	q8, [sp]                    // load round0 key
 	add	v3.4s, v15.4s, v13.4s       // +3
 	mov	x10, x15                    // pass rounds
-	sub	x11, x13, #LREVM0SR-LSR   // pass constants
+	sub	x11, x13, #.LREVM0SR-.LSR   // pass constants
 	add	v6.4s, v2.4s, v14.4s
 	add	v4.4s, v15.4s, v14.4s       // +4
 	add	v7.4s, v3.4s, v14.4s
@@ -1300,7 +1300,7 @@ Lctr_enc_loop:
 	bl	_bsaes_encrypt8_alt
 
 	subs	x2, x2, #8
-	blo	Lctr_enc_loop_done
+	blo	.Lctr_enc_loop_done
 
 	ldr	q16, [x0], #16
 	ldr	q17, [x0], #16
@@ -1328,50 +1328,50 @@ Lctr_enc_loop:
 	str	q2, [x1], #16
 	str	q5, [x1], #16
 
-	bne	Lctr_enc_loop
-	b	Lctr_enc_done
+	bne	.Lctr_enc_loop
+	b	.Lctr_enc_done
 
 .align	4
-Lctr_enc_loop_done:
+.Lctr_enc_loop_done:
 	add	x2, x2, #8
 	ldr	q16, [x0], #16              // load input
 	eor	v0.16b, v0.16b, v16.16b
 	str	q0, [x1], #16               // write output
 	cmp	x2, #2
-	blo	Lctr_enc_done
+	blo	.Lctr_enc_done
 	ldr	q17, [x0], #16
 	eor	v1.16b, v1.16b, v17.16b
 	str	q1, [x1], #16
-	beq	Lctr_enc_done
+	beq	.Lctr_enc_done
 	ldr	q18, [x0], #16
 	eor	v4.16b, v4.16b, v18.16b
 	str	q4, [x1], #16
 	cmp	x2, #4
-	blo	Lctr_enc_done
+	blo	.Lctr_enc_done
 	ldr	q19, [x0], #16
 	eor	v6.16b, v6.16b, v19.16b
 	str	q6, [x1], #16
-	beq	Lctr_enc_done
+	beq	.Lctr_enc_done
 	ldr	q20, [x0], #16
 	eor	v3.16b, v3.16b, v20.16b
 	str	q3, [x1], #16
 	cmp	x2, #6
-	blo	Lctr_enc_done
+	blo	.Lctr_enc_done
 	ldr	q21, [x0], #16
 	eor	v7.16b, v7.16b, v21.16b
 	str	q7, [x1], #16
-	beq	Lctr_enc_done
+	beq	.Lctr_enc_done
 	ldr	q22, [x0]
 	eor	v2.16b, v2.16b, v22.16b
 	str	q2, [x1], #16
 
-Lctr_enc_done:
+.Lctr_enc_done:
 	movi	v0.16b, #0
 	movi	v1.16b, #0
-Lctr_enc_bzero:	//	wipe key schedule [if any]
+.Lctr_enc_bzero:	//	wipe key schedule [if any]
 	stp	q0, q1, [sp], #32
 	cmp	sp, x14
-	bne	Lctr_enc_bzero
+	bne	.Lctr_enc_bzero
 
 	ldp	d8, d9, [sp, #16]
 	ldp	d10, d11, [sp, #32]
@@ -1380,7 +1380,7 @@ Lctr_enc_bzero:	//	wipe key schedule [if any]
 	ldp	x29, x30, [sp], #80
 	ret
 
-Lctr_enc_short:
+.Lctr_enc_short:
 	stp	x29, x30, [sp, #-96]!
 	stp	x19, x20, [sp, #16]
 	stp	x21, x22, [sp, #32]
@@ -1390,19 +1390,19 @@ Lctr_enc_short:
 	mov	x20, x1
 	mov	x21, x2
 	mov	x22, x3
-	ldr	w23, [x4, #12]              // load counter LSW
+	ldr	w23, [x4, #12]              // load counter .LSW
 	ldr	q1, [x4]                    // load whole counter value
 #ifdef __AARCH64EL__
 	rev	w23, w23
 #endif
 	str	q1, [sp, #80]               // copy counter value
 
-Lctr_enc_short_loop:
+.Lctr_enc_short_loop:
 	add	x0, sp, #80                 // input counter value
 	add	x1, sp, #64                 // output on the stack
 	mov	x2, x22                     // key
 
-	bl	_AES_encrypt
+	bl	AES_encrypt
 
 	ldr	q0, [x19], #16              // load input
 	ldr	q1, [sp, #64]               // load encrypted counter
@@ -1416,7 +1416,7 @@ Lctr_enc_short_loop:
 	eor	v0.16b, v0.16b, v1.16b
 	str	q0, [x20], #16              // store output
 	subs	x21, x21, #1
-	bne	Lctr_enc_short_loop
+	bne	.Lctr_enc_short_loop
 
 	movi	v0.16b, #0
 	movi	v1.16b, #0
@@ -1427,10 +1427,10 @@ Lctr_enc_short_loop:
 	ldp	x19, x20, [sp, #16]
 	ldp	x29, x30, [sp], #96
 	ret
+.size	ossl_bsaes_ctr32_encrypt_blocks,.-ossl_bsaes_ctr32_encrypt_blocks
 
-
-.globl	_ossl_bsaes_xts_encrypt
-
+.globl	ossl_bsaes_xts_encrypt
+.type	ossl_bsaes_xts_encrypt,%function
 .align	4
 // On entry:
 //   x0 -> input plaintext
@@ -1442,7 +1442,7 @@ Lctr_enc_short_loop:
 // On exit:
 //   Output ciphertext filled in
 //   No output registers, usual AAPCS64 register preservation
-_ossl_bsaes_xts_encrypt:
+ossl_bsaes_xts_encrypt:
 	AARCH64_VALID_CALL_TARGET
         // Stack layout:
         // sp ->
@@ -1472,7 +1472,7 @@ _ossl_bsaes_xts_encrypt:
 	mov	x0, x5                      // iv[]
 	mov	x1, sp
 	mov	x2, x4                      // key2
-	bl	_AES_encrypt
+	bl	AES_encrypt
 	ldr	q11, [sp], #16
 
 	ldr	w1, [x23, #240]             // get # of rounds
@@ -1489,18 +1489,18 @@ _ossl_bsaes_xts_encrypt:
 	str	q15, [x17]                  // save last round key
 
 	subs	x22, x22, #0x80
-	blo	Lxts_enc_short
-	b	Lxts_enc_loop
+	blo	.Lxts_enc_short
+	b	.Lxts_enc_loop
 
 .align	4
-Lxts_enc_loop:
-	ldr	q8, Lxts_magic
+.Lxts_enc_loop:
+	ldr	q8, .Lxts_magic
 	mov	x10, x1                     // pass rounds
 	add	x2, x19, #16
 	ldr	q0, [x20], #16
 	sshr	v1.2d, v11.2d, #63
 	mov	x9, sp                      // pass key schedule
-	ldr	q6, Lxts_magic+16
+	ldr	q6, .Lxts_magic+16
 	add	v2.2d, v11.2d, v11.2d
 	cmtst	v3.2d, v11.2d, v6.2d
 	and	v1.16b, v1.16b, v8.16b
@@ -1584,16 +1584,16 @@ Lxts_enc_loop:
 	str	q0, [x21], #16
 	str	q1, [x21], #16
 	str	q2, [x21], #16
-	bpl	Lxts_enc_loop
+	bpl	.Lxts_enc_loop
 
-Lxts_enc_short:
+.Lxts_enc_short:
 	adds	x22, x22, #0x70
-	bmi	Lxts_enc_done
+	bmi	.Lxts_enc_done
 
-	ldr	q8, Lxts_magic
+	ldr	q8, .Lxts_magic
 	sshr	v1.2d, v11.2d, #63
 	add	v2.2d, v11.2d, v11.2d
-	ldr	q9, Lxts_magic+16
+	ldr	q9, .Lxts_magic+16
 	subs	x22, x22, #0x10
 	ldr	q0, [x20], #16
 	and	v1.16b, v1.16b, v8.16b
@@ -1606,7 +1606,7 @@ Lxts_enc_short:
 	cmtst	v3.2d, v12.2d, v9.2d
 	eor	v13.16b, v2.16b, v1.16b
 	and	v22.16b, v3.16b, v8.16b
-	bmi	Lxts_enc_1
+	bmi	.Lxts_enc_1
 
 	ext	v2.16b, v22.16b, v22.16b, #8
 	add	v3.2d, v13.2d, v13.2d
@@ -1615,7 +1615,7 @@ Lxts_enc_short:
 	subs	x22, x22, #0x10
 	eor	v14.16b, v3.16b, v2.16b
 	and	v23.16b, v4.16b, v8.16b
-	bmi	Lxts_enc_2
+	bmi	.Lxts_enc_2
 
 	ext	v3.16b, v23.16b, v23.16b, #8
 	add	v4.2d, v14.2d, v14.2d
@@ -1625,7 +1625,7 @@ Lxts_enc_short:
 	subs	x22, x22, #0x10
 	eor	v15.16b, v4.16b, v3.16b
 	and	v24.16b, v5.16b, v8.16b
-	bmi	Lxts_enc_3
+	bmi	.Lxts_enc_3
 
 	ext	v4.16b, v24.16b, v24.16b, #8
 	add	v5.2d, v15.2d, v15.2d
@@ -1635,7 +1635,7 @@ Lxts_enc_short:
 	subs	x22, x22, #0x10
 	eor	v16.16b, v5.16b, v4.16b
 	and	v25.16b, v6.16b, v8.16b
-	bmi	Lxts_enc_4
+	bmi	.Lxts_enc_4
 
 	ext	v5.16b, v25.16b, v25.16b, #8
 	add	v6.2d, v16.2d, v16.2d
@@ -1647,7 +1647,7 @@ Lxts_enc_short:
 	subs	x22, x22, #0x10
 	eor	v17.16b, v6.16b, v5.16b
 	and	v26.16b, v7.16b, v8.16b
-	bmi	Lxts_enc_5
+	bmi	.Lxts_enc_5
 
 	ext	v7.16b, v26.16b, v26.16b, #8
 	add	v18.2d, v17.2d, v17.2d
@@ -1656,7 +1656,7 @@ Lxts_enc_short:
 	str	q17, [x0], #16
 	subs	x22, x22, #0x10
 	eor	v18.16b, v18.16b, v7.16b
-	bmi	Lxts_enc_6
+	bmi	.Lxts_enc_6
 
 	ldr	q6, [x20], #16
 	eor	v4.16b, v4.16b, v15.16b
@@ -1687,10 +1687,10 @@ Lxts_enc_short:
 	str	q3, [x21], #16
 	str	q0, [x21], #16
 	str	q1, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_6:
+.Lxts_enc_6:
 	eor	v4.16b, v4.16b, v15.16b
 	eor	v5.16b, v5.16b, v16.16b
 	mov	x9, sp                      // pass key schedule
@@ -1713,10 +1713,10 @@ Lxts_enc_6:
 	str	q6, [x21], #16
 	str	q3, [x21], #16
 	str	q0, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_5:
+.Lxts_enc_5:
 	eor	v3.16b, v3.16b, v14.16b
 	eor	v4.16b, v4.16b, v15.16b
 	mov	x9, sp                      // pass key schedule
@@ -1736,10 +1736,10 @@ Lxts_enc_5:
 	str	q4, [x21], #16
 	str	q6, [x21], #16
 	str	q3, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_4:
+.Lxts_enc_4:
 	eor	v2.16b, v2.16b, v13.16b
 	eor	v3.16b, v3.16b, v14.16b
 	mov	x9, sp                      // pass key schedule
@@ -1757,10 +1757,10 @@ Lxts_enc_4:
 	str	q1, [x21], #16
 	str	q4, [x21], #16
 	str	q6, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_3:
+.Lxts_enc_3:
 	eor	v1.16b, v1.16b, v12.16b
 	eor	v2.16b, v2.16b, v13.16b
 	mov	x9, sp                      // pass key schedule
@@ -1776,10 +1776,10 @@ Lxts_enc_3:
 	str	q0, [x21], #16
 	str	q1, [x21], #16
 	str	q4, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_2:
+.Lxts_enc_2:
 	eor	v0.16b, v0.16b, v11.16b
 	eor	v1.16b, v1.16b, v12.16b
 	mov	x9, sp                      // pass key schedule
@@ -1793,19 +1793,19 @@ Lxts_enc_2:
 	mov	v11.16b, v13.16b            // next round tweak
 	str	q0, [x21], #16
 	str	q1, [x21], #16
-	b	Lxts_enc_done
+	b	.Lxts_enc_done
 
 .align	4
-Lxts_enc_1:
+.Lxts_enc_1:
 	eor	v0.16b, v0.16b, v11.16b
 	sub	x0, sp, #16
 	sub	x1, sp, #16
 	mov	x2, x23
-	mov	v13.d[0], v11.d[1]          // just in case _AES_encrypt corrupts top half of callee-saved SIMD registers
+	mov	v13.d[0], v11.d[1]          // just in case AES_encrypt corrupts top half of callee-saved SIMD registers
 	mov	v14.d[0], v12.d[1]
 	str	q0, [sp, #-16]!
 
-	bl	_AES_encrypt
+	bl	AES_encrypt
 
 	ldr	q0, [sp], #16
 	trn1	v13.2d, v11.2d, v13.2d
@@ -1813,23 +1813,23 @@ Lxts_enc_1:
 	eor	v0.16b, v0.16b, v13.16b
 	str	q0, [x21], #16
 
-Lxts_enc_done:
+.Lxts_enc_done:
 	adds	x22, x22, #0x10
-	beq	Lxts_enc_ret
+	beq	.Lxts_enc_ret
 
 	sub	x6, x21, #0x10
         // Penultimate plaintext block produces final ciphertext part-block
         // plus remaining part of final plaintext block. Move ciphertext part
         // to final position and reuse penultimate ciphertext block buffer to
         // construct final plaintext block
-Lxts_enc_steal:
+.Lxts_enc_steal:
 	ldrb	w0, [x20], #1
 	ldrb	w1, [x21, #-0x10]
 	strb	w0, [x21, #-0x10]
 	strb	w1, [x21], #1
 
 	subs	x22, x22, #1
-	bhi	Lxts_enc_steal
+	bhi	.Lxts_enc_steal
 
         // Finally encrypt the penultimate ciphertext block using the
         // last tweak
@@ -1840,23 +1840,23 @@ Lxts_enc_steal:
 	mov	x1, sp
 	mov	x2, x23
 	mov	x21, x6
-	mov	v13.d[0], v11.d[1]          // just in case _AES_encrypt corrupts top half of callee-saved SIMD registers
+	mov	v13.d[0], v11.d[1]          // just in case AES_encrypt corrupts top half of callee-saved SIMD registers
 
-	bl	_AES_encrypt
+	bl	AES_encrypt
 
 	trn1	v11.2d, v11.2d, v13.2d
 	ldr	q0, [sp], #16
 	eor	v0.16b, v0.16b, v11.16b
 	str	q0, [x21]
 
-Lxts_enc_ret:
+.Lxts_enc_ret:
 
 	movi	v0.16b, #0
 	movi	v1.16b, #0
-Lxts_enc_bzero:	//	wipe key schedule
+.Lxts_enc_bzero:	//	wipe key schedule
 	stp	q0, q1, [sp], #32
 	cmp	sp, x19
-	bne	Lxts_enc_bzero
+	bne	.Lxts_enc_bzero
 
 	ldp	x19, x20, [sp, #80]
 	ldp	x21, x22, [sp, #96]
@@ -1867,16 +1867,16 @@ Lxts_enc_bzero:	//	wipe key schedule
 	ldp	d14, d15, [sp, #176]
 	ldp	x29, x30, [sp], #192
 	ret
-
+.size	ossl_bsaes_xts_encrypt,.-ossl_bsaes_xts_encrypt
 
 // The assembler doesn't seem capable of de-duplicating these when expressed
 // using `ldr qd,=` syntax, so assign a symbolic address
 .align	5
-Lxts_magic:
+.Lxts_magic:
 .quad	1, 0x87, 0x4000000000000000, 0x4000000000000000
 
-.globl	_ossl_bsaes_xts_decrypt
-
+.globl	ossl_bsaes_xts_decrypt
+.type	ossl_bsaes_xts_decrypt,%function
 .align	4
 // On entry:
 //   x0 -> input ciphertext
@@ -1888,7 +1888,7 @@ Lxts_magic:
 // On exit:
 //   Output plaintext filled in
 //   No output registers, usual AAPCS64 register preservation
-_ossl_bsaes_xts_decrypt:
+ossl_bsaes_xts_decrypt:
 	AARCH64_VALID_CALL_TARGET
         // Stack layout:
         // sp ->
@@ -1918,7 +1918,7 @@ _ossl_bsaes_xts_decrypt:
 	mov	x0, x5                      // iv[]
 	mov	x1, sp
 	mov	x2, x4                      // key2
-	bl	_AES_encrypt
+	bl	AES_encrypt
 	ldr	q11, [sp], #16
 
 	ldr	w1, [x23, #240]             // get # of rounds
@@ -1941,18 +1941,18 @@ _ossl_bsaes_xts_decrypt:
 	csel	x22, x30, x22, ne           // subtract another 16 bytes
 	subs	x22, x22, #0x80
 
-	blo	Lxts_dec_short
-	b	Lxts_dec_loop
+	blo	.Lxts_dec_short
+	b	.Lxts_dec_loop
 
 .align	4
-Lxts_dec_loop:
-	ldr	q8, Lxts_magic
+.Lxts_dec_loop:
+	ldr	q8, .Lxts_magic
 	mov	x10, x1                     // pass rounds
 	add	x2, x19, #16
 	ldr	q0, [x20], #16
 	sshr	v1.2d, v11.2d, #63
 	mov	x9, sp                      // pass key schedule
-	ldr	q6, Lxts_magic+16
+	ldr	q6, .Lxts_magic+16
 	add	v2.2d, v11.2d, v11.2d
 	cmtst	v3.2d, v11.2d, v6.2d
 	and	v1.16b, v1.16b, v8.16b
@@ -2036,16 +2036,16 @@ Lxts_dec_loop:
 	str	q7, [x21], #16
 	str	q1, [x21], #16
 	str	q0, [x21], #16
-	bpl	Lxts_dec_loop
+	bpl	.Lxts_dec_loop
 
-Lxts_dec_short:
+.Lxts_dec_short:
 	adds	x22, x22, #0x70
-	bmi	Lxts_dec_done
+	bmi	.Lxts_dec_done
 
-	ldr	q8, Lxts_magic
+	ldr	q8, .Lxts_magic
 	sshr	v1.2d, v11.2d, #63
 	add	v2.2d, v11.2d, v11.2d
-	ldr	q9, Lxts_magic+16
+	ldr	q9, .Lxts_magic+16
 	subs	x22, x22, #0x10
 	ldr	q0, [x20], #16
 	and	v1.16b, v1.16b, v8.16b
@@ -2058,7 +2058,7 @@ Lxts_dec_short:
 	cmtst	v3.2d, v12.2d, v9.2d
 	eor	v13.16b, v2.16b, v1.16b
 	and	v22.16b, v3.16b, v8.16b
-	bmi	Lxts_dec_1
+	bmi	.Lxts_dec_1
 
 	ext	v2.16b, v22.16b, v22.16b, #8
 	add	v3.2d, v13.2d, v13.2d
@@ -2067,7 +2067,7 @@ Lxts_dec_short:
 	subs	x22, x22, #0x10
 	eor	v14.16b, v3.16b, v2.16b
 	and	v23.16b, v4.16b, v8.16b
-	bmi	Lxts_dec_2
+	bmi	.Lxts_dec_2
 
 	ext	v3.16b, v23.16b, v23.16b, #8
 	add	v4.2d, v14.2d, v14.2d
@@ -2077,7 +2077,7 @@ Lxts_dec_short:
 	subs	x22, x22, #0x10
 	eor	v15.16b, v4.16b, v3.16b
 	and	v24.16b, v5.16b, v8.16b
-	bmi	Lxts_dec_3
+	bmi	.Lxts_dec_3
 
 	ext	v4.16b, v24.16b, v24.16b, #8
 	add	v5.2d, v15.2d, v15.2d
@@ -2087,7 +2087,7 @@ Lxts_dec_short:
 	subs	x22, x22, #0x10
 	eor	v16.16b, v5.16b, v4.16b
 	and	v25.16b, v6.16b, v8.16b
-	bmi	Lxts_dec_4
+	bmi	.Lxts_dec_4
 
 	ext	v5.16b, v25.16b, v25.16b, #8
 	add	v6.2d, v16.2d, v16.2d
@@ -2099,7 +2099,7 @@ Lxts_dec_short:
 	subs	x22, x22, #0x10
 	eor	v17.16b, v6.16b, v5.16b
 	and	v26.16b, v7.16b, v8.16b
-	bmi	Lxts_dec_5
+	bmi	.Lxts_dec_5
 
 	ext	v7.16b, v26.16b, v26.16b, #8
 	add	v18.2d, v17.2d, v17.2d
@@ -2108,7 +2108,7 @@ Lxts_dec_short:
 	str	q17, [x0], #16
 	subs	x22, x22, #0x10
 	eor	v18.16b, v18.16b, v7.16b
-	bmi	Lxts_dec_6
+	bmi	.Lxts_dec_6
 
 	ldr	q6, [x20], #16
 	eor	v4.16b, v4.16b, v15.16b
@@ -2139,10 +2139,10 @@ Lxts_dec_short:
 	str	q2, [x21], #16
 	str	q0, [x21], #16
 	str	q1, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_6:
+.Lxts_dec_6:
 	eor	v4.16b, v4.16b, v15.16b
 	eor	v5.16b, v5.16b, v16.16b
 	mov	x9, sp                      // pass key schedule
@@ -2165,10 +2165,10 @@ Lxts_dec_6:
 	str	q4, [x21], #16
 	str	q2, [x21], #16
 	str	q0, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_5:
+.Lxts_dec_5:
 	eor	v3.16b, v3.16b, v14.16b
 	eor	v4.16b, v4.16b, v15.16b
 	mov	x9, sp                      // pass key schedule
@@ -2188,10 +2188,10 @@ Lxts_dec_5:
 	str	q6, [x21], #16
 	str	q4, [x21], #16
 	str	q2, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_4:
+.Lxts_dec_4:
 	eor	v2.16b, v2.16b, v13.16b
 	eor	v3.16b, v3.16b, v14.16b
 	mov	x9, sp                      // pass key schedule
@@ -2209,10 +2209,10 @@ Lxts_dec_4:
 	str	q1, [x21], #16
 	str	q6, [x21], #16
 	str	q4, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_3:
+.Lxts_dec_3:
 	eor	v1.16b, v1.16b, v12.16b
 	eor	v2.16b, v2.16b, v13.16b
 	mov	x9, sp                      // pass key schedule
@@ -2228,10 +2228,10 @@ Lxts_dec_3:
 	str	q0, [x21], #16
 	str	q1, [x21], #16
 	str	q6, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_2:
+.Lxts_dec_2:
 	eor	v0.16b, v0.16b, v11.16b
 	eor	v1.16b, v1.16b, v12.16b
 	mov	x9, sp                      // pass key schedule
@@ -2245,19 +2245,19 @@ Lxts_dec_2:
 	mov	v11.16b, v13.16b            // next round tweak
 	str	q0, [x21], #16
 	str	q1, [x21], #16
-	b	Lxts_dec_done
+	b	.Lxts_dec_done
 
 .align	4
-Lxts_dec_1:
+.Lxts_dec_1:
 	eor	v0.16b, v0.16b, v11.16b
 	sub	x0, sp, #16
 	sub	x1, sp, #16
 	mov	x2, x23
-	mov	v13.d[0], v11.d[1]          // just in case _AES_decrypt corrupts top half of callee-saved SIMD registers
+	mov	v13.d[0], v11.d[1]          // just in case AES_decrypt corrupts top half of callee-saved SIMD registers
 	mov	v14.d[0], v12.d[1]
 	str	q0, [sp, #-16]!
 
-	bl	_AES_decrypt
+	bl	AES_decrypt
 
 	ldr	q0, [sp], #16
 	trn1	v13.2d, v11.2d, v13.2d
@@ -2265,12 +2265,12 @@ Lxts_dec_1:
 	eor	v0.16b, v0.16b, v13.16b
 	str	q0, [x21], #16
 
-Lxts_dec_done:
+.Lxts_dec_done:
 	adds	x22, x22, #0x10
-	beq	Lxts_dec_ret
+	beq	.Lxts_dec_ret
 
         // calculate one round of extra tweak for the stolen ciphertext
-	ldr	q8, Lxts_magic
+	ldr	q8, .Lxts_magic
 	sshr	v6.2d, v11.2d, #63
 	and	v6.16b, v6.16b, v8.16b
 	add	v12.2d, v11.2d, v11.2d
@@ -2284,10 +2284,10 @@ Lxts_dec_done:
 	mov	x0, sp
 	mov	x1, sp
 	mov	x2, x23
-	mov	v13.d[0], v11.d[1]          // just in case _AES_decrypt corrupts top half of callee-saved SIMD registers
+	mov	v13.d[0], v11.d[1]          // just in case AES_decrypt corrupts top half of callee-saved SIMD registers
 	mov	v14.d[0], v12.d[1]
 
-	bl	_AES_decrypt
+	bl	AES_decrypt
 
 	trn1	v12.2d, v12.2d, v14.2d
 	trn1	v11.2d, v11.2d, v13.2d
@@ -2300,14 +2300,14 @@ Lxts_dec_done:
         // plus remaining part of final ciphertext block. Move plaintext part
         // to final position and reuse penultimate plaintext block buffer to
         // construct final ciphertext block
-Lxts_dec_steal:
+.Lxts_dec_steal:
 	ldrb	w1, [x21]
 	ldrb	w0, [x20], #1
 	strb	w1, [x21, #0x10]
 	strb	w0, [x21], #1
 
 	subs	x22, x22, #1
-	bhi	Lxts_dec_steal
+	bhi	.Lxts_dec_steal
 
         // Finally decrypt the penultimate plaintext block using the
         // penultimate tweak
@@ -2319,21 +2319,21 @@ Lxts_dec_steal:
 	mov	x2, x23
 	mov	x21, x6
 
-	bl	_AES_decrypt
+	bl	AES_decrypt
 
 	trn1	v11.2d, v11.2d, v13.2d
 	ldr	q0, [sp], #16
 	eor	v0.16b, v0.16b, v11.16b
 	str	q0, [x21]
 
-Lxts_dec_ret:
+.Lxts_dec_ret:
 
 	movi	v0.16b, #0
 	movi	v1.16b, #0
-Lxts_dec_bzero:	//	wipe key schedule
+.Lxts_dec_bzero:	//	wipe key schedule
 	stp	q0, q1, [sp], #32
 	cmp	sp, x19
-	bne	Lxts_dec_bzero
+	bne	.Lxts_dec_bzero
 
 	ldp	x19, x20, [sp, #80]
 	ldp	x21, x22, [sp, #96]
@@ -2344,4 +2344,4 @@ Lxts_dec_bzero:	//	wipe key schedule
 	ldp	d14, d15, [sp, #176]
 	ldp	x29, x30, [sp], #192
 	ret
-
+.size	ossl_bsaes_xts_decrypt,.-ossl_bsaes_xts_decrypt

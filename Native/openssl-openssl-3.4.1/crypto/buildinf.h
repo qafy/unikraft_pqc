@@ -10,8 +10,8 @@
  * https://www.openssl.org/source/license.html
  */
 
-#define PLATFORM "platform: darwin64-arm64"
-#define DATE "built on: Tue Mar 25 14:21:02 2025 UTC"
+#define PLATFORM "platform: linux-aarch64"
+#define DATE "built on: Thu Apr  3 13:00:47 2025 UTC"
 
 /*
  * Generate compiler_flags as an array of individual characters. This is a
@@ -19,11 +19,14 @@
  * literal
  */
 static const char compiler_flags[] = {
-    'c','o','m','p','i','l','e','r',':',' ','c','c',' ','-','f','P',
-    'I','C',' ','-','a','r','c','h',' ','a','r','m','6','4',' ','-',
-    'O','3',' ','-','W','a','l','l',' ','-','D','L','_','E','N','D',
-    'I','A','N',' ','-','D','O','P','E','N','S','S','L','_','P','I',
-    'C',' ','-','D','_','R','E','E','N','T','R','A','N','T',' ','-',
+    'c','o','m','p','i','l','e','r',':',' ','/','w','o','r','k','s',
+    'p','a','c','e','/','m','u','s','l','-','i','n','s','t','a','l',
+    'l','/','b','i','n','/','m','u','s','l','-','g','c','c',' ','-',
+    'f','P','I','C',' ','-','p','t','h','r','e','a','d',' ','-','W',
+    'a',',','-','-','n','o','e','x','e','c','s','t','a','c','k',' ',
+    '-','W','a','l','l',' ','-','O','3',' ','-','D','O','P','E','N',
+    'S','S','L','_','U','S','E','_','N','O','D','E','L','E','T','E',
+    ' ','-','D','O','P','E','N','S','S','L','_','P','I','C',' ','-',
     'D','O','P','E','N','S','S','L','_','B','U','I','L','D','I','N',
     'G','_','O','P','E','N','S','S','L',' ','-','D','N','D','E','B',
     'U','G','\0'

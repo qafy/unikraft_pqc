@@ -68,7 +68,7 @@ LIBMUSL_SIGNAL_SRCS-y += $(LIBMUSL)/src/signal/x86_64/sigsetjmp.s|x86_64
 else ifeq (arm,$(CONFIG_UK_ARCH))
 LIBMUSL_SIGNAL_SRCS-y += $(LIBMUSL)/src/signal/arm/restore.s|arm
 LIBMUSL_SIGNAL_SRCS-y += $(LIBMUSL)/src/signal/arm/sigsetjmp.s|arm
-else ifeq (aarch64,$(CONFIG_UK_ARCH))
+else ifeq (arm64,$(CONFIG_UK_ARCH))
 LIBMUSL_SIGNAL_SRCS-y += $(LIBMUSL)/src/signal/aarch64/restore.s|aarch64
 LIBMUSL_SIGNAL_SRCS-y += $(LIBMUSL)/src/signal/aarch64/sigsetjmp.s|aarch64
 else
