@@ -91,3 +91,12 @@ void __libc_free(void *ptr)
 {
 	return uk_free(uk_alloc_get_default(), ptr);
 }
+
+// https://en.cppreference.com/w/c/memory/aligned_alloc
+// https://linux.die.net/man/3/memalign
+void *aligned_alloc(size_t alignment, size_t size )
+{
+	if (size % alignment != 0)
+		return __NULL;
+	return uk_memalign(uk_alloc_get_default(), alignment, size);
+}

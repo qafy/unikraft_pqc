@@ -1,9 +1,5 @@
-CFLAGS  = -I/Users/moritzbeckel/Desktop/IDP/src/opt/include -g -Wall
-LDFLAGS = -L/Users/moritzbeckel/Desktop/IDP/src/opt/lib
-LDLIBS  = -loqs
-
 example_kem:
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ example_kem.c $(LDLIBS)
+	$(CC) -o $@ example_kem.c liboqs.a -I/workspace/Native/opt/include -g -Wall 
 
 clean:
 	$(RM) example_kem

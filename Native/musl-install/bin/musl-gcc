@@ -1,2 +1,2 @@
 #!/bin/sh
-exec "${REALGCC:-gcc}" "$@" -specs "/workspace/musl-install/lib/musl-gcc.specs"
+exec "${REALGCC:-gcc}" "$@" -specs "/workspace/Native/musl-install/lib/musl-gcc.specs"

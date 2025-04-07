@@ -1,1 +1,1 @@
-savedcmd_usr/include/linux/netfilter/xt_CONNMARK.h := sh ./scripts/headers_install.sh include/uapi/linux/netfilter/xt_CONNMARK.h usr/include/linux/netfilter/xt_CONNMARK.h
+savedcmd_usr/include/linux/netfilter/xt_connmark.h := sh ./scripts/headers_install.sh include/uapi/linux/netfilter/xt_connmark.h usr/include/linux/netfilter/xt_connmark.h

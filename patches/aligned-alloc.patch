@@ -1,0 +1,16 @@
+--- mem.c       2025-04-07 11:52:04.974317328 +0000
++++ memcopy.c   2025-04-07 11:51:40.457844161 +0000
+@@ -91,3 +91,12 @@
+ {
+        return uk_free(uk_alloc_get_default(), ptr);
+ }
++
++// https://en.cppreference.com/w/c/memory/aligned_alloc
++// https://linux.die.net/man/3/memalign
++void *aligned_alloc(size_t alignment, size_t size )
++{
++       if (size % alignment != 0)
++               return __NULL;
++       return uk_memalign(uk_alloc_get_default(), alignment, size);
++}
+\ 

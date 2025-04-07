@@ -8,9 +8,9 @@ TESTS = EVP_MD_demo \
         EVP_MD_stdin \
         EVP_MD_xof \
         BIO_f_md
-
-CFLAGS  = -I/Users/moritzbeckel/Desktop/IDP/epqciuoe/src/opt/include -g -Wall
-LDFLAGS = -L/Users/moritzbeckel/Desktop/IDP/epqciuoe/src/opt/lib
+CC		= /workspace/Native/musl-install/bin/musl-gcc
+CFLAGS  = -I/workspace/Native/opt/include -g -Wall
+LDFLAGS = -L/workspace/Native/opt/lib
 LDLIBS  = -lcrypto
 
 all: $(TESTS)
