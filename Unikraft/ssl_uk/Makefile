@@ -1,5 +1,5 @@
 WITH_OPENSSL    ?= n
-WITH_LWIP		?= n 
+WITH_LWIP		?= y
 WITH_MUSL		?= y
 WITH_UKRANDOM	?= n
 

@@ -520,7 +520,7 @@ static struct posix_socket_ops lwip_posix_socket_ops = {
 	.write		= lwip_posix_socket_write,
 	.close		= lwip_posix_socket_close,
 	.ioctl		= lwip_posix_socket_ioctl,
-	.poll_setup	= lwip_posix_socket_poll_setup,
+	.poll	= lwip_posix_socket_poll_setup,
 };
 
 POSIX_SOCKET_FAMILY_REGISTER(AF_INET, &lwip_posix_socket_ops);

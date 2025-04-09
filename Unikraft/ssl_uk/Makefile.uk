@@ -3,8 +3,13 @@ $(eval $(call addlib,appopenssl))
 APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/libcrypto.a
 APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/liboqs.a
 APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/liboqsprovider.a
-APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/example_oqs_static.c
+APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/libssl.a
 
+
+APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/https_client.c
+
+#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/http_server.c
+#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/example_oqs_static.c
 #APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/sha256_test.c
 #APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/_archive/ssl_keygen_2048.c
 

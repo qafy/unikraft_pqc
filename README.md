@@ -99,8 +99,54 @@ export CMAKE_PARAMS="-DCMAKE_C_COMPILER=/workspace/Native/musl-install/bin/musl-
 ./scripts/fullbuild.sh
 cmake --install _build
 
+# Networking 
+
+
+ip link add dev virbr0 type bridge
+ip address add 172.44.0.1/24 dev virbr0
+ip link set dev virbr0 up
+
+qemu-system-aarch64 \
+	-kernel build/ssl_uk_qemu-arm64 \
+	-machine virt -cpu max -m 64M \
+	-nographic \
+	-netdev bridge,id=en0,br=virbr0 \
+    -device virtio-net-pci,netdev=en0 \
+	-append "ssl_uk netdev.ip=172.44.0.2/24:172.44.0.1::: -- "
+
+
+- Networking fails need:
+- lwip
+- uknetdev
+- param LIBUKNETDEV_EINFO_LIBPARAM
+- bridge see above
+
+- Printf fails need: 
+drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
+
+# TLS networking
+
+openssl req -x509 -new \
+			-newkey dilithium3 \
+			-keyout CA.key -out pki/CA.crt \
+			-nodes -subj "/CN=Test CA" -days 365 \
+			-config /workspace/container-files/openssl.cnf
+
+openssl req -new \
+			-newkey dilithium3 \
+			-keyout pki/server.key -out pki/server.csr \
+			-nodes -subj "/CN=testserver" \
+			-config /workspace/container-files/openssl.cnf
+
+openssl x509 -req \
+			 -in pki/server.csr -out pki/server.crt \
+			 -CA pki/CA.crt -CAkey CA.key -CAcreateserial -days 365
+
+for quick test use this:
+openssl s_server -key pki/server.key -cert pki/server.crt -accept 443 -www
+
 # To run the unikernel
-qemu-system-aarch64 -kernel ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic
+qemu-system-aarch64 -kernel build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic
 
 # Debugging 
 qemu-system-aarch64 -s -S -cpu max -machine virt -m 128M -nodefaults -no-acpi -display none -serial stdio -kernel build/ssl_uk_qemu-arm64 -append verbose
