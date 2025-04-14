@@ -1,0 +1,22 @@
+################################################################################
+# Library registration
+################################################################################
+$(eval $(call addlib_s,liboqs,$(CONFIG_LIBOQS)))
+################################################################################
+# Original sources
+################################################################################
+LIBOQS_VERSION=0.12.0
+LIBOQS_URL=https://github.com/open-quantum-safe/liboqs/archive/refs/tags/$(LIBOQS_VERSION).tar.gz
+LIBOQS_SUBDIR=liboqs-$(LIBOQS_VERSION)
+#$(eval $(call fetch,liboqs,$(LIBOQS_URL)))
+#$(eval $(call patch,liboqs,$(LIBOQS_SUBDIR)))
+################################################################################
+# Library includes
+################################################################################
+CINCLUDES-$(CONFIG_LIBOQS)      += -I$(LIBOQS_BASE)/include
+CXXINCLUDES-$(CONFIG_LIBOQS)    += -I$(LIBOQS_BASE)/include
+################################################################################
+# Sources
+################################################################################
+UK_ALIBS-$(CONFIG_LIBOQS)       += $(LIBOQS_BASE)/liboqs.a
+UK_ALIBS-$(CONFIG_LIBOQS)       += $(LIBOQS_BASE)/liboqsprovider.a

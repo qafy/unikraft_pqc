@@ -1,0 +1,23 @@
+################################################################################
+# Library registration
+################################################################################
+$(eval $(call addlib_s,libopenssl,$(CONFIG_LIBOPENSSL)))
+################################################################################
+# Original sources
+################################################################################
+LIBOPENSSL_VERSION=3.4.1
+LIBOPENSSL_URL=https://github.com/openssl/openssl/releases/download/openssl-$(LIBOPENSSL_VERSION)/openssl-$(LIBOPENSSL_VERSION).tar.gz
+LIBOPENSSL_SUBDIR=openssl-$(LIBOPENSSL_VERSION)
+#$(eval $(call fetch,libopenssl,$(LIBOPENSSL_URL)))
+#$(eval $(call patch,libopessl,$(LIBOPENSSL_SUBDIR)))
+################################################################################
+# Library includes
+################################################################################
+CINCLUDES-$(CONFIG_LIBOPENSSL)  	+= -I$(LIBOPENSSL_BASE)/include
+CXXINCLUDES-$(CONFIG_LIBOPENSSL) 	+= -I$(LIBOPENSSL_BASE)/include
+################################################################################
+# Sources
+################################################################################
+UK_ALIBS-$(CONFIG_LIBOPENSSL)		+= $(LIBOPENSSL_BASE)/libcrypto.a
+UK_ALIBS-$(CONFIG_LIBOPENSSL)	    += $(LIBOPENSSL_BASE)/libssl.a
+

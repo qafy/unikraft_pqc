@@ -1,0 +1,6 @@
+menuconfig LIBOPENSSL
+	bool "Openssl libraries"
+	default y
+	select LIBPTHREAD_EMBEDDED
+
+

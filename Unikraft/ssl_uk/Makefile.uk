@@ -1,26 +1,13 @@
+################################################################################
+# Library registration
+################################################################################
 $(eval $(call addlib,appopenssl))
+################################################################################
+# Sources
+################################################################################
+APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/ssl_uk.c
 
-APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/libcrypto.a
-APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/liboqs.a
-APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/liboqsprovider.a
-APPOPENSSL_ALIBS-y += $(APPOPENSSL_BASE)/libssl.a
 
 
-APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/https_client.c
 
-#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/http_server.c
-#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/example_oqs_static.c
-#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/sha256_test.c
-#APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/_archive/ssl_keygen_2048.c
 
-APPOPENSSL_CINCLUDES += -I/workspace/Native/opt/include/
-# ----- experimental -----
-
-#APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/libs/openssl-3.3.0/libssl.a
-#APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/libs/openssl-3.3.0/libcrypto.a
-
-#APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/lib-pthread-embedded/include/
-#APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/external_libs/include/
-
-#APPOPENSSL_SSL_KEYGEN_2048_NO_TIME_INCLUDES-y += -DFLAG
-#APPOPENSSL_SSL_KEYGEN_2048_NO_TIME_INCLUDES-y += -Iextra/openssl-3.3.0/include/

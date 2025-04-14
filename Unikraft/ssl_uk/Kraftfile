@@ -9,9 +9,7 @@ unikraft:
     CONFIG_LIBPOSIX_FDIO: 'y'
     CONFIG_LIBUKNETDEV_EINFO_LIBPARAM: 'y'
 
-targets:
-- qemu/x86_64
-- qemu/arm64
+targets: qemu/arm64
 
 #libraries:
 #  musl:

@@ -1,0 +1,25 @@
+menuconfig LIBOQS
+	bool "Post Qantum Secure Cryptography"
+	default y
+	
+if LIBOQS
+config OQSPROVIDER
+	bool "Connect OQS to OpenSSL for PQC TSL Connections"
+	default y
+	select LIBOPENSSL
+	select LIBNOLIBC if !HAVE_LIBC
+	select LIBUKDEBUG
+	select LIBUKALLOC
+	select LIBLWIP
+	select LWIP_IPV6
+	select LIBPOSIX_USER
+	select LIBPOSIX_LIBDL
+	select LIBSYSCALL_SHIM
+	select LIBUKRANDOM
+	select LIBUKRANDOM_DEVFS
+if OQSPROVIDER
+endif
+
+endif
+
+
