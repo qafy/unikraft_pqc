@@ -23,8 +23,6 @@
 		no-seed \
 		no-weak-ssl-ciphers
 
-
-
 make
 make install
 
@@ -101,7 +99,6 @@ cmake --install _build
 
 # Networking 
 
-
 ip link add dev virbr0 type bridge
 ip address add 172.44.0.1/24 dev virbr0
 ip link set dev virbr0 up
@@ -126,24 +123,48 @@ drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt t
 
 # TLS networking
 
-openssl req -x509 -new \
+Native/openssl req -x509 -new \
 			-newkey dilithium3 \
-			-keyout CA.key -out pki/CA.crt \
-			-nodes -subj "/CN=Test CA" -days 365 \
-			-config /workspace/container-files/openssl.cnf
+			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
+			-nodes -subj "/CN=Test CA" -days 365
 
-openssl req -new \
+Native/openssl req -new \
 			-newkey dilithium3 \
-			-keyout pki/server.key -out pki/server.csr \
-			-nodes -subj "/CN=testserver" \
-			-config /workspace/container-files/openssl.cnf
+			-keyout pki/server_dil.key -out pki/server_dil.csr \
+			-nodes -subj "/CN=testserver"
 
-openssl x509 -req \
-			 -in pki/server.csr -out pki/server.crt \
-			 -CA pki/CA.crt -CAkey CA.key -CAcreateserial -days 365
+Native/openssl x509 -req \
+			 -in pki/server_dil.csr -out pki/server_dil.crt \
+			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
 
-for quick test use this:
-openssl s_server -key pki/server.key -cert pki/server.crt -accept 443 -www
+
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+
+- tls connection is possible, however there is no certificate checking yet
+- kem is possible and is used to set a custom kem function
+- problem: how to test if kem is working?
+- signature and kem algorithms are displayed on startup
+- do not use file system for test application because reconfiguration and unikernel is supposed to be minimal
+
+- TODO use builtin libssl functions to load certificate
+- TODO adjust container to be able to use liboqs with oqsprovider and s_server
+- Optional port apps s_server and s_speed to unikraft and use them for benchmarking purposes, 
+pobably have to turn on filesystem and virtual memory for this
+
+- TODO '-Wl,-rpath,$(LIBRPATH)' is not configured for the docker file, is not needed since we do not use the openssl bin, but if we want to we need to adjust this
+
+# kvm on pi
+
+- first getrandom was not implemented, patch proposed on discord, did not work bc depends on lots of other patches
+- upgraded to latest version 18 of unikraft
+- still throws cpu exception
+- crashes in tcpip_init in the lwip network stack
+- seems to come from a either semaphore down or wzr register
+- was not the wzr register
+- there were also dependency issues in the uk config
+- building on the pi did not make a difference, same error occurs
+- updating to the most recent commit of unikraft helped, commit Tue Mar 18 5050e9f11e57a17bd18d4f1a3478010b329c6855
+- unikraft needs patch in poll -> poll_select
 
 # To run the unikernel
 qemu-system-aarch64 -kernel build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic

@@ -1,1 +1,0 @@
-savedcmd_usr/include/linux/media/raspberrypi/pisp_be_config.h := sh ./scripts/headers_install.sh include/uapi/linux/media/raspberrypi/pisp_be_config.h usr/include/linux/media/raspberrypi/pisp_be_config.h
