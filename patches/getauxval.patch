@@ -14,5 +14,5 @@ index 9358a4a5..63c5bfe9 100644
 +unsigned long __getauxval(unsigned long);
  
  #endif
--- 
+---
 2.41.0
