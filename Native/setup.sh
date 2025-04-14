@@ -84,7 +84,7 @@ function main()
     setup_oqs_provider
 
     ln -s $SCRIPT_DIR/local/bin/openssl $SCRIPT_DIR/openssl
-    mv $SCRIPT_DIR/openssl.cnf $SCRIPT_DIR/local/openssldir/openssl.cnf
+    cp $SCRIPT_DIR/openssl.cnf $SCRIPT_DIR/local/openssldir/openssl.cnf
 }
 
 main
