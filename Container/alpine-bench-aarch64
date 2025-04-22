@@ -1,0 +1,96 @@
+###
+# BUILD THE DOCKER CONTAINER AS THE TEST TARGET
+###
+
+# Versions (via git tags/branches)
+ARG VOPENSSL="3.4.1"
+ARG VLIBOQS="0.12.0"
+ARG VOQS_PROVIDER="0.8.0"
+
+ARG MAKE_DEFINES="-j 64"
+
+ARG WORKSPACE="/opt/pqcssl"
+ARG BUILD_DIR=${WORKSPACE}/build
+
+FROM alpine:latest AS buildenv
+# Get all software packages required for building all components:
+RUN mkdir /opt/pqcssl && mkdir /opt/pqcssl/build
+RUN apk add build-base linux-headers \
+            libtool automake autoconf cmake ninja \
+            make \
+            git pcre-dev \
+            pytest
+
+# OPENSSL
+FROM buildenv  AS openssl
+ARG MAKE_DEFINES
+ARG VOPENSSL
+ARG BUILD_DIR
+WORKDIR /opt/openssl
+# Build openssl (Openssl gets extenden with the oqs-provider in the build process)
+RUN git clone --depth 1 --branch openssl-${VOPENSSL} https://github.com/openssl/openssl.git /opt/openssl
+RUN chmod +x Configure
+RUN ./Configure \
+    # --prefix=${BUILD_DIR} \
+    no-ssl no-tls1 no-tls1_1 no-afalgeng \
+    no-shared threads -lm
+RUN make ${MAKE_DEFINES} && \
+    # make test && \
+    make install_sw
+
+
+# LIBOQS
+FROM openssl AS liboqs
+ARG MAKE_DEFINES
+ARG VLIBOQS
+ARG BUILD_DIR
+WORKDIR /opt/liboqs
+RUN git clone --depth 1 --branch ${VLIBOQS} https://github.com/open-quantum-safe/liboqs.git /opt/liboqs
+# build liboqs (static only)
+RUN mkdir build && cd build && \
+    cmake -GNinja \
+        -DBUILD_SHARED_LIBS=ON \
+        # -DOPENSSL_ROOT_DIR=${BUILD_DIR} \
+        # -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} \
+    #     # -DCMAKE_BUILD_TYPE=Debug \
+    #     # -DOQS_ENABLE_KEM_BIKE=OFF -DOQS_ENABLE_KEM_FRODOKEM=OFF -DOQS_ENABLE_KEM_CLASSIC_MCELIECE=OFF -DOQS_ENABLE_SIG_SPHINCS=OFF -DOQS_ENABLE_SIG_FALCON=OFF \
+    .. && \
+    ninja && \
+    # ninja run_tests && \
+    ninja install
+
+
+# OQSPROVIDER
+FROM liboqs AS oqs
+ARG MAKE_DEFINES
+ARG VOQS_PROVIDER
+ARG BUILD_DIR
+WORKDIR /opt/oqsprovider
+# get OQS sources
+RUN git clone --depth 1 --branch ${VOQS_PROVIDER} https://github.com/open-quantum-safe/oqs-provider.git /opt/oqsprovider
+# build oqsprovider
+# RUN liboqs_DIR=${BUILD_DIR} cmake \
+RUN cmake \
+    -DCMAKE_INSTALL_PREFIX=opt/oqsprovider \
+    # -DOPENSSL_ROOT_DIR=${BUILD_DIR} \
+    # -DCMAKE_BUILD_TYPE=Release \
+    -S . \
+    -B _build && \
+    cmake --build _build && \
+    cmake --install _build
+
+# Bringing it all together
+COPY ./openssl.cnf /etc/ssl/
+
+# SETUP TESTCASE
+FROM oqs AS test
+ARG SIG_ALG
+WORKDIR /opt/test
+# Palce for certs (generated during run)
+RUN mkdir pki 
+
+# Cleanup
+RUN apk del cmake ninja make git pcre-dev pytest
+
+WORKDIR /workspace
+# CMD [ "sleep infinity" ]
