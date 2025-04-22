@@ -20,3 +20,10 @@ CXXINCLUDES-$(CONFIG_LIBOQS)    += -I$(LIBOQS_BASE)/include
 ################################################################################
 UK_ALIBS-$(CONFIG_LIBOQS)       += $(LIBOQS_BASE)/liboqs.a
 UK_ALIBS-$(CONFIG_LIBOQS)       += $(LIBOQS_BASE)/liboqsprovider.a
+################################################################################
+# Tests
+################################################################################
+LIBOQS_SRCS-$(CONFIG_LIBOQS_TEST)    += $(LIBOQS_BASE)/tests/test_kem.c
+LIBOQS_SRCS-$(CONFIG_LIBOQS_TEST)    += $(LIBOQS_BASE)/tests/test_sig.c
+LIBOQS_SRCS-$(CONFIG_LIBOQS_TEST)    += $(LIBOQS_BASE)/tests/test_provider.c
+LIBOQS_SRCS-$(CONFIG_LIBOQS_TEST)    += $(LIBOQS_BASE)/tests/test_common.c
