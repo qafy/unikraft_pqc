@@ -139,6 +139,22 @@ Native/openssl x509 -req \
 
 
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Native/openssl s_client -connect localhost:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+
+Unikraft/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Native/openssl s_client -connect 172.44.0.2:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Unikraft/openssl s_client -connect 172.44.0.1:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+
+Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
+
+Container/openssl s_client -connect 10.1.1.155:443 
+does not work yet
+// -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
 
 - tls connection is possible, however there is no certificate checking yet
 - kem is possible and is used to set a custom kem function
@@ -173,3 +189,72 @@ qemu-system-aarch64 -kernel build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64
 qemu-system-aarch64 -s -S -cpu max -machine virt -m 128M -nodefaults -no-acpi -display none -serial stdio -kernel build/ssl_uk_qemu-arm64 -append verbose
 
 gdb --eval-command="target remote :1234" build/ssl_uk_qemu-arm64.dbg
+
+# reproducing the libraries
+
+libraries so far are used in the static library form .a and built manually
+create repoducible way to build libraries inside the uk_build_aarch64 docker file
+patched musl version is setup to compile the libraries
+libraries are compiled inside the docker container 
+everything is installed in the folder /opt/oqssa
+
+# unified setup
+
+call ./setup.sh in the folders Container/Native
+will generate openssl link that starts openssl binary in container
+
+# tests
+
+use liboqs tests and oqsprovider tests
+
+never finishes in a loop
+gdb still steps through
+stdout is not working anymore
+on next print call everything gets stuck
+
+Single stepping until exit from function OQS_KEM_bike_l1_decode,
+which has no line number information.
+memcpy (dest=0x403ab840, src=0x403aa600, n=1541) at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
+23              for (; (uintptr_t)s % 4 && n; n--) *d++ = *s++;
+(gdb) finish
+Run till exit from #0  memcpy (dest=0x403ab840, src=0x403aa600, n=1541)
+    at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
+0x0000000040224764 in OQS_KEM_bike_l1_decode ()
+Value returned is $22 = (void *) 0x403ab840
+(gdb) call printf("Hi\n")
+
+320 440 
+br OQS_KEM_bike_l1_decode
+br OQS_KEM_bike_l1_gf2x_mod_mul
+br OQS_KEM_bike_l1_gf2x_mod_mul_with_ctx
+
+gf2x_mod_mul_with_ctx
+between 1000 1500#
+
+uses karatsuba algorithms with recursion
+solution increase stack size to make it run (8 Pages so far)
+
+not all tests pass bc not all algorithms are enabled
+TODO do we need to support all of them?
+
+done in ssl_uk_test also prints the version available ciphers and
+TODO does a self connection to check if everything works
+
+
+# benchmarks
+
+internal benchmarks done in oqs_uk_speed also taken from liboqs, test the speed of KEM and Signature algorithms
+
+TODO match the configs of openssl + liboqs from container, native, Unikernel
+
+# openssl binary
+
+enabled 9pfs to access config
+statically add oqsprovider
+added s_server, s_client, s_time parts of openssl
+64M is not enough memory, increased to 128M
+
+Certificate verification shows that certificate is only valid later
+system time wrong? 
+
+TODO container does not load oqsprovider as additional provider, otherwise config file has to be specified for each cmd manually

@@ -1,0 +1,53 @@
+################################################################################
+# Library registration
+################################################################################
+$(eval $(call addlib,appopenssl))
+################################################################################
+# Includes
+################################################################################
+APPOPENSSL_CINCLUDES            += -I$(APPOPENSSL_BASE)/include/
+################################################################################
+# Lib
+################################################################################
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/app_libctx.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/app_params.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/app_provider.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/app_rand.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/app_x509.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/apps_opt_printf.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/apps_ui.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/apps.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/cmp_mock_srv.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/columns.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/engine_loader.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/engine.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/fmt.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/http_server.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/log.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/names.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/opt.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/s_cb.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/s_socket.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/tlssrp_depr.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/vms_decc_argv.c 
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/lib/vms_term_sock.c 
+################################################################################
+# Sources
+################################################################################
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/openssl.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/progs.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/enc.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/dgst.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/genpkey.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/list.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/s_server.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/ocsp.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/ca.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/s_client.c
+APPOPENSSL_SRCS-y               += $(APPOPENSSL_BASE)/s_time.c
+
+
+
+
+
+
