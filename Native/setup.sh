@@ -4,8 +4,8 @@ SCRIPT_PATH=$(realpath "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 
 VOPENSSL="3.4.1"
-VLIBOQS="0.9.0"
-VOQS_PROVIDER="0.5.2"
+VLIBOQS="0.12.0"
+VOQS_PROVIDER="0.8.0"
 
 function setup_openssl()
 {
@@ -68,12 +68,25 @@ function make_local_install()
     mkdir local
     rm -rf src
     mkdir src
-    rm openssl
+    rm openssl 2>/dev/null
 }
 
+function clean_local_install()
+{
+    rm -rf local
+    rm -rf src
+    rm openssl 2>/dev/null
+}
 # Dependencies: astyle cmake gcc ninja-build libssl-dev python3-pytest python3-pytest-xdist unzip xsltproc doxygen graphviz python3-yaml valgrind
 function main()
 {   
+    cd $SCRIPT_DIR
+    if [ "$1" == "clean" ]; then
+        echo "Removing local files"
+        clean_local_install
+        exit
+    fi
+
     cd $SCRIPT_DIR
     make_local_install
     cd $SCRIPT_DIR
@@ -87,4 +100,4 @@ function main()
     cp $SCRIPT_DIR/openssl.cnf $SCRIPT_DIR/local/openssldir/openssl.cnf
 }
 
-main
+main $@
