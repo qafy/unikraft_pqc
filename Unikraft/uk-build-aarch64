@@ -32,7 +32,7 @@ RUN set -e ;\
         libncurses-dev ;\
     rm -rf /var/lib/apt/lists/* ;
 
-COPY ./container-files/install-kraft.sh /tmp
+COPY curl -sSfL https://get.kraftkit.sh > /tmp/kraftkit.sh
 RUN chmod a+x /tmp/install-kraft.sh
 RUN bash /tmp/install-kraft.sh -y
 
