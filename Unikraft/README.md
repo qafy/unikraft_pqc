@@ -30,7 +30,3 @@ APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/openssl-3.3.0/include/
 
 ## OQS SSL Unikernel Doc
 
-
-## test
-we can compile the sha256_test.c with:
-gcc sha256_test.c -I/Users/moritzbeckel/Desktop/IDP/epqciuoe/Native/opt/include -L/Users/moritzbeckel/Desktop/IDP/epqciuoe/Native/opt/lib -lcrypto
