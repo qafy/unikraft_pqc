@@ -99,9 +99,12 @@ cmake --install _build
 
 # Networking 
 
-ip link add dev virbr0 type bridge
-ip address add 172.44.0.1/24 dev virbr0
-ip link set dev virbr0 up
+sudo ip link add dev virbr0 type bridge
+sudo ip address add 172.44.0.1/24 dev virbr0
+sudo ip link set dev virbr0 up
+
+sudo mkdir /etc/qemu
+sudo echo "allow virbr0" > /etc/qemu/bridge.conf
 
 qemu-system-aarch64 \
 	-kernel build/ssl_uk_qemu-arm64 \
@@ -258,3 +261,41 @@ Certificate verification shows that certificate is only valid later
 system time wrong? 
 
 TODO container does not load oqsprovider as additional provider, otherwise config file has to be specified for each cmd manually
+
+# benchmarks
+
+TODO find a way to get the ip address from the dock
+
+TODO for power measurement, draw a diagram of the connections (resistor etc)
+
+TODO inform about basics electrical engineering, voltage splitter
+
+TODO also check memory consumption, look for good profiler for this
+
+
+most important kyber, falcon, dilithium, sphincs
+interesting lms xms
+less interesting frodokem, bike
+
+
+TODO find a way to reliably kill the openssl processes, with s_client you have to use Q in stdin to terminate it, Unikraft does not have stdin, find a way to terminate this as well, s_server does neet ctrl-c, the binaries we provide (Unikraft/openssl) are scripts that then execute the right configuration with e.g. qemu, if we cancel this script maybe qemu is not termianted as well
+
+# on pi 
+
+CMake Error at CMakeLists.txt:64 (find_package):
+  By not providing "Findliboqs.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "liboqs", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "liboqs" with any
+  of the following names:
+
+    liboqsConfig.cmake
+    liboqs-config.cmake
+
+  Add the installation prefix of "liboqs" to CMAKE_PREFIX_PATH or set
+  "liboqs_DIR" to a directory containing one of the above files.  If "liboqs"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+TODO setup script did not work, few changes are made on the pi cant push move manually
