@@ -126,6 +126,8 @@ drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt t
 
 # TLS networking
 
+## setup 
+
 Native/openssl req -x509 -new \
 			-newkey dilithium3 \
 			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
@@ -140,6 +142,7 @@ Native/openssl x509 -req \
 			 -in pki/server_dil.csr -out pki/server_dil.crt \
 			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
 
+# s_client
 
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Native/openssl s_client -connect localhost:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
@@ -150,14 +153,23 @@ Native/openssl s_client -connect 172.44.0.2:443 -verifyCAfile pki/CA_dil.crt -ig
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Unikraft/openssl s_client -connect 172.44.0.1:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
 
+Container/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 442 -www
+Native/openssl s_client -connect localhost:442 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Container/openssl s_client -connect host.docker.internal:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+
+# s_time
+
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
 
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
 
-Container/openssl s_client -connect 10.1.1.155:443 
-does not work yet
-// -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
+Container/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+
 
 - tls connection is possible, however there is no certificate checking yet
 - kem is possible and is used to set a custom kem function
@@ -299,3 +311,16 @@ CMake Error at CMakeLists.txt:64 (find_package):
   installed.
 
 TODO setup script did not work, few changes are made on the pi cant push move manually
+
+
+IMPORTANT Container does not work with oqsprovider yet, fix this
+
+# first results of power measurement
+
+- on idle takes about 1.5-1.6W with ssh and vscode server running
+- with Native/s_server Native/s_time increases to 1.9-2.0W
+- with Native/s_server Unikraft/s_time increases to 2.6-2.7W
+- with Native/s_server Container/s_time  
+
+Note: not tested with kvm yet so performance improvement still possible
+
