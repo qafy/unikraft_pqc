@@ -332,3 +332,7 @@ IMPORTANT Container does not work with oqsprovider yet, fix this
 - not tested with kvm yet so performance improvement still possible
 - need to enable kvm
 
+- kvm works without processor generated randomness TODO find if this can be enabled again
+- results with kvm are very similar to Container, about 2.8-2.9W
+- results differ, for session renogiation power usage is lower, especially on Unikernel
+- between the different modes power usage is higher
