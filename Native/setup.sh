@@ -28,8 +28,7 @@ function setup_openssl()
 		no-rc5 \
 		no-ec2m \
 		no-ssl3 \
-		no-seed \
-		no-weak-ssl-ciphers
+		no-seed 
     
     make -j$(nproc)
     make install
@@ -41,13 +40,11 @@ function setup_liboqs()
     git clone --depth 1 --branch ${VLIBOQS} https://github.com/open-quantum-safe/liboqs.git src/liboqs
     cd src/liboqs
 
-    mkdir build && cd build
-    export CMAKE_INSTALL_PREFIX="${SCRIPT_DIR}/local"
-    export OPENSSL_ROOT_DIR="${SCRIPT_DIR}/src/openssl"
-    cmake ..
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX="${SCRIPT_DIR}/local" -DOPENSSL_ROOT_DIR="${SCRIPT_DIR}/src/openssl"
     cmake --build . -- -j$(nproc)
     cmake --install .
-
 }
 
 function setup_oqs_provider()
