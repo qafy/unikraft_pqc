@@ -15,7 +15,29 @@ docker build -t alpine-bench -f ./Container/alpine-bench-aarch64 $SCRIPT_DIR
 
 cat << EOF > $SCRIPT_DIR/openssl
 #!/usr/bin/env bash
-docker run --network=alpine-bench-net -v \$(pwd):/workspace -it alpine-bench openssl \$*
+docker run \\
+    --name alpine_bench_\$(whoami) \\
+    --network=alpine-bench-net \\
+    -v \$(pwd):/workspace \\
+    -it --rm \\
+    -p 442:442 \\
+    --add-host host.docker.internal=host-gateway \\
+    alpine-bench \\
+    openssl \$*
+EOF
+
+cat << EOF > $SCRIPT_DIR/sh
+#!/usr/bin/env bash
+docker run \\
+    --name alpine_bench_\$(whoami) \\
+    --network=alpine-bench-net \\
+    -v \$(pwd):/workspace \\
+    -it --rm \\
+    -p 442:442 \\
+    --add-host host.docker.internal=host-gateway \\
+    alpine-bench \\
+    sh
 EOF
 
 chmod a+x $SCRIPT_DIR/openssl
+chmod a+x $SCRIPT_DIR/sh
