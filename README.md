@@ -167,8 +167,8 @@ Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
 
-Container/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA_dil.crt
 
 
 - tls connection is possible, however there is no certificate checking yet
@@ -320,7 +320,15 @@ IMPORTANT Container does not work with oqsprovider yet, fix this
 - on idle takes about 1.5-1.6W with ssh and vscode server running
 - with Native/s_server Native/s_time increases to 1.9-2.0W
 - with Native/s_server Unikraft/s_time increases to 2.6-2.7W
-- with Native/s_server Container/s_time  
+- with Native/s_server Container/s_time  increases to 2.9-3.0W
 
-Note: not tested with kvm yet so performance improvement still possible
+- remeassuring for Native now takes 2.8-2.9W
+- Unikraft measurement stays consistent 2.6-2.7W
+- remeassuring Container now also takes 2.8-2.9W, slightly higher than Native 
+
+- Theory: power consumption is nic bound
+- unikraft has less connections so can also only do less io operations
+- /dev/null does decrease power consumption, probably because of the many stdio calls s_time does
+- not tested with kvm yet so performance improvement still possible
+- need to enable kvm
 
