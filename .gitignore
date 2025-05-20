@@ -7,6 +7,10 @@ Native/src
 Native/openssl
 
 Container/openssl
+Container/sh
+
 Unikraft/openssl
 Unikraft/test
 Unikraft/benchmark
+
+pki/
