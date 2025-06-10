@@ -104,6 +104,7 @@ RUN export liboqs_DIR="${SCRIPT_DIR}/local" && \
 ENV PATH="/local/bin:${PATH}"
 RUN ln -s $SCRIPT_DIR/local/bin/openssl $SCRIPT_DIR/openssl
 COPY ./openssl.cnf /local/openssldir
+COPY ./oqs_speed /local/oqs_speed
 
 # # SETUP TESTCASE
 # FROM oqs AS test
