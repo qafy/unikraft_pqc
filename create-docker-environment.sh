@@ -10,7 +10,7 @@ function run_docker()
         docker exec -it $CONTAINER_NAME bash
     else
         echo "Starting new container: $CONTAINER_NAME"
-        docker build -t uk-build -f ./container-files/uk-build-aarch64 . 
+        docker build -t uk-build -f ./Unikraft/uk-build-aarch64 . 
         # 2>/dev/null
         docker run \
             --hostname uk-build \

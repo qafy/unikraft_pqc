@@ -32,7 +32,7 @@ RUN set -e ;\
         libncurses-dev ;\
     rm -rf /var/lib/apt/lists/* ;
 
-COPY curl -sSfL https://get.kraftkit.sh > /tmp/kraftkit.sh
+RUN curl -sSfL https://get.kraftkit.sh > /tmp/install-kraft.sh
 RUN chmod a+x /tmp/install-kraft.sh
 RUN bash /tmp/install-kraft.sh -y
 
@@ -56,7 +56,7 @@ RUN wget https://musl.libc.org/releases/musl-1.2.3.tar.gz && \
 
 WORKDIR /opt/musl-1.2.3
 
-COPY ./patches/getauxval.patch /opt
+COPY ./Unikraft/patches/getauxval.patch /opt
 RUN patch -p1 < /opt/getauxval.patch
 
 RUN ./configure \
@@ -105,7 +105,7 @@ RUN git clone --depth 1 --branch ${OPENSSL_TAG} https://github.com/openssl/opens
 
 WORKDIR /opt/openssl
 
-COPY ./patches/auxv.patch /opt
+COPY ./Unikraft/patches/auxv.patch /opt
 RUN patch -p1 < /opt/auxv.patch
 
 RUN ./Configure \
