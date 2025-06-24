@@ -2,17 +2,19 @@
 
 # import docker
 # import docker.errors
-import socket
+# import socket
 import time
 import subprocess
 import argparse
 import json
 import os
 from datetime import datetime
-# import signal
-import matplotlib.pyplot as plt
-import numpy as np
 
+
+VIRT_METHODS = ["native", "docker", "unikraft"]
+SIG_ALGORITHMS = ["SPHINCS+-SHA2-128s-simple", "SPHINCS+-SHA2-128f-simple", "Falcon-512", "Dilithium2", "Dilithium3", "Falcon-1024"]
+KEM_ALGORITHMS = ["Kyber512", "BIKE-L1", "HQC-128", "FrodoKEM-640-AES", "FrodoKEM-640-SHAKE", "Kyber768", "Kyber1024"]
+STAGES = ["primitives", "primitives_power", "primitives_memory", "tls", "tls_power", "tls_memory"]
 
 UNIKRAFT = "172.44.0.1", "172.44.0.2"
 DOCKER = "host.docker.internal", "localhost"
@@ -20,118 +22,243 @@ DOCKER = "host.docker.internal", "localhost"
 SCRIPT_PATH = __file__
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
-
 def main():
+
     parser = argparse.ArgumentParser(
-        description="Run the target as client or server, default: server"
-    )
-    parser.add_argument(
-        "--mode",
-        choices=["server", "client"],
-        default="server",
-        required=False,
-        help="Specify whether to run as a server or client.",
+        description="Run benchmark suite to test oqs primitives, by default all benchmarks are executed"
     )
 
+    parse_virt = lambda arg : parse_list(arg, VIRT_METHODS)
     parser.add_argument(
         "--virt",
-        choices=["native", "docker", "unikraft"],
+        type=parse_virt,
         required=False,
-        default="native",
-        help="Specify a virtualization method, default is nativ.",
+        default=VIRT_METHODS,
+        help=f"Specify a virtualization methods comma-separated, options: {",".join(VIRT_METHODS)}",
     )
-
+    
+    parse_sig = lambda arg : parse_list(arg, SIG_ALGORITHMS)
     parser.add_argument(
-        "--algcert",
+        "--sig",
+        type=parse_sig,
         required=False,
-        default="dilithium5",
-        help="Specify the used method for certificate generation",
+        default=SIG_ALGORITHMS,
+        help=f"Specify a signature algorithms comma-separated, options: {",".join(SIG_ALGORITHMS)}",
+    )
+
+    parse_kem = lambda arg : parse_list(arg, KEM_ALGORITHMS)
+    parser.add_argument(
+        "--kem",
+        type=parse_kem,
+        required=False,
+        default=KEM_ALGORITHMS,
+        help=f"Specify KEM algorithms comma-separated, options: {",".join(KEM_ALGORITHMS)}"
+    )
+
+    parse_stages = lambda arg : parse_list(arg, STAGES)
+    parser.add_argument(
+        "--stages",
+        type=parse_stages,
+        required=False,
+        default=STAGES,
+        help=f"Specify what benchmark stages run, options: {",".join(STAGES)}"
     )
 
     parser.add_argument(
-        "--newcert", action="store_true", help="Force generation of certificates"
+        "--primitives_time",
+        type=int,
+        required=False,
+        default=5,
+        help="Specify the amount of time to run a primitive opertation"
     )
 
     parser.add_argument(
-        "--test", action="store_true", help="Test connection with s_client"
+        "--tls_time",
+        type=int,
+        required=False,
+        default=30,
+        help="Specify the amount of time to openssl s_speed"
     )
+
 
     args = parser.parse_args()
-
-    if args.newcert or not os.path.exists(os.path.join(SCRIPT_DIR, "../pki")):
-        os.makedirs(os.path.join(SCRIPT_DIR, "../pki"), exist_ok=True)
-        setup_certificates(args.algcert)
-
-    if args.virt == "docker":
-        DOCKER = get_container_ip()
+    global_res = {}
 
     try:
-        if args.test:
-            if args.mode == "server":
-                prc0 = run_s_server(args.virt)
-                if not check_server(get_host("client", args.virt), 1):
-                    print("Cannot connect to server")
-                    return
-                prc1 = run_s_client("native")
+        if "primitives" in args.stages: 
+            print("Evaluating speed of primitive operations of liboqs algorithms:")
+    
+            for virt in args.virt:
+                print(f"Running with virtualization method: {virt}")
+                for sig in args.sig:
+                    prc = run_primitive(virt, "sig", sig, args.primitives_time)
+                    ret = prc.wait()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitive(prc, "sig", sig)
+                    global_res = merge_dicts(res, global_res)
+                
+                for kem in args.kem:
+                    prc = run_primitive(virt, "kem", kem, args.primitives_time)
+                    ret = prc.wait()
+                    if ret != 0:
+                        raise Exception(f"primitive kem failed with return code: {ret}")
+                    res = eval_res_primitive(prc, "kem", kem)
+                    global_res = merge_dicts(res, global_res)
+        
+    
+        if "tls" in args.stages:
+            print("Evaluating speed of tls handshake with liboqs algorithms:")
+            pki_path = os.path.join(SCRIPT_DIR, "pki")
+            os.makedirs(pki_path, exist_ok=True)
+
+            for virt in args.virt:
+                print(f"Running with virtualization method: {virt}")
                 print("")
-                prc1.wait()
-                prc0.kill()
+                for sig in args.sig:
+                    for kem in args.kem:         
+                        setup_certificates(sig)
+                        print("")
+                    
+                        prc0 = run_s_server("native", sig, kem.lower())
+                        prc1 = run_s_time(virt, args.tls_time)
 
-            elif args.mode == "client":
-                prc0 = run_s_server("native")
-                if not check_server(get_host("client", args.virt), 1):
-                    print("Cannot connect to server")
-                    return
-                prc1 = run_s_client(args.virt)
-                print("")
-                prc1.wait()
-                prc0.kill()
+                        ret = prc1.wait()
+                        prc0.kill()
 
-        else:
-            prc0 = prc1 = None
-            if args.mode == "server":
-                prc0 = run_s_server(args.virt)
-                prc1 = run_s_time("native")
+                        if ret != 0:
+                            raise Exception(f"s_speed failed with return code: {ret}")
+                        
+                        print("")
+                        res = eval_res_tls(prc1, sig, kem)
+                        global_res = merge_dicts(res, global_res)
 
-            elif args.mode == "client":
-                prc0 = run_s_server("native")
-                prc1 = run_s_time(args.virt)
+        if "tls_memory" in args.stages:
+            print("Evaluating memory consumption of primitive operations:")
+        
 
-            print("")
+        if "primitives_memory" in args.stages:
+            print("Evaluating memory consumption of primitive operations:")
+        
 
-            out, _ = prc1.communicate()
-            lines = out.decode().splitlines()
-            lines2 = out.decode().split("\n\n")[1].splitlines()[:2]
-            lines3 = out.decode().split("\n\n")[2].splitlines()[1]
-            print(lines[0])
-            print("\n".join(lines2))
-            print(lines3)
-            print("\n".join(lines[-2:]))
+        if "primitives_power" in args.stages:
+            print("Executing primitives for manual evaluation of power consumption:")
+            for virt in args.virt:
+                print(f"Running with virtualization method: {virt}")
+                # for sig in args.sig:
+                #     print("Waiting to establish baseline")
+                #     time.sleep(5)
+                #     print(f"Running {sig} keygen for {args.primitives_time} seconds")
+                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "keygen")
+                #     prc.wait()
+                #     print("Finished")
 
-            prc1.wait()
-            prc0.kill()
+                #     print("Waiting to establish baseline")
+                #     time.sleep(5)
+                #     print(f"Running {sig} encaps for {args.primitives_time} seconds")
+                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "encaps")
+                #     prc.wait()
+                #     print("Finished")
 
-            write_results(out)
+                #     print("Waiting to establish baseline")
+                #     time.sleep(5)
+                #     print(f"Running {sig} decaps for {args.primitives_time} seconds")
+                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "decaps")
+                #     prc.wait()
+                #     print("Finished")
+                
+                for kem in args.kem:
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {kem} keygen for {args.primitives_time} seconds")
+                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "keygen")
+                    prc.wait()
+                    print("Finished")
+                    
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {kem} encaps for {args.primitives_time} seconds")
+                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "encaps")
+                    prc.wait()
+                    print("Finished")
+                    
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {kem} encaps for {args.primitives_time} seconds")
+                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "encaps")
+                    prc.wait()
+                    print("Finished")
+                    
+                    
+
+        if "tls_power" in args.stages:
+            print("Executing primitives for manual evaluation of power consumption:")
 
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print(e)
+    finally:
+        if "docker" in args.virt :
+            subprocess.run(["docker", "kill", "alpine_bench_" + os.environ.get("USER")])
 
-    if args.virt == "docker":
-        subprocess.run(["docker", "kill", "alpine_bench_" + os.environ.get("USER")])
+        subprocess.run(["pkill", "openssl"])
+        subprocess.run(["pkill", "qemu"])
 
-    subprocess.run(["pkill", "openssl"])
-    subprocess.run(["pkill", "qemu"])
+        with open(
+            os.path.join(
+                SCRIPT_DIR,
+                "results_" + datetime.today().strftime("%Y-%m-%d_%H-%M-%S") + ".json",
+            ),
+            "w",
+        ) as f:
+            json.dump(global_res, f)
 
 
-def run_s_server(virt):
-    openssl_version = get_openssl_bin(virt)
+def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
+    additional_args = []
+    if limit_operation is not None:
+        if limit_operation == "keygen":
+            additional_args.append("--no_encaps")
+            additional_args.append("--no_decaps")
+        elif limit_operation == "encaps":
+            additional_args.append("--no_keygen")
+            additional_args.append("--no_decaps")
+        elif limit_operation == "decaps":
+            additional_args.append("--no_keygen")
+            additional_args.append("--no_encaps")
+    
+    test_version = get_virt_bin(virt, "benchmark")
+    cmd = [
+        test_version,
+        sig_kem,
+    ] + additional_args + [
+        "-d",
+        str(duration),
+        cipher,
+    ]
+    print(" ".join(cmd))
+    prc = subprocess.Popen(
+        cmd,
+        start_new_session=True,
+        stdout=subprocess.PIPE,
+    )  
+    return prc
+
+
+def run_s_server(virt, sig, kem):
+    openssl_version = get_virt_bin(virt, "openssl")
+    dir_key = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.key")
+    dir_crt = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crt")
     cmd = [
         openssl_version,
         "s_server",
         "-key",
-        "pki/server_dil.key",
+        dir_key,
         "-cert",
-        "pki/server_dil.crt",
+        dir_crt,
+        "-groups",
+        kem,
         "-accept",
         "443",
         "-www",
@@ -145,7 +272,7 @@ def run_s_server(virt):
 
 
 def run_s_client(virt):
-    openssl_version = get_openssl_bin(virt)
+    openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
     cmd = [
         openssl_version,
@@ -165,8 +292,8 @@ def run_s_client(virt):
     )
 
 
-def run_s_time(virt):
-    openssl_version = get_openssl_bin(virt)
+def run_s_time(virt, time):
+    openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
     cmd = [
         openssl_version,
@@ -178,7 +305,7 @@ def run_s_time(virt):
         "-CAfile",
         "pki/CA_dil.crt",
         "-time",
-        "3",
+        str(time),
     ]
     print(" ".join(cmd))
     return subprocess.Popen(
@@ -188,19 +315,21 @@ def run_s_time(virt):
     )
 
 
-def setup_certificates(cypher):
-    print("Setting up certificates")
+def setup_certificates(sig):
+    print(f"Setting up certificates for signature algorithm {sig}")
+    ca_key = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.key")
+    ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
     cmd = [
-        "Native/openssl",
+        get_virt_bin("native", "openssl"),
         "req",
         "-x509",
         "-new",
         "-newkey",
-        cypher,
+        sig,
         "-keyout",
-        "pki/CA_dil.key",
+        ca_key,
         "-out",
-        "pki/CA_dil.crt",
+        ca_crt,
         "-nodes",
         "-subj",
         "/CN=Test CA",
@@ -208,45 +337,52 @@ def setup_certificates(cypher):
         "365",
     ]
     print(" ".join(cmd))
-    subprocess.run(cmd, stdout=subprocess.PIPE)
-
+    prc = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if prc.returncode != 0:
+        raise Exception(f"req failed with return code: {prc.returncode}")
+    
+    dir_key = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.key")
+    dir_crt = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crt")
+    dir_crs = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crs")
     cmd = [
-        "Native/openssl",
+        get_virt_bin("native", "openssl"),
         "req",
         "-new",
         "-newkey",
-        cypher,
+        sig,
         "-keyout",
-        "pki/server_dil.key",
+        dir_key,
         "-out",
-        "pki/server_dil.csr",
+        dir_crs,
         "-nodes",
         "-subj",
         "/CN=testserver",
     ]
     print(" ".join(cmd))
-    subprocess.run(cmd, stdout=subprocess.PIPE)
-
+    prc = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if prc.returncode != 0:
+        raise Exception(f"req failed with return code: {prc.returncode}")
+    
     cmd = [
-        "Native/openssl",
+        get_virt_bin("native", "openssl"),
         "x509",
         "-req",
         "-in",
-        "pki/server_dil.csr",
+        dir_crs,
         "-out",
-        "pki/server_dil.crt",
+        dir_crt,
         "-CA",
-        "pki/CA_dil.crt",
+        ca_crt,
         "-CAkey",
-        "pki/CA_dil.key",
+        ca_key,
         "-CAcreateserial",
         "-days",
         "365",
     ]
     print(" ".join(cmd))
-    subprocess.run(cmd, stdout=subprocess.PIPE)
-    print("Done")
-    print("")
+    prc = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if prc.returncode != 0:
+        raise Exception(f"x509 failed with return code: {prc.returncode}")
 
 
 def get_host(target, virt):
@@ -268,148 +404,151 @@ def get_host(target, virt):
     return configs[virt][target]
 
 
-def get_openssl_bin(virt):
+def get_virt_bin(virt, app):
     return {
-        "native": "Native/openssl",
-        "unikraft": "Unikraft/openssl",
-        "docker": "Container/openssl",
+        "native": os.path.join(SCRIPT_DIR, "..", "Native", app),
+        "unikraft": os.path.join(SCRIPT_DIR, "..", "Unikraft", app),
+        "docker": os.path.join(SCRIPT_DIR, "..", "Container", app),
     }[virt]
 
 
-def write_results(out):
-    line1 = strout.lines()[0]
-    line2 = "\n".join(strout.split("\n\n")[1].splitlines()[:2])
-    lines3 = strout.split("\n\n")[2].splitlines()[1]
+def eval_res_primitive(prc, sig_kem, cipher):
+    out, _ = prc.communicate()
+    print(out.decode())
+    lines = out.decode().splitlines()
+    res = {
+        "primitive": {
+            sig_kem: {
+                cipher: {
+                    "keygen": {
+                        "iterations": float(lines[6].split("|")[1].strip()),
+                        "total_time": float(lines[6].split("|")[2].strip()),
+                        "mean_us": float(lines[6].split("|")[3].strip()),
+                        "stddev_us": float(lines[6].split("|")[4].strip()),
+                        "mean_ns": float(lines[6].split("|")[5].strip()),
+                        "stddev_ns": float(lines[6].split("|")[6].strip()),
+                    },
+                    "encaps": {
+                        "iterations": float(lines[7].split("|")[1].strip()),
+                        "total_time": float(lines[7].split("|")[2].strip()),
+                        "mean_us": float(lines[7].split("|")[3].strip()),
+                        "stddev_us": float(lines[7].split("|")[4].strip()),
+                        "mean_ns": float(lines[7].split("|")[5].strip()),
+                        "stddev_ns": float(lines[7].split("|")[6].strip()),
+                    },
+                    "decaps": {
+                        "iterations": float(lines[8].split("|")[1].strip()),
+                        "total_time": float(lines[8].split("|")[2].strip()),
+                        "mean_us": float(lines[8].split("|")[3].strip()),
+                        "stddev_us": float(lines[8].split("|")[4].strip()),
+                        "mean_ns": float(lines[8].split("|")[5].strip()),
+                        "stddev_ns": float(lines[8].split("|")[6].strip()),
+                    },
+                }
+            }
+        }
+    }
+    return res
 
-    # 
-    # print(line1)
-    # print(line2)
-    # print(lines3)
-    # print("\n".join(lines[-2:]))
+def eval_res_tls(prc, sig, kem):
+    out, _ = prc.communicate()
     
-    results_template = {
-        "time": 0,
+    print(out.decode().splitlines()[0])
+    print("\n".join(out.decode().split("\n\n")[1].splitlines()[:2]))
+    print(out.decode().split("\n\n")[2].splitlines()[1])
+    print("\n".join(out.decode().splitlines()[-2:]))
+
+    line1 = out.decode().splitlines()[0]
+    line2 = out.decode().split("\n\n")[1].splitlines()[0]
+    line3 = out.decode().split("\n\n")[1].splitlines()[1]
+    line4 = out.decode().splitlines()[-2]
+    line5 = out.decode().splitlines()[-1]
+
+    res = { "tls": { f"{sig}+{kem}" : { 
+        "time": float(line1.split(" ")[4]),
         "initial": {
             "user": {
-                "connections": 0,
-                "time": 0,
-                "conn_p_user_sec": 0,
-                "bytes_read": 0,
+                "connections": float(line2.split(" ")[0]),
+                "time": float(line2.split(" ")[3][:-2]),
+                "conn_p_user_sec": float(line2.split(" ")[4]),
+                "bytes_read": float(line2.split(" ")[9]),
             },
             "real": {
-                "connections": 0,
-                "time": 0,
-                "bytes_read": 0,
+                "connections": float(line3.split(" ")[0]),
+                "time": float(line3.split(" ")[3]),
+                "bytes_read": float(line3.split(" ")[6]),
             },
         },
         "session_reuse": {
             "user": {
-                "connections": 0,
-                "time": 0,
-                "conn_p_user_sec": 0,
-                "bytes_read": 0,
+                "connections": float(line4.split(" ")[0]),
+                "time": float(line4.split(" ")[3][:-2]),
+                "conn_p_user_sec": float(line4.split(" ")[4]),
+                "bytes_read": float(line4.split(" ")[9]),
             },
             "real": {
-                "connections": 0,
-                "time": 0,
-                "bytes_read": 0,
+                "connections": float(line5.split(" ")[0]),
+                "time": float(line5.split(" ")[3]),
+                "bytes_read": float(line5.split(" ")[6]),
             },
         },
-    }
-
-    with open(os.path.join(SCRIPT_DIR, "results_" + datetime.today().strftime("%Y-%m-%d_%H-%M-%S") + ".json"), "w") as f:
-        json.dump(results_template, f)
-
-    return results_template
-
-def plot():
-    # Common settings for two-column format
-    FIG_WIDTH = 6.8  # inches (adjusted for two plots)
-    FIG_HEIGHT = 2.5  # inches
-    DPI = 300
-
-    # Create a figure with two subplots
-    fig, axs = plt.subplots(1, 2, figsize=(FIG_WIDTH, FIG_HEIGHT), dpi=DPI)
-
-    # Example 7: Error Bars
-    x = np.arange(5)
-    means = np.random.rand(5) * 10
-    stds = np.random.rand(5)
-
-    # Plotting error bars
-    axs[0].errorbar(x, means, yerr=stds, fmt="o-", capsize=4, color="tab:red")
-    axs[0].set_xticks(x)
-    axs[0].set_xticklabels(["A", "B", "C", "D", "E"])
-    axs[0].set_xlabel("Category")
-    axs[0].set_ylabel("Mean ± SD")
-    axs[0].set_title("Error Bar Plot")
-
-    # Define the data points for the first line
-    x1 = [0, 1, 2, 3, 4, 5]
-    y1 = [0, 1, 0, 1, 0, 1]
-
-    # Define the data points for the second line
-    x2 = [0, 1, 2, 3, 4, 5]
-    y2 = [1, 0, 1, 0, 1, 0]
-
-    # Create the piecewise linear graph for the first line
-    axs[1].plot(x1, y1, marker="o", linestyle="-", color="b", label="Line 1")
-
-    # Create the piecewise linear graph for the second line
-    axs[1].plot(x2, y2, marker="o", linestyle="-", color="r", label="Line 2")
-
-    # Add labels and title for the second subplot
-    axs[1].set_title("Piecewise Linear Graph")
-    axs[1].set_xlabel("X-axis")
-    axs[1].set_ylabel("Y-axis")
-
-    # Show grid for the second subplot
-    axs[1].grid()
-
-    # Add a legend for the second subplot
-    axs[1].legend()
-
-    # Adjust layout to prevent overlap
-    plt.tight_layout()
-
-    # Display the plot
-    plt.show()
-    fig.savefig("figure.pdf", bbox_inches="tight")
+    } 
+    }}
+    return res
 
 
-def get_container_ip():
-    prc = subprocess.run(
-        ["docker", "network", "inspect", "alpine-bench-net"], capture_output=True
-    )
-    network_config_str = prc.stdout.decode()
-    network_config = json.loads(network_config_str)
-    host_address = network_config[0]["IPAM"]["Config"][0]["Gateway"]
-
-    prc = subprocess.run(
-        [
-            "docker",
-            "run",
-            "--network=alpine-bench-net",
-            "-it",
-            "alpine-bench",
-            "ifconfig",
-        ],
-        capture_output=True,
-    )
-    target_config_str = prc.stdout.decode()
-    target_address = target_config_str.split("inet addr:")[1].split(" ")[0]
-
-    return host_address, target_address
+def parse_list(arglist, constraint):
+    # Split the string by commas
+    args = arglist.split(',')
+    # Check if each drive is in the valid choices
+    for arg in args:
+        if arg not in constraint:
+            raise argparse.ArgumentTypeError(f"Invalid drive: {arg}. Must be one of {constraint}.")
+    return args
 
 
-def check_server(host, timeout):
-    for i in range(timeout):
-        try:
-            time.sleep(1)
-            with socket.create_connection((host, 443), timeout=5):
-                return True
-        except (socket.timeout, ConnectionRefusedError):
-            return False
+def merge_dicts(dictl, dictr):
+    for key, value in dictl.items():
+        if key in dictr and isinstance(dictr[key], dict) and isinstance(value, dict):
+                merge_dicts(value, dictr[key])
+        else:
+            dictr[key] = value
+    return dictr
+
+
+# def get_container_ip():
+#     prc = subprocess.run(
+#         ["docker", "network", "inspect", "alpine-bench-net"], capture_output=True
+#     )
+#     network_config_str = prc.stdout.decode()
+#     network_config = json.loads(network_config_str)
+#     host_address = network_config[0]["IPAM"]["Config"][0]["Gateway"]
+#
+#     prc = subprocess.run(
+#         [
+#             "docker",
+#             "run",
+#             "--network=alpine-bench-net",
+#             "-it",
+#             "alpine-bench",
+#             "ifconfig",
+#         ],
+#         capture_output=True,
+#     )
+#     target_config_str = prc.stdout.decode()
+#     target_address = target_config_str.split("inet addr:")[1].split(" ")[0]
+#
+#     return host_address, target_address
+
+
+# def check_server(host, timeout):
+#     for i in range(timeout):
+#         try:
+#             time.sleep(1)
+#             with socket.create_connection((host, 443), timeout=5):
+#                 return True
+#         except (socket.timeout, ConnectionRefusedError):
+#             return False
 
 
 # def setup_docker(client, cypher):

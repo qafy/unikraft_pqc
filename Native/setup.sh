@@ -42,7 +42,9 @@ function setup_liboqs()
 
     mkdir build
     cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX="${SCRIPT_DIR}/local" -DOPENSSL_ROOT_DIR="${SCRIPT_DIR}/src/openssl"
+    cmake .. \
+        -DCMAKE_INSTALL_PREFIX="${SCRIPT_DIR}/local" \
+        -DOPENSSL_ROOT_DIR="${SCRIPT_DIR}/src/openssl"
     cmake --build . -- -j$(nproc)
     cmake --install .
 }
@@ -68,12 +70,22 @@ function make_local_install()
     rm openssl 2>/dev/null
 }
 
+function make_oqs_speed()
+{
+    cd oqs_speed
+    make
+}
+
 function clean_local_install()
 {
     rm -rf local
     rm -rf src
     rm openssl 2>/dev/null
+
+    cd oqs_speed
+    make clean
 }
+
 # Dependencies: astyle cmake gcc ninja-build libssl-dev python3-pytest python3-pytest-xdist unzip xsltproc doxygen graphviz python3-yaml valgrind
 function main()
 {   
@@ -92,8 +104,11 @@ function main()
     setup_liboqs
     cd $SCRIPT_DIR
     setup_oqs_provider
+    cd $SCRIPT_DIR
+    make_oqs_speed
 
     ln -s $SCRIPT_DIR/local/bin/openssl $SCRIPT_DIR/openssl
+    ln -s $SCRIPT_DIR/oqs_speed/benchmark $SCRIPT_DIR/benchmark
     cp $SCRIPT_DIR/openssl.cnf $SCRIPT_DIR/local/openssldir/openssl.cnf
 }
 
