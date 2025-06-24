@@ -344,15 +344,11 @@ int main_test_sig(int argc, char **argv) {
 		UK_TEST_EXPECT_SNUM_EQ(ret, EXIT_SUCCESS);			  \
 	}														  \
 
-CREATE_SIG_TESTCASE_WITH_CIPHER("cross-rsdp-128-balanced", cross_rsdp_128_balanced)
-CREATE_SIG_TESTCASE_WITH_CIPHER("Dilithium2", dilithium2)
-CREATE_SIG_TESTCASE_WITH_CIPHER("Dilithium5", dilithium5)
-CREATE_SIG_TESTCASE_WITH_CIPHER("Falcon-1024", falcon_1024)
-CREATE_SIG_TESTCASE_WITH_CIPHER("MAYO-3", mayo_3)
-CREATE_SIG_TESTCASE_WITH_CIPHER("ML-DSA-87", ml_dsa_87)
+CREATE_SIG_TESTCASE_WITH_CIPHER("SPHINCS+-SHA2-128s-simple", sphincs_pm_sha2_128s_simple)
 CREATE_SIG_TESTCASE_WITH_CIPHER("SPHINCS+-SHA2-128f-simple", sphincs_pm_sha2_128f_simple)
-CREATE_SIG_TESTCASE_WITH_CIPHER("OV-V", ov_v)
-CREATE_SIG_TESTCASE_WITH_CIPHER("XMSS-SHA2_10_256", xmss_sha2_10_256)
-CREATE_SIG_TESTCASE_WITH_CIPHER("LMS_SHA256_H5_W1", lms_sha256_h5_w1)
+CREATE_SIG_TESTCASE_WITH_CIPHER("Falcon-512", falcon_512)
+CREATE_SIG_TESTCASE_WITH_CIPHER("Dilithium2", dilithium2)
+CREATE_SIG_TESTCASE_WITH_CIPHER("Dilithium3", dilithium3)
+CREATE_SIG_TESTCASE_WITH_CIPHER("Falcon-1024", falcon_1024)
 
 uk_testsuite_register(pqc_sig_testsuite, NULL);

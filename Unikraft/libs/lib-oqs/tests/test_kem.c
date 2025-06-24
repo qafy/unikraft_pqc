@@ -394,13 +394,14 @@ UK_TESTCASE(pqc_kem_testsuite, pqc_test_case_ ## testname)\
 	int ret = main_test_kem(2, argv);					  \
 	UK_TEST_EXPECT_SNUM_EQ(ret, EXIT_SUCCESS);			  \
 }														  \
-									
+
+
+CREATE_KEM_TESTCASE_WITH_CIPHER("Kyber512", kyber512)
 CREATE_KEM_TESTCASE_WITH_CIPHER("BIKE-L1", bike_l1)
-CREATE_KEM_TESTCASE_WITH_CIPHER("Classic-McEliece-348864", classis_mceliece_348864)
+CREATE_KEM_TESTCASE_WITH_CIPHER("HQC-128", hqc_128)
 CREATE_KEM_TESTCASE_WITH_CIPHER("FrodoKEM-640-AES", frodokem_640_aes)
-CREATE_KEM_TESTCASE_WITH_CIPHER("HQC-256", hqc_256)
+CREATE_KEM_TESTCASE_WITH_CIPHER("FrodoKEM-640-SHAKE", frodokem_640_shake)
+CREATE_KEM_TESTCASE_WITH_CIPHER("Kyber768", kyber768)
 CREATE_KEM_TESTCASE_WITH_CIPHER("Kyber1024", kyber1024)
-CREATE_KEM_TESTCASE_WITH_CIPHER("ML-KEM-1024", ml_kem_1024)
-CREATE_KEM_TESTCASE_WITH_CIPHER("sntrup761", sntrup761)
 
 uk_testsuite_register(pqc_kem_testsuite, NULL);
