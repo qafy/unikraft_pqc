@@ -13,6 +13,7 @@ We build a test setup in this repository which contains a configuration for a Un
 
 
 # Setup
+TODO dependencies + setup keys in the pki folder
 
 The first thing we need for the setup is a bridge as we use bridge networking for our Unikernel. To enable bridge networking run the following: 
 
@@ -34,8 +35,8 @@ Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA_dil.crt
 
-Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www -groups x25519_kyber512
+Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -groups x25519_kyber512
 
 ```
 
@@ -383,3 +384,56 @@ IMPORTANT Container does not work with oqsprovider yet, fix this
 - results with kvm are very similar to Container, about 2.8-2.9W
 - results differ, for session renogiation power usage is lower, especially on Unikernel
 - between the different modes power usage is higher
+
+
+# how the paper meassured energy
+
+- KEMs: ECDHE as reference, Kyber512, Bike-1, HQC-128, FrodoKEM1-AES, FrodoKEM1-SHAKE, Kyber768, Kyber1024
+- Sigs: RSA-2048, ECDSA, Sphincs128-small-simple, Sphincs128-fast-simple, Falcon512, Dilithium2, Dilithium3, Falcon1024
+- TODO what is NIST security level
+- measure execution time, power consumption in W
+- do we need exact Jool, because with current power measurements we can not execute this
+
+- then the same thing for a handshake
+- average energy consumption all handshakes is 
+
+- use the paper as template
+- make a table for the primitives and for the tls handshake
+- make one bar chart that shows the different power usage
+- use average wattage instead of joule if possible, we cannot measure joule
+- do not use client/server differences are mostly consistent
+- instead use unikernel/container/native for different colors
+
+TODO 
+
+does not work: , lms, xms, frodokem, bike
+works: falcon, dilithium, sphincs, kyber
+interesting 
+less interesting 
+
+lms xms are not in the liboqs source code
+the paper only uses ciphers that work in our implementationm
+
+is set to off by default
+https://github.com/open-quantum-safe/liboqs/blob/main/CONFIGURE.md
+https://github.com/open-quantum-safe/liboqs/blob/main/.CMake/alg_support.cmake
+
+if we strictly follow the paper then we do not need the additional ciphers
+
+TODO do proper error handling in the python script if a subprocess fails
+
+TODO do we need rsa, ecdhe as a comparison?
+
+Big todos:
+- find a way to select different kems
+- get everything running flawlessly on the pi
+- include default comparisons rsa ecdhe
+- update readme to successfully launch the project
+- add memory benchmark
+- write report
+
+to use kem algorithm:
+Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -groups x25519_kyber512
+https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
+
+split up the sig oqs speed c implementation 
