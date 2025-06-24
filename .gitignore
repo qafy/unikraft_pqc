@@ -14,3 +14,10 @@ Unikraft/test
 Unikraft/benchmark
 
 pki/
+
+.vscode
+**/test
+
+Native/benchmark 
+Container/benchmark
+Unikraft/benchmark

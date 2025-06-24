@@ -92,7 +92,8 @@ WORKDIR /opt/liboqs/build
 RUN cmake .. \
     -DOQS_USE_OPENSSL=OFF \
     -DCMAKE_INSTALL_PREFIX="${INSTALLDIR}" \
-    -DCMAKE_C_COMPILER="${INSTALLDIR}/bin/musl-gcc" &&\
+    -DCMAKE_C_COMPILER="${INSTALLDIR}/bin/musl-gcc" \
+    -DOQS_ALGS_ENABLED="All" &&\
     cmake --build . -- -j$(nproc) &&\
     cmake --install .
 
