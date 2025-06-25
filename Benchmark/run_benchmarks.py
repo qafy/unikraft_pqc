@@ -10,11 +10,32 @@ import json
 import os
 from datetime import datetime
 
-
 VIRT_METHODS = ["native", "docker", "unikraft"]
-SIG_ALGORITHMS = ["SPHINCS+-SHA2-128s-simple", "SPHINCS+-SHA2-128f-simple", "Falcon-512", "Dilithium2", "Dilithium3", "Falcon-1024"]
-KEM_ALGORITHMS = ["Kyber512", "BIKE-L1", "HQC-128", "FrodoKEM-640-AES", "FrodoKEM-640-SHAKE", "Kyber768", "Kyber1024"]
-STAGES = ["primitives", "primitives_power", "primitives_memory", "tls", "tls_power", "tls_memory"]
+SIG_ALGORITHMS = [
+    "SPHINCS+-SHA2-128s-simple",
+    "SPHINCS+-SHA2-128f-simple",
+    "Falcon-512",
+    "Dilithium2",
+    "Dilithium3",
+    "Falcon-1024",
+]
+KEM_ALGORITHMS = [
+    "Kyber512",
+    "BIKE-L1",
+    "HQC-128",
+    "FrodoKEM-640-AES",
+    "FrodoKEM-640-SHAKE",
+    "Kyber768",
+    "Kyber1024",
+]
+STAGES = [
+    "primitives",
+    "primitives_power",
+    "primitives_memory",
+    "tls",
+    "tls_power",
+    "tls_memory",
+]
 
 UNIKRAFT = "172.44.0.1", "172.44.0.2"
 DOCKER = "host.docker.internal", "localhost"
@@ -22,46 +43,47 @@ DOCKER = "host.docker.internal", "localhost"
 SCRIPT_PATH = __file__
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
+
 def main():
 
     parser = argparse.ArgumentParser(
         description="Run benchmark suite to test oqs primitives, by default all benchmarks are executed"
     )
 
-    parse_virt = lambda arg : parse_list(arg, VIRT_METHODS)
+    parse_virt = lambda arg: parse_list(arg, VIRT_METHODS)
     parser.add_argument(
         "--virt",
         type=parse_virt,
         required=False,
         default=VIRT_METHODS,
-        help=f"Specify a virtualization methods comma-separated, options: {",".join(VIRT_METHODS)}",
+        help=f"Specify a virtualization methods comma-separated, options: { ','.join(VIRT_METHODS) }",
     )
-    
-    parse_sig = lambda arg : parse_list(arg, SIG_ALGORITHMS)
+
+    parse_sig = lambda arg: parse_list(arg, SIG_ALGORITHMS)
     parser.add_argument(
         "--sig",
         type=parse_sig,
         required=False,
         default=SIG_ALGORITHMS,
-        help=f"Specify a signature algorithms comma-separated, options: {",".join(SIG_ALGORITHMS)}",
+        help=f"Specify a signature algorithms comma-separated, options: { ','.join(SIG_ALGORITHMS) }",
     )
 
-    parse_kem = lambda arg : parse_list(arg, KEM_ALGORITHMS)
+    parse_kem = lambda arg: parse_list(arg, KEM_ALGORITHMS)
     parser.add_argument(
         "--kem",
         type=parse_kem,
         required=False,
         default=KEM_ALGORITHMS,
-        help=f"Specify KEM algorithms comma-separated, options: {",".join(KEM_ALGORITHMS)}"
+        help=f"Specify KEM algorithms comma-separated, options: {','.join(KEM_ALGORITHMS)}",
     )
 
-    parse_stages = lambda arg : parse_list(arg, STAGES)
+    parse_stages = lambda arg: parse_list(arg, STAGES)
     parser.add_argument(
         "--stages",
         type=parse_stages,
         required=False,
         default=STAGES,
-        help=f"Specify what benchmark stages run, options: {",".join(STAGES)}"
+        help=f"Specify what benchmark stages run, options: {','.join(STAGES)}",
     )
 
     parser.add_argument(
@@ -69,7 +91,7 @@ def main():
         type=int,
         required=False,
         default=5,
-        help="Specify the amount of time to run a primitive opertation"
+        help="Specify the amount of time to run a primitive operation",
     )
 
     parser.add_argument(
@@ -77,17 +99,16 @@ def main():
         type=int,
         required=False,
         default=30,
-        help="Specify the amount of time to openssl s_speed"
+        help="Specify the amount of time to openssl s_speed",
     )
-
 
     args = parser.parse_args()
     global_res = {}
 
     try:
-        if "primitives" in args.stages: 
+        if "primitives" in args.stages:
             print("Evaluating speed of primitive operations of liboqs algorithms:")
-    
+
             for virt in args.virt:
                 print(f"Running with virtualization method: {virt}")
                 for sig in args.sig:
@@ -95,18 +116,17 @@ def main():
                     ret = prc.wait()
                     if ret != 0:
                         raise Exception(f"primitive sig failed with return code: {ret}")
-                    res = eval_res_primitive(prc, "sig", sig)
+                    res = eval_res_primitive(prc, virt, "sig", sig)
                     global_res = merge_dicts(res, global_res)
-                
+
                 for kem in args.kem:
                     prc = run_primitive(virt, "kem", kem, args.primitives_time)
                     ret = prc.wait()
                     if ret != 0:
                         raise Exception(f"primitive kem failed with return code: {ret}")
-                    res = eval_res_primitive(prc, "kem", kem)
+                    res = eval_res_primitive(prc, virt, "kem", kem)
                     global_res = merge_dicts(res, global_res)
-        
-    
+
         if "tls" in args.stages:
             print("Evaluating speed of tls handshake with liboqs algorithms:")
             pki_path = os.path.join(SCRIPT_DIR, "pki")
@@ -116,90 +136,125 @@ def main():
                 print(f"Running with virtualization method: {virt}")
                 print("")
                 for sig in args.sig:
-                    for kem in args.kem:         
-                        setup_certificates(sig)
+                    for kem in args.kem:
+                        setup_certificates(get_sig(sig))
                         print("")
-                    
-                        prc0 = run_s_server("native", sig, kem.lower())
-                        prc1 = run_s_time(virt, args.tls_time)
+
+                        prc0 = run_s_server("native", get_sig(sig), get_group(kem))
+                        time.sleep(0.1)  # Wait for s_server to start
+                        prc1 = run_s_time(virt, args.tls_time, get_sig(sig), kem)
 
                         ret = prc1.wait()
                         prc0.kill()
 
                         if ret != 0:
                             raise Exception(f"s_speed failed with return code: {ret}")
-                        
+
                         print("")
-                        res = eval_res_tls(prc1, sig, kem)
+                        res = eval_res_tls(prc1, virt, sig, kem)
                         global_res = merge_dicts(res, global_res)
 
         if "tls_memory" in args.stages:
             print("Evaluating memory consumption of primitive operations:")
-        
 
         if "primitives_memory" in args.stages:
             print("Evaluating memory consumption of primitive operations:")
-        
 
         if "primitives_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
             for virt in args.virt:
                 print(f"Running with virtualization method: {virt}")
-                # for sig in args.sig:
-                #     print("Waiting to establish baseline")
-                #     time.sleep(5)
-                #     print(f"Running {sig} keygen for {args.primitives_time} seconds")
-                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "keygen")
-                #     prc.wait()
-                #     print("Finished")
+                for sig in args.sig:
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {sig} keygen for {args.primitives_time} seconds")
+                    prc = run_primitive(
+                        virt, "sig", sig, args.primitives_time, "keygen"
+                    )
+                    prc.wait()
+                    print("Finished")
 
-                #     print("Waiting to establish baseline")
-                #     time.sleep(5)
-                #     print(f"Running {sig} encaps for {args.primitives_time} seconds")
-                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "encaps")
-                #     prc.wait()
-                #     print("Finished")
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {sig} sign for {args.primitives_time} seconds")
+                    prc = run_primitive(virt, "sig", sig, args.primitives_time, "sign")
+                    prc.wait()
+                    print("Finished")
 
-                #     print("Waiting to establish baseline")
-                #     time.sleep(5)
-                #     print(f"Running {sig} decaps for {args.primitives_time} seconds")
-                #     prc = run_primitive(virt, "sig", sig, args.primitives_time, "decaps")
-                #     prc.wait()
-                #     print("Finished")
-                
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
+                    print(f"Running {sig} verify for {args.primitives_time} seconds")
+                    prc = run_primitive(
+                        virt, "sig", sig, args.primitives_time, "verify"
+                    )
+                    prc.wait()
+                    print("Finished")
+
                 for kem in args.kem:
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} keygen for {args.primitives_time} seconds")
-                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "keygen")
+                    prc = run_primitive(
+                        virt, "kem", kem, args.primitives_time, "keygen"
+                    )
                     prc.wait()
                     print("Finished")
-                    
+
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} encaps for {args.primitives_time} seconds")
-                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "encaps")
+                    prc = run_primitive(
+                        virt, "kem", kem, args.primitives_time, "encaps"
+                    )
                     prc.wait()
                     print("Finished")
-                    
+
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} encaps for {args.primitives_time} seconds")
-                    prc = run_primitive(virt, "kem", kem, args.primitives_time, "encaps")
+                    prc = run_primitive(
+                        virt, "kem", kem, args.primitives_time, "encaps"
+                    )
                     prc.wait()
                     print("Finished")
-                    
-                    
 
         if "tls_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
+            pki_path = os.path.join(SCRIPT_DIR, "pki")
+            os.makedirs(pki_path, exist_ok=True)
+
+            for virt in args.virt:
+                print(f"Running with virtualization method: {virt}")
+                print("")
+                for sig in args.sig:
+                    for kem in args.kem:
+                        setup_certificates(get_sig(sig))
+                        print("")
+
+                        print("Waiting to establish baseline")
+                        time.sleep(5)
+
+                        print(
+                            f"Running TLS handshakes with {kem}+{sig} for {args.tls_time} seconds"
+                        )
+                        prc0 = run_s_server("native", get_sig(sig), get_group(kem))
+                        time.sleep(0.1)  # Wait for s_server to start
+                        prc1 = run_s_time(virt, args.tls_time, get_sig(sig), kem)
+
+                        ret = prc1.wait()
+                        prc0.kill()
+
+                        if ret != 0:
+                            raise Exception(f"s_speed failed with return code: {ret}")
+
+                        print("")
 
     except KeyboardInterrupt:
         pass
     except Exception as e:
         print(e)
     finally:
-        if "docker" in args.virt :
+        if "docker" in args.virt:
             subprocess.run(["docker", "kill", "alpine_bench_" + os.environ.get("USER")])
 
         subprocess.run(["pkill", "openssl"])
@@ -218,31 +273,38 @@ def main():
 def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
     additional_args = []
     if limit_operation is not None:
-        if limit_operation == "keygen":
-            additional_args.append("--no_encaps")
-            additional_args.append("--no_decaps")
-        elif limit_operation == "encaps":
-            additional_args.append("--no_keygen")
-            additional_args.append("--no_decaps")
-        elif limit_operation == "decaps":
-            additional_args.append("--no_keygen")
-            additional_args.append("--no_encaps")
-    
+        additional_args += {
+            "kem": {
+                "keygen": ["--no_encaps", "--no_decaps"],
+                "encaps": ["--no_keygen", "--no_decaps"],
+                "decaps": ["--no_keygen", "--no_encaps"],
+            },
+            "sig": {
+                "keygen": ["--no_sign", "--no_verify"],
+                "sign": ["--no_keygen", "--no_verify"],
+                "verify": ["--no_keygen", "--no_sign"],
+            },
+        }[sig_kem][limit_operation]
+
     test_version = get_virt_bin(virt, "benchmark")
-    cmd = [
-        test_version,
-        sig_kem,
-    ] + additional_args + [
-        "-d",
-        str(duration),
-        cipher,
-    ]
+    cmd = (
+        [
+            test_version,
+            sig_kem,
+        ]
+        + additional_args
+        + [
+            "-d",
+            str(duration),
+            cipher,
+        ]
+    )
     print(" ".join(cmd))
     prc = subprocess.Popen(
         cmd,
         start_new_session=True,
         stdout=subprocess.PIPE,
-    )  
+    )
     return prc
 
 
@@ -271,7 +333,7 @@ def run_s_server(virt, sig, kem):
     )
 
 
-def run_s_client(virt):
+def run_s_client(virt, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
     cmd = [
@@ -292,9 +354,10 @@ def run_s_client(virt):
     )
 
 
-def run_s_time(virt, time):
+def run_s_time(virt, time, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
+    ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
     cmd = [
         openssl_version,
         "s_time",
@@ -303,7 +366,7 @@ def run_s_time(virt, time):
         "-www",
         "/",
         "-CAfile",
-        "pki/CA_dil.crt",
+        ca_crt,
         "-time",
         str(time),
     ]
@@ -340,7 +403,7 @@ def setup_certificates(sig):
     prc = subprocess.run(cmd, stdout=subprocess.PIPE)
     if prc.returncode != 0:
         raise Exception(f"req failed with return code: {prc.returncode}")
-    
+
     dir_key = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.key")
     dir_crt = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crt")
     dir_crs = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crs")
@@ -362,7 +425,7 @@ def setup_certificates(sig):
     prc = subprocess.run(cmd, stdout=subprocess.PIPE)
     if prc.returncode != 0:
         raise Exception(f"req failed with return code: {prc.returncode}")
-    
+
     cmd = [
         get_virt_bin("native", "openssl"),
         "x509",
@@ -404,6 +467,30 @@ def get_host(target, virt):
     return configs[virt][target]
 
 
+def get_group(kem):
+    # https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
+    return {
+        "Kyber512": "kyber512",
+        "BIKE-L1": "bikel1",
+        "HQC-128": "hqc128",
+        "FrodoKEM-640-AES": "frodo640aes",
+        "FrodoKEM-640-SHAKE": "frodo640shake",
+        "Kyber768": "kyber768",
+        "Kyber1024": "kyber1024",
+    }[kem]
+
+
+def get_sig(sig):
+    return {
+        "SPHINCS+-SHA2-128s-simple": "sphincssha2128ssimple",
+        "SPHINCS+-SHA2-128f-simple": "sphincssha2128fsimple",
+        "Falcon-512": "falcon512",
+        "Dilithium2": "Dilithium2",
+        "Dilithium3": "Dilithium3",
+        "Falcon-1024": "falcon1024",
+    }[sig]
+
+
 def get_virt_bin(virt, app):
     return {
         "native": os.path.join(SCRIPT_DIR, "..", "Native", app),
@@ -412,47 +499,50 @@ def get_virt_bin(virt, app):
     }[virt]
 
 
-def eval_res_primitive(prc, sig_kem, cipher):
+def eval_res_primitive(prc, virt, sig_kem, cipher):
     out, _ = prc.communicate()
     print(out.decode())
     lines = out.decode().splitlines()
     res = {
         "primitive": {
-            sig_kem: {
-                cipher: {
-                    "keygen": {
-                        "iterations": float(lines[6].split("|")[1].strip()),
-                        "total_time": float(lines[6].split("|")[2].strip()),
-                        "mean_us": float(lines[6].split("|")[3].strip()),
-                        "stddev_us": float(lines[6].split("|")[4].strip()),
-                        "mean_ns": float(lines[6].split("|")[5].strip()),
-                        "stddev_ns": float(lines[6].split("|")[6].strip()),
-                    },
-                    "encaps": {
-                        "iterations": float(lines[7].split("|")[1].strip()),
-                        "total_time": float(lines[7].split("|")[2].strip()),
-                        "mean_us": float(lines[7].split("|")[3].strip()),
-                        "stddev_us": float(lines[7].split("|")[4].strip()),
-                        "mean_ns": float(lines[7].split("|")[5].strip()),
-                        "stddev_ns": float(lines[7].split("|")[6].strip()),
-                    },
-                    "decaps": {
-                        "iterations": float(lines[8].split("|")[1].strip()),
-                        "total_time": float(lines[8].split("|")[2].strip()),
-                        "mean_us": float(lines[8].split("|")[3].strip()),
-                        "stddev_us": float(lines[8].split("|")[4].strip()),
-                        "mean_ns": float(lines[8].split("|")[5].strip()),
-                        "stddev_ns": float(lines[8].split("|")[6].strip()),
-                    },
+            virt: {
+                sig_kem: {
+                    cipher: {
+                        "keygen": {
+                            "iterations": float(lines[6].split("|")[1].strip()),
+                            "total_time": float(lines[6].split("|")[2].strip()),
+                            "mean_us": float(lines[6].split("|")[3].strip()),
+                            "stddev_us": float(lines[6].split("|")[4].strip()),
+                            "mean_ns": float(lines[6].split("|")[5].strip()),
+                            "stddev_ns": float(lines[6].split("|")[6].strip()),
+                        },
+                        "encaps": {
+                            "iterations": float(lines[7].split("|")[1].strip()),
+                            "total_time": float(lines[7].split("|")[2].strip()),
+                            "mean_us": float(lines[7].split("|")[3].strip()),
+                            "stddev_us": float(lines[7].split("|")[4].strip()),
+                            "mean_ns": float(lines[7].split("|")[5].strip()),
+                            "stddev_ns": float(lines[7].split("|")[6].strip()),
+                        },
+                        "decaps": {
+                            "iterations": float(lines[8].split("|")[1].strip()),
+                            "total_time": float(lines[8].split("|")[2].strip()),
+                            "mean_us": float(lines[8].split("|")[3].strip()),
+                            "stddev_us": float(lines[8].split("|")[4].strip()),
+                            "mean_ns": float(lines[8].split("|")[5].strip()),
+                            "stddev_ns": float(lines[8].split("|")[6].strip()),
+                        },
+                    }
                 }
             }
         }
     }
     return res
 
-def eval_res_tls(prc, sig, kem):
+
+def eval_res_tls(prc, virt, sig, kem):
     out, _ = prc.communicate()
-    
+
     print(out.decode().splitlines()[0])
     print("\n".join(out.decode().split("\n\n")[1].splitlines()[:2]))
     print(out.decode().split("\n\n")[2].splitlines()[1])
@@ -464,53 +554,60 @@ def eval_res_tls(prc, sig, kem):
     line4 = out.decode().splitlines()[-2]
     line5 = out.decode().splitlines()[-1]
 
-    res = { "tls": { f"{sig}+{kem}" : { 
-        "time": float(line1.split(" ")[4]),
-        "initial": {
-            "user": {
-                "connections": float(line2.split(" ")[0]),
-                "time": float(line2.split(" ")[3][:-2]),
-                "conn_p_user_sec": float(line2.split(" ")[4]),
-                "bytes_read": float(line2.split(" ")[9]),
-            },
-            "real": {
-                "connections": float(line3.split(" ")[0]),
-                "time": float(line3.split(" ")[3]),
-                "bytes_read": float(line3.split(" ")[6]),
-            },
-        },
-        "session_reuse": {
-            "user": {
-                "connections": float(line4.split(" ")[0]),
-                "time": float(line4.split(" ")[3][:-2]),
-                "conn_p_user_sec": float(line4.split(" ")[4]),
-                "bytes_read": float(line4.split(" ")[9]),
-            },
-            "real": {
-                "connections": float(line5.split(" ")[0]),
-                "time": float(line5.split(" ")[3]),
-                "bytes_read": float(line5.split(" ")[6]),
-            },
-        },
-    } 
-    }}
+    res = {
+        "tls": {
+            virt: {
+                f"{sig}+{kem}": {
+                    "time": float(line1.split(" ")[4]),
+                    "initial": {
+                        "user": {
+                            "connections": float(line2.split(" ")[0]),
+                            "time": float(line2.split(" ")[3][:-2]),
+                            "conn_p_user_sec": float(line2.split(" ")[4]),
+                            "bytes_read": float(line2.split(" ")[9]),
+                        },
+                        "real": {
+                            "connections": float(line3.split(" ")[0]),
+                            "time": float(line3.split(" ")[3]),
+                            "bytes_read": float(line3.split(" ")[6]),
+                        },
+                    },
+                    "session_reuse": {
+                        "user": {
+                            "connections": float(line4.split(" ")[0]),
+                            "time": float(line4.split(" ")[3][:-2]),
+                            "conn_p_user_sec": float(line4.split(" ")[4]),
+                            "bytes_read": float(line4.split(" ")[9]),
+                        },
+                        "real": {
+                            "connections": float(line5.split(" ")[0]),
+                            "time": float(line5.split(" ")[3]),
+                            "bytes_read": float(line5.split(" ")[6]),
+                        },
+                    },
+                }
+            }
+        }
+    }
     return res
 
 
 def parse_list(arglist, constraint):
     # Split the string by commas
-    args = arglist.split(',')
+    args = arglist.split(",")
     # Check if each drive is in the valid choices
     for arg in args:
         if arg not in constraint:
-            raise argparse.ArgumentTypeError(f"Invalid drive: {arg}. Must be one of {constraint}.")
+            raise argparse.ArgumentTypeError(
+                f"Invalid drive: {arg}. Must be one of {constraint}."
+            )
     return args
 
 
 def merge_dicts(dictl, dictr):
     for key, value in dictl.items():
         if key in dictr and isinstance(dictr[key], dict) and isinstance(value, dict):
-                merge_dicts(value, dictr[key])
+            merge_dicts(value, dictr[key])
         else:
             dictr[key] = value
     return dictr
