@@ -26,7 +26,24 @@ sudo mkdir /etc/qemu
 sudo echo "allow virbr0" > /etc/qemu/bridge.conf
 ```
 
-The repository contains the 3 folders Container, Native, Unikraft which all contain a configuration for openssl (with liboqs). To build them first run the 'setup.sh' in the respective folder. The script will generate an link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+
+The repository contains the 3 folders Container, Native, Unikraft which all contain a configuration for openssl (with liboqs). To build them first run the 'setup.sh' in the respective folder. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+
+```bash
+Native/openssl req -x509 -new \
+			-newkey dilithium3 \
+			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
+			-nodes -subj "/CN=Test CA" -days 365
+
+Native/openssl req -new \
+			-newkey dilithium3 \
+			-keyout pki/server_dil.key -out pki/server_dil.csr \
+			-nodes -subj "/CN=testserver"
+
+Native/openssl x509 -req \
+			 -in pki/server_dil.csr -out pki/server_dil.crt \
+			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
+```
 
 ```bash
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
@@ -425,7 +442,7 @@ TODO do proper error handling in the python script if a subprocess fails
 TODO do we need rsa, ecdhe as a comparison?
 
 Big todos:
-- find a way to select different kems
+find a way to select different kems
 - get everything running flawlessly on the pi
 - include default comparisons rsa ecdhe
 - update readme to successfully launch the project
@@ -437,3 +454,44 @@ Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -grou
 https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
 
 split up the sig oqs speed c implementation 
+
+find a way to use send-to-pi efficiently again maybe rsync
+
+
+# TODOs
+- [ ] Build vanilla ssl Unikernel
+- [ ] Build oqs ssl Unikernel
+
+## Vanilla SSL Unikernel Doc: [ssl_uk]
+- ~~ Build openssl directly into unikernel ~~
+	-> Building openssl again and again inefficient
+	-> Building openssl into Unikraft unikernel  
+- Instead build openssl as prebuild binary into unikernel
+	-> Call openssl binary and header files during unikraft build in Makefile.uk
+``` Makefile.uk
+APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/openssl-3.3.0/libssl.a
+```
+	-> see [Unikraft Build System](https://unikraft.org/docs/internals/build-system)
+- Build successfull, but nothing to do, as only the library was added
+- ssl keygen through c file (chat gpt generated :D)
+- Include c file with
+``` Makefile.uk
+APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/ssl_keygen_2024_no_time.c
+```
+	-> ssl header files missing. Include them with 
+
+``` Makefile.uk
+APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/openssl-3.3.0/include/
+```
+- pthread header missing
+	-> kraft menu shows it is included ...
+	-> pull from [lib-pthread-embedded](https://github.com/unikraft/lib-pthread-embedded)
+	-> include pthread like openssl above
+
+## OQS SSL Unikernel Doc
+
+
+
+some weird stuff: 
+- the algorithm names are inconsistent sometimes need upercase sometimes lowercase without dashes in liboqs
+- 9pfs does link the mounted folder as root / directory that means no absolute paths for the pki files
