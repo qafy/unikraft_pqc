@@ -55,3 +55,5 @@ EOF
 chmod a+x $SCRIPT_DIR/openssl
 chmod a+x $SCRIPT_DIR/sh
 chmod a+x $SCRIPT_DIR/benchmark
+
+# docker save -o alpine_bench.tar alpine-bench
