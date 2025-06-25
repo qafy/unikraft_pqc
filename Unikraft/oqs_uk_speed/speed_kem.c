@@ -33,7 +33,7 @@ static void fullcycletest(OQS_KEM *kem, uint8_t *public_key, uint8_t *secret_key
 
 }
 
-static OQS_STATUS kem_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle) {
+static OQS_STATUS kem_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeyGen, bool noEncaps, bool noDecaps) {
 
 	OQS_KEM *kem = NULL;
 	uint8_t *public_key = NULL;
@@ -61,9 +61,12 @@ static OQS_STATUS kem_speed_wrapper(const char *method_name, uint64_t duration, 
 
 	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", kem->method_name, "", "", "", "", "", "");
 	if (!doFullCycle) {
-		TIME_OPERATION_SECONDS(OQS_KEM_keypair(kem, public_key, secret_key), "keygen", duration)
-		TIME_OPERATION_SECONDS(OQS_KEM_encaps(kem, ciphertext, shared_secret_e, public_key), "encaps", duration)
-		TIME_OPERATION_SECONDS(OQS_KEM_decaps(kem, shared_secret_d, ciphertext, secret_key), "decaps", duration)
+		if (!noKeyGen)
+			TIME_OPERATION_SECONDS(OQS_KEM_keypair(kem, public_key, secret_key), "keygen", duration)
+		if (!noEncaps)
+			TIME_OPERATION_SECONDS(OQS_KEM_encaps(kem, ciphertext, shared_secret_e, public_key), "encaps", duration)
+		if (!noDecaps)
+			TIME_OPERATION_SECONDS(OQS_KEM_decaps(kem, shared_secret_d, ciphertext, secret_key), "decaps", duration)
 	} else {
 		TIME_OPERATION_SECONDS(fullcycletest(kem, public_key, secret_key, ciphertext, shared_secret_e, shared_secret_d), "fullcycletest", duration)
 	}
@@ -113,7 +116,9 @@ int main_speed_kem(int argc, char **argv) {
 	uint64_t duration = 3;
 	bool printKemInfo = false;
 	bool doFullCycle = false;
-
+	bool noKeyGen = false;
+	bool noEncaps = false;
+	bool noDecaps = false;
 	OQS_KEM *single_kem = NULL;
 
 	OQS_randombytes_switch_algorithm(OQS_RAND_alg_openssl);
@@ -145,6 +150,15 @@ int main_speed_kem(int argc, char **argv) {
 			continue;
 		} else if ((strcmp(argv[i], "--fullcycle") == 0) || (strcmp(argv[i], "-f") == 0)) {
 			doFullCycle = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_keygen") == 0)) {
+			noKeyGen = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_encaps") == 0)) {
+			noEncaps = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_decaps") == 0)) {
+			noDecaps = true;
 			continue;
 		} else {
 			single_kem = OQS_KEM_new(argv[i]);
@@ -180,14 +194,14 @@ int main_speed_kem(int argc, char **argv) {
 
 	PRINT_TIMER_HEADER
 	if (single_kem != NULL) {
-		rc = kem_speed_wrapper(single_kem->method_name, duration, printKemInfo, doFullCycle);
+		rc = kem_speed_wrapper(single_kem->method_name, duration, printKemInfo, doFullCycle, noKeyGen, noEncaps, noDecaps);
 		if (rc != OQS_SUCCESS) {
 			ret = EXIT_FAILURE;
 		}
 		OQS_KEM_free(single_kem);
 	} else {
 		for (size_t i = 0; i < OQS_KEM_algs_length; i++) {
-			rc = kem_speed_wrapper(OQS_KEM_alg_identifier(i), duration, printKemInfo, doFullCycle);
+			rc = kem_speed_wrapper(OQS_KEM_alg_identifier(i), duration, printKemInfo, doFullCycle, noKeyGen, noEncaps, noDecaps);
 			if (rc != OQS_SUCCESS) {
 				ret = EXIT_FAILURE;
 			}

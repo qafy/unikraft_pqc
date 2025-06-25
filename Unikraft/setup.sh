@@ -58,6 +58,7 @@ cat << EOF > $SCRIPT_DIR/benchmark
 #!/usr/bin/env bash
 qemu-system-aarch64 \\
     -kernel $SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \\
+    -append " -- \$*" \\
     -machine virt -cpu max -m 64M \\
     -nographic
 EOF
