@@ -194,7 +194,7 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
         BIO_printf(bio_err, "Error in PSK client callback\n");
     return 0;
 }
-#endif
+#endif  
 
 const unsigned char tls13_aes128gcmsha256_id[] = { 0x13, 0x01 };
 const unsigned char tls13_aes256gcmsha384_id[] = { 0x13, 0x02 };

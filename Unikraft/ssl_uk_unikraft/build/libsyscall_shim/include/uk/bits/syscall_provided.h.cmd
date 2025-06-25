@@ -1,1 +1,0 @@
-awk -f /home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/lib/syscall_shim/syscall_provided.awk    -F '-'    /home/chio/Documents/projects/pqc-vs-unikernel/02_unikernel/ssl_uk_unikraft/build/libsyscall_shim/provided_syscalls.in > /home/chio/Documents/projects/pqc-vs-unikernel/02_unikernel/ssl_uk_unikraft/build/libsyscall_shim/include/uk/bits/syscall_provided.h

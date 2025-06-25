@@ -1,5 +1,0 @@
-# Auto generated file. DO NOT EDIT
-source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/plat/kvm/Config.uk"
-source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/plat/linuxu/Config.uk"
-source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/plat/xen/Config.uk"
-source "/home/chio/Documents/projects/Studenten/duiue/unikraft/unikraft-0.16.3/plat/Config.uk"

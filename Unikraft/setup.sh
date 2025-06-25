@@ -6,6 +6,11 @@ SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 if [ "$1" == "clean" ]; then    
     ip link del dev virbr0 type bridge 2>/dev/null
     rm $SCRIPT_DIR/openssl
+    rm $SCRIPT_DIR/test
+    rm $SCRIPT_DIR/benchmark
+    rm -rf $SCRIPT_DIR/ssl_uk_test/build
+    rm -rf $SCRIPT_DIR/ssl_uk_bin/build
+    rm -rf $SCRIPT_DIR/oqs_uk_speed/build
     exit
 fi  
 
