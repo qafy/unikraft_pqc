@@ -153,10 +153,13 @@ int main_speed_kem(int argc, char **argv) {
 			continue;
 		} else if ((strcmp(argv[i], "--no_keygen") == 0)) {
 			noKeyGen = true;
+			continue;
 		} else if ((strcmp(argv[i], "--no_encaps") == 0)) {
 			noEncaps = true;
+			continue;
 		} else if ((strcmp(argv[i], "--no_decaps") == 0)) {
-			noDecaps = true;	
+			noDecaps = true;
+			continue;
 		} else {
 			single_kem = OQS_KEM_new(argv[i]);
 			if (single_kem == NULL) {

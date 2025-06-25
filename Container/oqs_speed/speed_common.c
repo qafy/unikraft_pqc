@@ -7,12 +7,12 @@
 
 #include <oqs/oqs.h>
 
-// #if defined(OQS_USE_RASPBERRY_PI)
-// #define _OQS_RASPBERRY_PI
-// #endif
-// #if defined(OQS_SPEED_USE_ARM_PMU)
-// #define SPEED_USE_ARM_PMU
-// #endif
+#if defined(OQS_USE_RASPBERRY_PI)
+#define _OQS_RASPBERRY_PI
+#endif
+#if defined(OQS_SPEED_USE_ARM_PMU)
+#define SPEED_USE_ARM_PMU
+#endif
 #include "ds_benchmark.h"
 //#include "system_info.c"
 

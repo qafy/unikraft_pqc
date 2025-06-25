@@ -8,7 +8,12 @@
 
 #include <oqs/oqs.h>
 
-// .
+#if defined(OQS_USE_RASPBERRY_PI)
+#define _OQS_RASPBERRY_PI
+#endif
+#if defined(OQS_SPEED_USE_ARM_PMU)
+#define SPEED_USE_ARM_PMU
+#endif
 #include "ds_benchmark.h"
 //#include "system_info.c"
 
@@ -27,7 +32,7 @@ static void fullcycle(OQS_SIG *sig, uint8_t *public_key, uint8_t *secret_key, ui
 	}
 }
 
-static OQS_STATUS sig_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle) {
+static OQS_STATUS sig_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeygen, bool noSign, bool noVerify) {
 
 	OQS_SIG *sig = NULL;
 	uint8_t *public_key = NULL;
@@ -57,9 +62,12 @@ static OQS_STATUS sig_speed_wrapper(const char *method_name, uint64_t duration, 
 
 	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", sig->method_name, "", "", "", "", "", "");
 	if (!doFullCycle) {
-		TIME_OPERATION_SECONDS(OQS_SIG_keypair(sig, public_key, secret_key), "keypair", duration)
-		TIME_OPERATION_SECONDS(OQS_SIG_sign(sig, signature, &signature_len, message, message_len, secret_key), "sign", duration)
-		TIME_OPERATION_SECONDS(OQS_SIG_verify(sig, message, message_len, signature, signature_len, public_key), "verify", duration)
+		if (!noKeygen)
+			TIME_OPERATION_SECONDS(OQS_SIG_keypair(sig, public_key, secret_key), "keypair", duration)
+		if (!noSign)
+			TIME_OPERATION_SECONDS(OQS_SIG_sign(sig, signature, &signature_len, message, message_len, secret_key), "sign", duration)
+		if (!noVerify)
+			TIME_OPERATION_SECONDS(OQS_SIG_verify(sig, message, message_len, signature, signature_len, public_key), "verify", duration)
 	} else {
 		TIME_OPERATION_SECONDS(fullcycle(sig, public_key, secret_key, signature, signature_len, message, message_len), "fullcycle", duration)
 	}
@@ -113,6 +121,10 @@ int main_speed_sig(int argc, char **argv) {
 	bool printSigInfo = false;
 	bool doFullCycle = false;
 
+	bool noKeygen = false;
+	bool noVerify = false;
+	bool noSign = false;
+
 	OQS_SIG *single_sig = NULL;
 
 	OQS_init();
@@ -144,6 +156,15 @@ int main_speed_sig(int argc, char **argv) {
 			continue;
 		} else if ((strcmp(argv[i], "--fullcycle") == 0) || (strcmp(argv[i], "-f") == 0)) {
 			doFullCycle = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_keygen") == 0)) {
+			noKeygen = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_sign") == 0)) {
+			noSign = true;
+			continue;
+		} else if ((strcmp(argv[i], "--no_verify") == 0)) {
+			noVerify = true;
 			continue;
 		} else {
 			single_sig = OQS_SIG_new(argv[i]);
@@ -180,7 +201,7 @@ int main_speed_sig(int argc, char **argv) {
 
 	PRINT_TIMER_HEADER
 	if (single_sig != NULL) {
-		rc = sig_speed_wrapper(single_sig->method_name, duration, printSigInfo, doFullCycle);
+		rc = sig_speed_wrapper(single_sig->method_name, duration, printSigInfo, doFullCycle, noKeygen, noSign, noVerify);
 		if (rc != OQS_SUCCESS) {
 			ret = EXIT_FAILURE;
 		}
@@ -188,7 +209,7 @@ int main_speed_sig(int argc, char **argv) {
 
 	} else {
 		for (size_t i = 0; i < OQS_SIG_algs_length; i++) {
-			rc = sig_speed_wrapper(OQS_SIG_alg_identifier(i), duration, printSigInfo, doFullCycle);
+			rc = sig_speed_wrapper(OQS_SIG_alg_identifier(i), duration, printSigInfo, doFullCycle, noKeygen, noSign, noVerify);
 			if (rc != OQS_SUCCESS) {
 				ret = EXIT_FAILURE;
 			}

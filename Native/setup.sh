@@ -82,6 +82,9 @@ function clean_local_install()
     rm -rf src
     rm openssl 2>/dev/null
 
+    rm openssl
+    rm test
+    rm benchmark
     cd oqs_speed
     make clean
 }
