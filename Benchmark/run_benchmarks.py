@@ -152,6 +152,7 @@ def main():
 
                         print("")
                         res = eval_res_tls(prc1, virt, sig, kem)
+                        print("")
                         global_res = merge_dicts(res, global_res)
 
         if "tls_memory" in args.stages:
@@ -211,9 +212,9 @@ def main():
 
                     print("Waiting to establish baseline")
                     time.sleep(5)
-                    print(f"Running {kem} encaps for {args.primitives_time} seconds")
+                    print(f"Running {kem} decaps for {args.primitives_time} seconds")
                     prc = run_primitive(
-                        virt, "kem", kem, args.primitives_time, "encaps"
+                        virt, "kem", kem, args.primitives_time, "decaps"
                     )
                     prc.wait()
                     print("Finished")
@@ -310,8 +311,12 @@ def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
 
 def run_s_server(virt, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
-    dir_key = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.key")
-    dir_crt = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crt")
+    if virt == "unikraft": 
+        dir_key = f"Benchmark/pki/server_{sig}.key"
+        dir_crt = f"Benchmark/pki/server_{sig}.crt"
+    else:   
+        dir_key = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.key")
+        dir_crt = os.path.join(SCRIPT_DIR, f"pki/server_{sig}.crt")
     cmd = [
         openssl_version,
         "s_server",
@@ -336,13 +341,19 @@ def run_s_server(virt, sig, kem):
 def run_s_client(virt, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
+    if virt == "unikraft": 
+        ca_crt = f"Benchmark/pki/CA_{sig}.crt"
+    else:   
+        ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
     cmd = [
         openssl_version,
         "s_client",
         "-connect",
         host + ":443",
+        "-groups",
+        kem,
         "-verifyCAfile",
-        "pki/CA_dil.crt",
+        ca_crt,
         "-ign_eof",
         "-nocommands",
     ]
@@ -357,7 +368,10 @@ def run_s_client(virt, sig, kem):
 def run_s_time(virt, time, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
-    ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
+    if virt == "unikraft": 
+        ca_crt = f"Benchmark/pki/CA_{sig}.crt"
+    else:   
+        ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
     cmd = [
         openssl_version,
         "s_time",
@@ -502,6 +516,7 @@ def get_virt_bin(virt, app):
 def eval_res_primitive(prc, virt, sig_kem, cipher):
     out, _ = prc.communicate()
     print(out.decode())
+
     lines = out.decode().splitlines()
     res = {
         "primitive": {
@@ -541,18 +556,22 @@ def eval_res_primitive(prc, virt, sig_kem, cipher):
 
 
 def eval_res_tls(prc, virt, sig, kem):
-    out, _ = prc.communicate()
+    out, _ = prc.communicate()  
 
-    print(out.decode().splitlines()[0])
-    print("\n".join(out.decode().split("\n\n")[1].splitlines()[:2]))
-    print(out.decode().split("\n\n")[2].splitlines()[1])
-    print("\n".join(out.decode().splitlines()[-2:]))
+    out_str = out.decode().replace("\r\n", "\n")
+    lines = out_str.splitlines()
+    segments = out_str.split("\n\n")
 
-    line1 = out.decode().splitlines()[0]
-    line2 = out.decode().split("\n\n")[1].splitlines()[0]
-    line3 = out.decode().split("\n\n")[1].splitlines()[1]
-    line4 = out.decode().splitlines()[-2]
-    line5 = out.decode().splitlines()[-1]
+    print(lines[0])
+    print("\n".join(segments[1].splitlines()[:2]))
+    print(segments[2].splitlines()[1])
+    print("\n".join(lines[-2:]))
+
+    line1 = lines[0]
+    line2 = segments[1].splitlines()[0]
+    line3 = segments[1].splitlines()[1]
+    line4 = lines[-2]
+    line5 = lines[-1]
 
     res = {
         "tls": {
