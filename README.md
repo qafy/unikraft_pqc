@@ -490,8 +490,15 @@ APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/openssl-3.3.0/include/
 
 ## OQS SSL Unikernel Doc
 
+# different kems
 
+to get different kem algorithms need to specify them as a group with the s_server
+and need to allow the s_speed to use them, otherwise the tls handshake fails
+specify default groups in the openssl.cnf like this:
+DEFAULT_GROUPS  = x25519:x448:kyber512:bikel1:hqc128:frodo640aes:frodo640shake:kyber768:kyber1024
 
-some weird stuff: 
-- the algorithm names are inconsistent sometimes need upercase sometimes lowercase without dashes in liboqs
-- 9pfs does link the mounted folder as root / directory that means no absolute paths for the pki files
+the algorithm names are inconsistent sometimes need upercase sometimes lowercase without dashes in liboqs
+listed in https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
+
+for unikraft we use 9pfs and compile in the environment variable OPENSSL_CONF=/Unikraft/openssl.cnf 
+note: 9pfs does link the mounted folder as root / directory that means no absolute paths for the pki files
