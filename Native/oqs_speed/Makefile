@@ -1,7 +1,7 @@
 
 # Compiler settings
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra -O0 -g
 LDLIB = -I$(PWD)/../local/include -L$(PWD)/../local/lib -loqs -lcrypto -lm
 # Targets
 all: benchmark
