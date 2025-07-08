@@ -1,0 +1,105 @@
+% Class options:
+% - Use `noindent` for a non-indented version of the report
+% - Use `public` to mark the document for public use
+% - Use `restricted` to mark the document for internal use only
+% - Use `confidential` to mark the document as confidential
+% - Use `strictlyconfidential` to mark the document as strictly confidential
+% For more details, see https://intern.aisec.fraunhofer.de/display/ISMS/Informationsklassifizierung
+% and https://ocs.zv.fraunhofer.de/OTCS/livelink.exe/open/408035
+\documentclass[restricted]{aisecreport}
+
+\usepackage[ngerman, english]{babel}
+\usepackage[backref=true]{biblatex}
+\usepackage{graphicx}
+
+% Draft mode
+\usepackage{draftwatermark}
+\SetWatermarkAngle{45}
+\SetWatermarkLightness{0.9}
+\SetWatermarkFontSize{5cm}
+\SetWatermarkScale{1}
+\SetWatermarkText{DRAFT}
+
+% Commands for TODOs, FIXMEs, and other notes
+\usepackage{xcolor}
+\newcommand{\todo}[1]{{\color{red}\textbf{TODO(}}{\color{white!25!black}#1}{\color{red}\textbf{)}}}
+\newcommand{\fixme}[1]{{\color{blue}\textbf{FIXME(}}{\color{white!25!black}#1}{\color{blue}\textbf{)}}}
+\newcommand{\note}[1]{{\color{green!50!black}\textbf{NOTE(}}{\color{white!25!black}#1}{\color{green!50!black}\textbf{)}}}
+
+\title{IDP: Post-Quantum Cryptography in Unikernels}
+\subtitle{Evaluating Post-Quantum Cryptography in Unikernels on Embedded Devices}
+% \version{0.1}
+
+\author{
+    Moritz Beckel
+}
+\date{\today}
+
+\begin{document}
+
+\uppertitleback{}
+\lowertitleback{
+	\begin{flushleft}
+	Fraunhofer Research Institution for Applied and Integrated Security\\
+	\url{www.aisec.fraunhofer.de}\\[5mm]
+	Fraunhofer AISEC\\
+	Lichtenbergstraße 11\\
+	85748 Garching (near Munich)\\
+	Germany\\[5mm]
+	Contact: Moritz Beckel \\
+	\texttt{moritz.beckel@aisec.fraunhofer.de}
+	\end{flushleft}
+}
+
+\maketitle
+\tableofcontents
+
+\chapter{Motivation}
+
+This Interdisciplinary Project revolves around integrating the Post-Quantum Cryptography Library liboqs into the Unikraft Project and comparing several performance metrics to a native solution and a containerized solution. 
+
+Our first task was to evaluate the hardware at hand and choose a to industry standards comparable platform. We chose a Raspberry Pi 4 model, as it has wide development support and is ARM based making it more comparable to low-powered industrial hardware.
+
+Our second task was to define use-cases which will be used as a basis for the evaluation. Since Post Quantum Cryptography's most important use case is TLS we opt for benchmarking the performance of network connections via TLS/HTTPS. 
+
+Our third task was to define measurands to evaluate the performance. We measure the networking performance with TLS by the number of TLS connections per second and we measure the runtime of Post-Quantum Cryptography Primitives inside our virtual environment. During which we also take a look at overall power consumption, memory allocation.
+Finally we evaluate the usabilty of the system by means of built time, toolchain complexity, etc.
+
+We build a test setup in this repository which contains a configuration for a Unikraft Unikernel capable of post-quantum cryptographic primitives and a new OpenSSL version which can make use of those primitives. The repository also contains configurations for a Docker Container and a native setup which have the same solution running. For testing we use the openssl user application and its s\_server and s\_time components to test TLS connections. For primitives we use tests included in liboqs. 
+
+\chapter{Background}
+
+In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to cound as a post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
+
+\section{Post-Quantum Cryptography}
+
+Quantum-Cryptography aims to solve this problem by providing alternative algorithms which are resistent against Qunatum Algorithms. By default Symmetric Cryptography is already quantum resistant, only assymmetric/public key cryptography is weak to quantum algorithms, which means a cryptography standard has to change assymmetric aspects of its protocol to support quantum-resistant algorithms. For a TLS connection we need to support different certificate signing algorithms and key encapsulation mechanisms (KEM) for key exchanges. 
+
+\chapter{Demonstrator}
+\chapter{Implementation}
+
+\chapter{Results}
+\chapter{Conclusion}
+
+
+% \begin{figure}[htbp]
+% 	\begin{center}
+% 		\includegraphics[width=.5\textwidth]{aisec_logo.pdf}
+% 	\end{center}
+% 	\caption{AISEC Logo}
+% 	\label{fig:aisec-logo}
+% \end{figure}
+
+% \subsection{Example Subsection}
+% Text text text text text text text text text text text text text text text text
+% text text text text text text text text text text text text text text text text.
+
+% \subsubsection{Example Subsubsection}
+% Text text text text text text text text text text text text text text text text
+% text text text text text text text text text text text text text text text text.
+
+% \paragraph{Example Paragraph}
+% Text text text text text text text text text text text text text text text text
+% text text text text text text text text text text text text text text text text.
+
+\end{document}
