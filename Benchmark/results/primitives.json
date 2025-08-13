@@ -5,39 +5,6 @@
                 "SPHINCS+-SHA2-128s-simple": {
                     "keygen": {
                         "iterations": 16.0,
-                        "total_time": 5.282,
-                        "mean_us": 330133.938,
-                        "stddev_us": 1198.509,
-                        "mean_ns": 330133760.0,
-                        "stddev_ns": 1198541.0
-                    },
-                    "encaps": {
-                        "iterations": 2.0,
-                        "total_time": 5.013,
-                        "mean_us": 2506386.5,
-                        "stddev_us": 5117.5,
-                        "mean_ns": 2506385792.0,
-                        "stddev_ns": 5117312.0
-                    },
-                    "decaps": {
-                        "iterations": 1919.0,
-                        "total_time": 5.002,
-                        "mean_us": 2606.786,
-                        "stddev_us": 144.305,
-                        "mean_ns": 2606684.0,
-                        "stddev_ns": 144290.0
-                    }
-                }
-            }
-        }
-    }
-}{}{
-    "primitive": {
-        "native": {
-            "sig": {
-                "SPHINCS+-SHA2-128s-simple": {
-                    "keygen": {
-                        "iterations": 16.0,
                         "total_time": 5.278,
                         "mean_us": 329865.875,
                         "stddev_us": 322.332,

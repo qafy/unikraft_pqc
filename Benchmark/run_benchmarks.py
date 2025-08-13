@@ -18,8 +18,8 @@ SIG_ALGORITHMS = [
     "Dilithium2",
     "Dilithium3",
     "Falcon-1024",
-    "ECDSA",
     "RSA-2048",
+    "DSA-2048",
 ]
 KEM_ALGORITHMS = [
     "Kyber512",
@@ -29,7 +29,7 @@ KEM_ALGORITHMS = [
     "FrodoKEM-640-SHAKE",
     "Kyber768",
     "Kyber1024",
-    "ECDHE",
+    "RSA-2048",
 ]
 STAGES = [
     "primitives",
@@ -155,6 +155,7 @@ def main():
 
                         res = eval_res_tls(prc1, virt, sig, kem)
                         global_res = merge_dicts(res, global_res)
+                        subprocess.run(["pkill", "openssl"])
 
         if "primitives_memory" in args.stages:
             print("Evaluating memory consumption of primitive operations:")
@@ -162,7 +163,7 @@ def main():
                 print(f"Running with virtualization method: {virt}")
                 for sig in args.sig:
                     prc = run_primitive(virt, "sig", sig, args.primitives_time)
-                    time.sleep(0.1) # wait for benchmark to start
+                    time.sleep(0.1)  # wait for benchmark to start
                     prc2 = run_top(prc.pid)
                     ret = prc.wait()
 
@@ -175,7 +176,7 @@ def main():
 
                 for kem in args.kem:
                     prc = run_primitive(virt, "kem", kem, args.primitives_time)
-                    time.sleep(0.1) # wait for benchmark to start
+                    time.sleep(0.1)  # wait for benchmark to start
                     prc2 = run_top(prc.pid)
                     ret = prc.wait()
 
@@ -213,7 +214,8 @@ def main():
 
                         res = eval_res_tls_top(prc2, virt, sig, kem)
                         global_res = merge_dicts(res, global_res)
-                        
+                        subprocess.run(["pkill", "openssl"])
+
         if "primitives_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
             for virt in args.virt:
@@ -302,6 +304,7 @@ def main():
                             raise Exception(f"s_speed failed with return code: {ret}")
 
                         print("")
+                        subprocess.run(["pkill", "openssl"])
 
     except KeyboardInterrupt:
         pass
@@ -310,12 +313,14 @@ def main():
     finally:
         if "docker" in args.virt:
             try:
-                subprocess.run(
+                subprocess.Popen(
                     [
                         "docker",
                         "kill",
                         "alpine_bench_" + (os.environ.get("USER") or "user"),
-                    ]
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                 )
             except Exception:
                 pass
@@ -432,6 +437,8 @@ def run_s_time(virt, time, sig, kem):
     host = get_host("client", virt)
     if virt == "unikraft":
         ca_crt = f"Benchmark/pki/CA_{sig}.crt"
+    elif virt == "docker": 
+        ca_crt = f"/workspace/Benchmark/pki/CA_{sig}.crt"
     else:
         ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
     cmd = [
@@ -497,13 +504,12 @@ def setup_certificates(sig):
         ca_key_src = ["-key", ca_key]
         dir_key_src = ["-key", dir_key]
 
-    elif sig == "ECDSA":
+    elif sig == "DSA":
         cmd = [
             get_virt_bin("native", "openssl"),
-            "ecparam",
+            "dsaparam",
             "-genkey",
-            "-name",
-            "secp256r1",
+            "2048",
             "-out",
             ca_key,
         ]
@@ -628,7 +634,7 @@ def get_group(kem):
         "FrodoKEM-640-SHAKE": "frodo640shake",
         "Kyber768": "kyber768",
         "Kyber1024": "kyber1024",
-        "ECDHE": "secp256r1",
+        "RSA-2048": "rsa2048",
     }[kem]
 
 
@@ -641,7 +647,7 @@ def get_sig(sig):
         "Dilithium3": "Dilithium3",
         "Falcon-1024": "falcon1024",
         "RSA-2048": "RSA-2048",
-        "ECDSA": "ECDSA",
+        "DSA": "DSA",
     }[sig]
 
 

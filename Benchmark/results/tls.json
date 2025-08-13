@@ -1,5 +1,2445 @@
 {
     "tls": {
+        "docker": {
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.13,
+                        "conn_p_user_sec": 92.31,
+                        "bytes_read": 86820.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5474.0,
+                        "time": 10.38,
+                        "conn_p_user_sec": 527.36,
+                        "bytes_read": 25777541.0
+                    },
+                    "real": {
+                        "connections": 5474.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 1.08,
+                        "conn_p_user_sec": 11.11,
+                        "bytes_read": 86772.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 32.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 212.0,
+                        "time": 17.23,
+                        "conn_p_user_sec": 12.3,
+                        "bytes_read": 997460.0
+                    },
+                    "real": {
+                        "connections": 212.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.39,
+                        "conn_p_user_sec": 30.77,
+                        "bytes_read": 86772.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 33.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 642.0,
+                        "time": 15.74,
+                        "conn_p_user_sec": 40.79,
+                        "bytes_read": 3020610.0
+                    },
+                    "real": {
+                        "connections": 642.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.48,
+                        "conn_p_user_sec": 22.92,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 410.0,
+                        "time": 14.93,
+                        "conn_p_user_sec": 27.46,
+                        "bytes_read": 1933150.0
+                    },
+                    "real": {
+                        "connections": 410.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.27,
+                        "conn_p_user_sec": 44.44,
+                        "bytes_read": 86940.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 32.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1003.0,
+                        "time": 14.66,
+                        "conn_p_user_sec": 68.42,
+                        "bytes_read": 4733157.0
+                    },
+                    "real": {
+                        "connections": 1003.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.12,
+                        "conn_p_user_sec": 100.0,
+                        "bytes_read": 86820.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 32.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5223.0,
+                        "time": 10.43,
+                        "conn_p_user_sec": 500.77,
+                        "bytes_read": 24595331.0
+                    },
+                    "real": {
+                        "connections": 5223.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.11,
+                        "conn_p_user_sec": 109.09,
+                        "bytes_read": 86844.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 33.0,
+                        "bytes_read": 7237.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5036.0,
+                        "time": 10.01,
+                        "conn_p_user_sec": 503.1,
+                        "bytes_read": 23724633.0
+                    },
+                    "real": {
+                        "connections": 5036.0,
+                        "time": 31.0,
+                        "bytes_read": 4711.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 196.0,
+                        "time": 4.26,
+                        "conn_p_user_sec": 46.01,
+                        "bytes_read": 1418060.0
+                    },
+                    "real": {
+                        "connections": 196.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5403.0,
+                        "time": 10.25,
+                        "conn_p_user_sec": 527.12,
+                        "bytes_read": 25443131.0
+                    },
+                    "real": {
+                        "connections": 5403.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 118.0,
+                        "time": 11.9,
+                        "conn_p_user_sec": 9.92,
+                        "bytes_read": 853258.0
+                    },
+                    "real": {
+                        "connections": 118.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 213.0,
+                        "time": 17.45,
+                        "conn_p_user_sec": 12.21,
+                        "bytes_read": 1002165.0
+                    },
+                    "real": {
+                        "connections": 213.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 164.0,
+                        "time": 7.32,
+                        "conn_p_user_sec": 22.4,
+                        "bytes_read": 1185884.0
+                    },
+                    "real": {
+                        "connections": 164.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 637.0,
+                        "time": 15.57,
+                        "conn_p_user_sec": 40.91,
+                        "bytes_read": 2997085.0
+                    },
+                    "real": {
+                        "connections": 637.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 144.0,
+                        "time": 7.98,
+                        "conn_p_user_sec": 18.05,
+                        "bytes_read": 1042704.0
+                    },
+                    "real": {
+                        "connections": 144.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 413.0,
+                        "time": 15.07,
+                        "conn_p_user_sec": 27.41,
+                        "bytes_read": 1947295.0
+                    },
+                    "real": {
+                        "connections": 413.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 176.0,
+                        "time": 5.86,
+                        "conn_p_user_sec": 30.03,
+                        "bytes_read": 1275120.0
+                    },
+                    "real": {
+                        "connections": 176.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1011.0,
+                        "time": 14.63,
+                        "conn_p_user_sec": 69.1,
+                        "bytes_read": 4770909.0
+                    },
+                    "real": {
+                        "connections": 1011.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 192.0,
+                        "time": 4.03,
+                        "conn_p_user_sec": 47.64,
+                        "bytes_read": 1389120.0
+                    },
+                    "real": {
+                        "connections": 192.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5203.0,
+                        "time": 10.33,
+                        "conn_p_user_sec": 503.68,
+                        "bytes_read": 24501131.0
+                    },
+                    "real": {
+                        "connections": 5203.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 190.0,
+                        "time": 4.12,
+                        "conn_p_user_sec": 46.12,
+                        "bytes_read": 1375030.0
+                    },
+                    "real": {
+                        "connections": 190.0,
+                        "time": 31.0,
+                        "bytes_read": 7237.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5150.0,
+                        "time": 11.06,
+                        "conn_p_user_sec": 465.64,
+                        "bytes_read": 24261801.0
+                    },
+                    "real": {
+                        "connections": 5150.0,
+                        "time": 31.0,
+                        "bytes_read": 4711.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3753.0,
+                        "time": 10.07,
+                        "conn_p_user_sec": 372.69,
+                        "bytes_read": 27062883.0
+                    },
+                    "real": {
+                        "connections": 3753.0,
+                        "time": 31.0,
+                        "bytes_read": 7211.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5453.0,
+                        "time": 10.27,
+                        "conn_p_user_sec": 530.96,
+                        "bytes_read": 25547759.0
+                    },
+                    "real": {
+                        "connections": 5453.0,
+                        "time": 31.0,
+                        "bytes_read": 4685.0
+                    }
+                }
+            },
+            "Falcon-512+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 209.0,
+                        "time": 17.25,
+                        "conn_p_user_sec": 12.12,
+                        "bytes_read": 1506263.0
+                    },
+                    "real": {
+                        "connections": 209.0,
+                        "time": 31.0,
+                        "bytes_read": 7207.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 216.0,
+                        "time": 17.61,
+                        "conn_p_user_sec": 12.27,
+                        "bytes_read": 1011096.0
+                    },
+                    "real": {
+                        "connections": 216.0,
+                        "time": 31.0,
+                        "bytes_read": 4681.0
+                    }
+                }
+            },
+            "Falcon-512+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 615.0,
+                        "time": 15.52,
+                        "conn_p_user_sec": 39.63,
+                        "bytes_read": 4432305.0
+                    },
+                    "real": {
+                        "connections": 615.0,
+                        "time": 31.0,
+                        "bytes_read": 7207.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 641.0,
+                        "time": 15.73,
+                        "conn_p_user_sec": 40.75,
+                        "bytes_read": 3000521.0
+                    },
+                    "real": {
+                        "connections": 641.0,
+                        "time": 31.0,
+                        "bytes_read": 4681.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 400.0,
+                        "time": 14.91,
+                        "conn_p_user_sec": 26.83,
+                        "bytes_read": 2886800.0
+                    },
+                    "real": {
+                        "connections": 400.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 415.0,
+                        "time": 15.08,
+                        "conn_p_user_sec": 27.52,
+                        "bytes_read": 1946765.0
+                    },
+                    "real": {
+                        "connections": 415.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 944.0,
+                        "time": 14.4,
+                        "conn_p_user_sec": 65.56,
+                        "bytes_read": 6816624.0
+                    },
+                    "real": {
+                        "connections": 944.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1015.0,
+                        "time": 14.69,
+                        "conn_p_user_sec": 69.09,
+                        "bytes_read": 4765425.0
+                    },
+                    "real": {
+                        "connections": 1015.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3693.0,
+                        "time": 10.2,
+                        "conn_p_user_sec": 362.06,
+                        "bytes_read": 26630223.0
+                    },
+                    "real": {
+                        "connections": 3693.0,
+                        "time": 31.0,
+                        "bytes_read": 7211.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5308.0,
+                        "time": 10.27,
+                        "conn_p_user_sec": 516.85,
+                        "bytes_read": 24868289.0
+                    },
+                    "real": {
+                        "connections": 5308.0,
+                        "time": 31.0,
+                        "bytes_read": 4685.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3617.0,
+                        "time": 10.36,
+                        "conn_p_user_sec": 349.13,
+                        "bytes_read": 26089421.0
+                    },
+                    "real": {
+                        "connections": 3617.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5166.0,
+                        "time": 11.18,
+                        "conn_p_user_sec": 462.08,
+                        "bytes_read": 24213209.0
+                    },
+                    "real": {
+                        "connections": 5166.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3746.0,
+                        "time": 10.7,
+                        "conn_p_user_sec": 350.09,
+                        "bytes_read": 27019898.0
+                    },
+                    "real": {
+                        "connections": 3746.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5443.0,
+                        "time": 10.39,
+                        "conn_p_user_sec": 523.87,
+                        "bytes_read": 25511785.0
+                    },
+                    "real": {
+                        "connections": 5443.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 210.0,
+                        "time": 17.34,
+                        "conn_p_user_sec": 12.11,
+                        "bytes_read": 1513890.0
+                    },
+                    "real": {
+                        "connections": 210.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 216.0,
+                        "time": 17.54,
+                        "conn_p_user_sec": 12.31,
+                        "bytes_read": 1011528.0
+                    },
+                    "real": {
+                        "connections": 216.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium2+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 615.0,
+                        "time": 15.62,
+                        "conn_p_user_sec": 39.37,
+                        "bytes_read": 4433535.0
+                    },
+                    "real": {
+                        "connections": 615.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 641.0,
+                        "time": 15.64,
+                        "conn_p_user_sec": 40.98,
+                        "bytes_read": 3001803.0
+                    },
+                    "real": {
+                        "connections": 641.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 401.0,
+                        "time": 14.94,
+                        "conn_p_user_sec": 26.84,
+                        "bytes_read": 2894819.0
+                    },
+                    "real": {
+                        "connections": 401.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 414.0,
+                        "time": 15.09,
+                        "conn_p_user_sec": 27.44,
+                        "bytes_read": 1942902.0
+                    },
+                    "real": {
+                        "connections": 414.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 956.0,
+                        "time": 14.82,
+                        "conn_p_user_sec": 64.51,
+                        "bytes_read": 6905188.0
+                    },
+                    "real": {
+                        "connections": 956.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1012.0,
+                        "time": 14.77,
+                        "conn_p_user_sec": 68.52,
+                        "bytes_read": 4753364.0
+                    },
+                    "real": {
+                        "connections": 1012.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3672.0,
+                        "time": 11.3,
+                        "conn_p_user_sec": 324.96,
+                        "bytes_read": 26486136.0
+                    },
+                    "real": {
+                        "connections": 3672.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5400.0,
+                        "time": 10.39,
+                        "conn_p_user_sec": 519.73,
+                        "bytes_read": 25310201.0
+                    },
+                    "real": {
+                        "connections": 5400.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3622.0,
+                        "time": 11.12,
+                        "conn_p_user_sec": 325.72,
+                        "bytes_read": 26132730.0
+                    },
+                    "real": {
+                        "connections": 3622.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5165.0,
+                        "time": 11.57,
+                        "conn_p_user_sec": 446.41,
+                        "bytes_read": 24218851.0
+                    },
+                    "real": {
+                        "connections": 5165.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3465.0,
+                        "time": 11.3,
+                        "conn_p_user_sec": 306.64,
+                        "bytes_read": 24993045.0
+                    },
+                    "real": {
+                        "connections": 3465.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5274.0,
+                        "time": 10.09,
+                        "conn_p_user_sec": 522.7,
+                        "bytes_read": 24719513.0
+                    },
+                    "real": {
+                        "connections": 5274.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium3+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 210.0,
+                        "time": 17.4,
+                        "conn_p_user_sec": 12.07,
+                        "bytes_read": 1513890.0
+                    },
+                    "real": {
+                        "connections": 210.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 216.0,
+                        "time": 17.59,
+                        "conn_p_user_sec": 12.28,
+                        "bytes_read": 1011528.0
+                    },
+                    "real": {
+                        "connections": 216.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium3+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 610.0,
+                        "time": 15.62,
+                        "conn_p_user_sec": 39.05,
+                        "bytes_read": 4397490.0
+                    },
+                    "real": {
+                        "connections": 610.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 641.0,
+                        "time": 15.65,
+                        "conn_p_user_sec": 40.96,
+                        "bytes_read": 3001803.0
+                    },
+                    "real": {
+                        "connections": 641.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium3+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 400.0,
+                        "time": 15.13,
+                        "conn_p_user_sec": 26.44,
+                        "bytes_read": 2887600.0
+                    },
+                    "real": {
+                        "connections": 400.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 415.0,
+                        "time": 15.13,
+                        "conn_p_user_sec": 27.43,
+                        "bytes_read": 1947595.0
+                    },
+                    "real": {
+                        "connections": 415.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Dilithium3+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 944.0,
+                        "time": 14.91,
+                        "conn_p_user_sec": 63.31,
+                        "bytes_read": 6818512.0
+                    },
+                    "real": {
+                        "connections": 944.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1015.0,
+                        "time": 14.62,
+                        "conn_p_user_sec": 69.43,
+                        "bytes_read": 4767455.0
+                    },
+                    "real": {
+                        "connections": 1015.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3384.0,
+                        "time": 11.14,
+                        "conn_p_user_sec": 303.77,
+                        "bytes_read": 24408792.0
+                    },
+                    "real": {
+                        "connections": 3384.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5301.0,
+                        "time": 10.58,
+                        "conn_p_user_sec": 501.04,
+                        "bytes_read": 24846089.0
+                    },
+                    "real": {
+                        "connections": 5301.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3343.0,
+                        "time": 11.41,
+                        "conn_p_user_sec": 292.99,
+                        "bytes_read": 24119745.0
+                    },
+                    "real": {
+                        "connections": 3343.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5161.0,
+                        "time": 10.89,
+                        "conn_p_user_sec": 473.92,
+                        "bytes_read": 24200091.0
+                    },
+                    "real": {
+                        "connections": 5161.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3354.0,
+                        "time": 10.42,
+                        "conn_p_user_sec": 321.88,
+                        "bytes_read": 24192402.0
+                    },
+                    "real": {
+                        "connections": 3354.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5455.0,
+                        "time": 10.31,
+                        "conn_p_user_sec": 529.1,
+                        "bytes_read": 25568041.0
+                    },
+                    "real": {
+                        "connections": 5455.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Falcon-1024+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 210.0,
+                        "time": 17.35,
+                        "conn_p_user_sec": 12.1,
+                        "bytes_read": 1513890.0
+                    },
+                    "real": {
+                        "connections": 210.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 216.0,
+                        "time": 17.5,
+                        "conn_p_user_sec": 12.34,
+                        "bytes_read": 1011528.0
+                    },
+                    "real": {
+                        "connections": 216.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Falcon-1024+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 610.0,
+                        "time": 15.58,
+                        "conn_p_user_sec": 39.15,
+                        "bytes_read": 4397490.0
+                    },
+                    "real": {
+                        "connections": 610.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 641.0,
+                        "time": 15.68,
+                        "conn_p_user_sec": 40.88,
+                        "bytes_read": 3001803.0
+                    },
+                    "real": {
+                        "connections": 641.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Falcon-1024+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 401.0,
+                        "time": 15.06,
+                        "conn_p_user_sec": 26.63,
+                        "bytes_read": 2894819.0
+                    },
+                    "real": {
+                        "connections": 401.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 414.0,
+                        "time": 15.06,
+                        "conn_p_user_sec": 27.49,
+                        "bytes_read": 1942902.0
+                    },
+                    "real": {
+                        "connections": 414.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Falcon-1024+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 947.0,
+                        "time": 14.8,
+                        "conn_p_user_sec": 63.99,
+                        "bytes_read": 6840181.0
+                    },
+                    "real": {
+                        "connections": 947.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1013.0,
+                        "time": 14.68,
+                        "conn_p_user_sec": 69.01,
+                        "bytes_read": 4758061.0
+                    },
+                    "real": {
+                        "connections": 1013.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3314.0,
+                        "time": 10.28,
+                        "conn_p_user_sec": 322.37,
+                        "bytes_read": 23903882.0
+                    },
+                    "real": {
+                        "connections": 3314.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5297.0,
+                        "time": 10.33,
+                        "conn_p_user_sec": 512.78,
+                        "bytes_read": 24827337.0
+                    },
+                    "real": {
+                        "connections": 5297.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3254.0,
+                        "time": 10.37,
+                        "conn_p_user_sec": 313.79,
+                        "bytes_read": 23477610.0
+                    },
+                    "real": {
+                        "connections": 3254.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5174.0,
+                        "time": 11.38,
+                        "conn_p_user_sec": 454.66,
+                        "bytes_read": 24261061.0
+                    },
+                    "real": {
+                        "connections": 5174.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            }
+        },
+        "unikraft": {
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86820.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4628.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 21793252.0
+                    },
+                    "real": {
+                        "connections": 4628.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79541.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 889245.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86772.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 32.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 568.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2672440.0
+                    },
+                    "real": {
+                        "connections": 568.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86892.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 32.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 417.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1966155.0
+                    },
+                    "real": {
+                        "connections": 417.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86940.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 982.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4634058.0
+                    },
+                    "real": {
+                        "connections": 982.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86820.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4468.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 21039812.0
+                    },
+                    "real": {
+                        "connections": 4468.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 86844.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 31.0,
+                        "bytes_read": 7237.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4317.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 20337387.0
+                    },
+                    "real": {
+                        "connections": 4317.0,
+                        "time": 31.0,
+                        "bytes_read": 4711.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 215.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1555525.0
+                    },
+                    "real": {
+                        "connections": 215.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4589.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 21609601.0
+                    },
+                    "real": {
+                        "connections": 4589.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 121.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 874951.0
+                    },
+                    "real": {
+                        "connections": 121.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 188.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 884540.0
+                    },
+                    "real": {
+                        "connections": 188.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 181.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1308811.0
+                    },
+                    "real": {
+                        "connections": 181.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 578.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2719490.0
+                    },
+                    "real": {
+                        "connections": 578.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 155.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1122355.0
+                    },
+                    "real": {
+                        "connections": 155.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 425.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2003875.0
+                    },
+                    "real": {
+                        "connections": 425.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 193.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1398285.0
+                    },
+                    "real": {
+                        "connections": 193.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 989.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4667091.0
+                    },
+                    "real": {
+                        "connections": 989.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 215.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1555525.0
+                    },
+                    "real": {
+                        "connections": 215.0,
+                        "time": 31.0,
+                        "bytes_read": 7235.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4451.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 20959759.0
+                    },
+                    "real": {
+                        "connections": 4451.0,
+                        "time": 31.0,
+                        "bytes_read": 4709.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 215.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1555955.0
+                    },
+                    "real": {
+                        "connections": 215.0,
+                        "time": 31.0,
+                        "bytes_read": 7237.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4314.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 20323254.0
+                    },
+                    "real": {
+                        "connections": 4314.0,
+                        "time": 31.0,
+                        "bytes_read": 4711.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3528.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25440408.0
+                    },
+                    "real": {
+                        "connections": 3528.0,
+                        "time": 31.0,
+                        "bytes_read": 7211.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4263.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19972155.0
+                    },
+                    "real": {
+                        "connections": 4263.0,
+                        "time": 31.0,
+                        "bytes_read": 4685.0
+                    }
+                }
+            },
+            "Falcon-512+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 187.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1347709.0
+                    },
+                    "real": {
+                        "connections": 187.0,
+                        "time": 31.0,
+                        "bytes_read": 7207.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 190.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 889390.0
+                    },
+                    "real": {
+                        "connections": 190.0,
+                        "time": 31.0,
+                        "bytes_read": 4681.0
+                    }
+                }
+            },
+            "Falcon-512+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 564.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4064748.0
+                    },
+                    "real": {
+                        "connections": 564.0,
+                        "time": 31.0,
+                        "bytes_read": 7207.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 578.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2705618.0
+                    },
+                    "real": {
+                        "connections": 578.0,
+                        "time": 31.0,
+                        "bytes_read": 4681.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 418.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3016706.0
+                    },
+                    "real": {
+                        "connections": 418.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 426.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1998366.0
+                    },
+                    "real": {
+                        "connections": 426.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 960.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 6932160.0
+                    },
+                    "real": {
+                        "connections": 960.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 990.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4648050.0
+                    },
+                    "real": {
+                        "connections": 990.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3464.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24978904.0
+                    },
+                    "real": {
+                        "connections": 3464.0,
+                        "time": 31.0,
+                        "bytes_read": 7211.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4167.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19522395.0
+                    },
+                    "real": {
+                        "connections": 4167.0,
+                        "time": 31.0,
+                        "bytes_read": 4685.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3373.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24329449.0
+                    },
+                    "real": {
+                        "connections": 3373.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4047.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 18968289.0
+                    },
+                    "real": {
+                        "connections": 4047.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3597.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25945161.0
+                    },
+                    "real": {
+                        "connections": 3597.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4248.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19910376.0
+                    },
+                    "real": {
+                        "connections": 4248.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 187.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1348083.0
+                    },
+                    "real": {
+                        "connections": 187.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 885087.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium2+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 566.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4080294.0
+                    },
+                    "real": {
+                        "connections": 566.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 580.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2716140.0
+                    },
+                    "real": {
+                        "connections": 580.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 417.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3010323.0
+                    },
+                    "real": {
+                        "connections": 417.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 424.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1989832.0
+                    },
+                    "real": {
+                        "connections": 424.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 960.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 6934080.0
+                    },
+                    "real": {
+                        "connections": 960.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 995.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4673515.0
+                    },
+                    "real": {
+                        "connections": 995.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3543.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25555659.0
+                    },
+                    "real": {
+                        "connections": 3543.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4154.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19469798.0
+                    },
+                    "real": {
+                        "connections": 4154.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium2+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3466.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25007190.0
+                    },
+                    "real": {
+                        "connections": 3466.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4023.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 18863847.0
+                    },
+                    "real": {
+                        "connections": 4023.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3351.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24170763.0
+                    },
+                    "real": {
+                        "connections": 3351.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4279.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 20055673.0
+                    },
+                    "real": {
+                        "connections": 4279.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium3+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 187.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1348083.0
+                    },
+                    "real": {
+                        "connections": 187.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 885087.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium3+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 563.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4058667.0
+                    },
+                    "real": {
+                        "connections": 563.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 578.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2706774.0
+                    },
+                    "real": {
+                        "connections": 578.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Dilithium3+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 417.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3010323.0
+                    },
+                    "real": {
+                        "connections": 417.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 425.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1994525.0
+                    },
+                    "real": {
+                        "connections": 425.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Dilithium3+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 950.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 6861850.0
+                    },
+                    "real": {
+                        "connections": 950.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 992.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4659424.0
+                    },
+                    "real": {
+                        "connections": 992.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3296.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 23774048.0
+                    },
+                    "real": {
+                        "connections": 3296.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4177.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19577599.0
+                    },
+                    "real": {
+                        "connections": 4177.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3250.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 23448750.0
+                    },
+                    "real": {
+                        "connections": 3250.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4044.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 18962316.0
+                    },
+                    "real": {
+                        "connections": 4044.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3242.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 23384546.0
+                    },
+                    "real": {
+                        "connections": 3242.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4299.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 20149413.0
+                    },
+                    "real": {
+                        "connections": 4299.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Falcon-1024+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 188.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1355292.0
+                    },
+                    "real": {
+                        "connections": 188.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 885087.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Falcon-1024+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 563.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4058667.0
+                    },
+                    "real": {
+                        "connections": 563.0,
+                        "time": 31.0,
+                        "bytes_read": 7209.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 580.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2716140.0
+                    },
+                    "real": {
+                        "connections": 580.0,
+                        "time": 31.0,
+                        "bytes_read": 4683.0
+                    }
+                }
+            },
+            "Falcon-1024+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 417.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3010323.0
+                    },
+                    "real": {
+                        "connections": 417.0,
+                        "time": 31.0,
+                        "bytes_read": 7219.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 426.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1999218.0
+                    },
+                    "real": {
+                        "connections": 426.0,
+                        "time": 31.0,
+                        "bytes_read": 4693.0
+                    }
+                }
+            },
+            "Falcon-1024+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 954.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 6890742.0
+                    },
+                    "real": {
+                        "connections": 954.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 993.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4664121.0
+                    },
+                    "real": {
+                        "connections": 993.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3188.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 22995044.0
+                    },
+                    "real": {
+                        "connections": 3188.0,
+                        "time": 31.0,
+                        "bytes_read": 7213.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4199.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19680713.0
+                    },
+                    "real": {
+                        "connections": 4199.0,
+                        "time": 31.0,
+                        "bytes_read": 4687.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3137.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 22633455.0
+                    },
+                    "real": {
+                        "connections": 3137.0,
+                        "time": 31.0,
+                        "bytes_read": 7215.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4070.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 19084230.0
+                    },
+                    "real": {
+                        "connections": 4070.0,
+                        "time": 31.0,
+                        "bytes_read": 4689.0
+                    }
+                }
+            }
+        },
         "native": {
             "SPHINCS+-SHA2-128s-simple+Kyber512": {
                 "time": 30.0,
