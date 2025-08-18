@@ -69,7 +69,7 @@ def plot_power():
     plt.ylabel('Power (Volts)')
     
     plt.yticks(np.arange(0, 10, 1))
-    plt.xticks(np.arange(0, 1500, 100))
+    plt.xticks(np.arange(0, 1500, 10))
     
     plt.grid()
     plt.legend()
@@ -103,7 +103,7 @@ def plot_power():
     plt.ylabel('Power (W)')
     
     plt.yticks(np.arange(0, 10, 1))
-    plt.xticks(np.arange(0, 1500, 10))
+    plt.xticks(np.arange(0, 1500, 1))
     
     plt.grid()
     plt.legend()
