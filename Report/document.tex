@@ -88,83 +88,93 @@ The next technology is the Unikraft unikernel which is a library operating syste
 
 To enable quantum resistant-cryptography we use the liboqs library and its oqsprovider library that acts as connects to the provider architecture of OpenSSL. 
 
+
+% TODO where is everything and what does it do
+% libs are in Unikraft/libs, precompiled
+% uk-build-aarch64 is the dockerfile that builds the libs
+% ssl_uk_test executes the tests for cryptographic primitives
+
+% # unified setup
+
+% call ./setup.sh in the folders Container/Native
+% will generate openssl link that starts openssl binary in container
+
+% start docker run --rm multiarch/qemu-user-static
+% this will allow cross platform build of the project
+
+
+\section{Development}
+
+In this section we document the development process, the faced challenges, and solutions. 
+
 Unikraft already has an older version OpenSSL version included in its core packages. Unfortunately the version is too old to support the provider architecture for newer OpenSSL version. So our approach was to integrate a newer OpenSSL version into Unikraft. 
 
 Unikraft has its own build system and the consesus in the Unikraft community is to create a new build script for each library that works on the original source files. This works well for smaller projects however with OpenSSL we have several build steps we have to make before we get our resulting library, and all that is done with a large amount of source files. 
 
-To build OpenSSL we first have to configure it via a perl Configure script. This not only contains the configuration for the main library but also the configuragion for a large amount of tests, demos, documentation, and applications. This Configure script then generates a Makefile. Initially we tried to include OpenSSL by rewriting the Makefile to work with the Unikraft build system, though this quickly turned out to be quite difficult, because of the size of the Makfile and the fact that most of it is generated automatically. This would also mean that if we tried to update the library we potentially would have to rewrite the solution again. A proper solution for this problem would be to write create a new target system in the Configuration script. However because of the lack of time and Perl knowledge we pursued another approach. Fortunately the Unikraft build system also has the ability to inlucde prebuilt object files and static libraries. We built a static library and then used this feature to include it in Unikrafts build process. 
+To build OpenSSL we first have to configure it via a perl Configure script. This not only contains the configuration for the main library but also the configuragion for a large amount of tests, demos, documentation, and applications. This Configure script then generates a Makefile. Initially we tried to include OpenSSL by rewriting the Makefile to work with the Unikraft build system, though this quickly turned out to be quite difficult, because of the size of the Makefile and the fact that most of it is generated automatically. This would also mean that if we tried to update the library we potentially would have to rewrite the solution again. A proper solution for this problem would be to create a new target system in the Configuration script. However because of the lack of Perl knowledge we pursued another approach. Fortunately the Unikraft build system also has the ability to include prebuilt object files and static libraries. We built a static library and then used this feature to include it in Unikrafts build process. 
 
+Another approach would have been to use the Unikraft elfloader project which loads statically compiled binaries during runtime. We did not opt for this solution because regular Unikraft supports OpenSSL by compiling it directly into the unikernel. We wanted to make our solution as similar to the already existing infrastructure in case the solution finds further usage in other projects.
 
+Unikraft uses musl as a standard library so we had to adjust our build process for the static libraries we wanted to include. We used musl-gcc to compile the library statically and then included them in the build script of our Unikernel. We also needed to compile the linux-headers with musl-gcc because if they are compiled with regular gcc (with glibc) we have a different interface that is not compatible with Unikraft's interface. Aside from a few changes to fix mostly missing symbols and missing methods from Unikraft's musl implementation we did not have to change much on Unikraft's side to succefully compile a unikernel. Since liboqs and oqs-provider are fairly small and require very little interfacing with the operating system they ran with no change inside the Unikernel. OpenSSL on the other hand did not run without any changes. 
 
-% - What is FIPS, is it important?
-% - Reduce the ./Configure script from openssl so that teh Makefile gets as small as possible
-% - Inspect build system of unikraft to understand how to write a custom Makefile
-% - liboqs has configuration that can enable hardware acceleration OQS_USE_CPUFEATURE_INSTRUCTIONS
-% - maybe we can use elfloader for this and do not even need to port the library
-% - OQS_EMBEDDED_BUILD can be used to omit use of filesystem + systemcalls
-% - liboqss ninja run_tests does not pass all tests on this version on this mac
+OpenSSL has several constructors that are executed once the libraries is loaded (in our case once the program is launched since we have a static library). In one of those constructors OpenSSL purposefully causes a false instruction to raise a SIGILL exception to detect cpu features. For a regular operation system this does not pose a problem since cpu exception are caught by the kernel. In unikernel the exception is not caught and the unikernel simply crashes. There already exists a patch that forces OpenSSL to detect cpu features by using the auxiliary vector. 
+% https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/openssl/auxv.patch
+
+The current setup in the repository builds the libarries in the uk-build-aarch64 Dockerfile. Precompiled versions are already contained in the lib-openssl and lib-oqs libraries (only for arm64). 
+
+% # reproducing the libraries
+
+% libraries so far are used in the static library form .a and built manually
+% create repoducible way to build libraries inside the uk_build_aarch64 docker file
+% patched musl version is setup to compile the libraries
+% libraries are compiled inside the docker container 
+% everything is installed in the folder /opt/oqssa
+
+running cryptographic primitives
+
 % - liboqs may need static
 % https://github.com/open-quantum-safe/oqs-provider/blob/main/examples/static_oqsprovider.c
 
-% - TODO openssl compiler uses gcc -> we need to set compiler prefix to make sure it uses arm compilation even on x86 container
-% - TODO dependencies for musl linux-headers curl gcc + the kraft dependencies
-% - TODO (option for me) write gdb init that make gdb easier to use (set pagination off, ctrl c default3)
+testing cryptographic primitives
 
-% - enabled sigsetjmp in the Makefile.signal rule in libmusl TODO look into why this does not work
-% - compiled openssl inside alpine linux with musl instead of glibc TODO find a way to do this without docker 
-% - Dependencies (Alpine): linux-headers perl curl gcc make 
+% # tests
 
-% - TODO create patch libmusl needs to be patched in Makefile rules signal ifeq aarch64 -> arm64 
-% - check for __attribute__((constructor)) to see library intizializes something and causes the crash
-% - check for sigsetjmp that this may cause the crash
-% - cannot get signals to work properly look into that
-% - https://github.com/unikraft/unikraft/pull/1461 says that irqs need to be enabled 
-% - https://unikraft.org/docs/internals/booting
+% use liboqs tests and oqsprovider tests
 
-% - guess that it is a constructor was right
-% - it is OPENSSL_cpuid_setup
-% - assumption construtor has (void) as argument, maybe because unikraft passes arguments to it it does not work
-% - not its not the problem
-% - found this https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/openssl/auxv.patch
-% - says openssl intentionally executes invalid instruction sigill
+% never finishes in a loop
+% gdb still steps through
+% stdout is not working anymore
+% on next print call everything gets stuck
 
-% cd /workspace/Native/openssl-openssl-3.4.1/crypto
-% patch < /workspace/auxv.patch 
+% Single stepping until exit from function OQS_KEM_bike_l1_decode,
+% which has no line number information.
+% memcpy (dest=0x403ab840, src=0x403aa600, n=1541) at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
+% 23              for (; (uintptr_t)s % 4 && n; n--) *d++ = *s++;
+% (gdb) finish
+% Run till exit from #0  memcpy (dest=0x403ab840, src=0x403aa600, n=1541)
+%     at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
+% 0x0000000040224764 in OQS_KEM_bike_l1_decode ()
+% Value returned is $22 = (void *) 0x403ab840
+% (gdb) call printf("Hi\n")
 
-% ## Musl setup + linux-headers
-% ./configure --prefix=/workspace/Native/musl-install/ --syslibdir=/workspace/Native/musl-install/syslibdir/ 
-% make install
+% 320 440 
+% br OQS_KEM_bike_l1_decode
+% br OQS_KEM_bike_l1_gf2x_mod_mul
+% br OQS_KEM_bike_l1_gf2x_mod_mul_with_ctx
 
-% https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/linux-6.12.6.tar.xz
-% make headers ARCH="arm64"
-% - copy usr/include into musl-insall/include
+% gf2x_mod_mul_with_ctx
+% between 1000 1500#
 
-% - Configure musl-gcc path with CC= in openssl configuration script
+% uses karatsuba algorithms with recursion
+% solution increase stack size to make it run (8 Pages so far)
 
-% - Compilation will fail but the libcrypto is produced still have to look at a fix for this
-% - possible fix https://www.openwall.com/lists/musl/2023/10/12/3
+% not all tests pass bc not all algorithms are enabled
+% TODO do we need to support all of them?
 
-% - TODO cross compiling? only tested on aarch64 so far
-% - TODO write patch for musl aligned_alloc
+% done in ssl_uk_test also prints the version available ciphers and
+% TODO does a self connection to check if everything works
 
-% # .config
-% - select none in arm cpu
-% - select kvm for platform
-% - enable exactly one tty
-
-% ## Configuration for liboqs
-% mkdir build && cd build
-% cmake .. -DOQS_USE_OPENSSL=OFF -DCMAKE_INSTALL_PREFIX=/workspace/Native/opt -DCMAKE_C_COMPILER=/workspace/Native/musl-install/bin/musl-gcc
-% cmake --build .
-% cmake --install .
-% - TODO OQS_USE_OPENSSL depends on openssl and will look for openssl during compilation, but gives better performance include this
-
-% ## Configuration for oqs-provider
-% export liboqs_DIR="/workspace/Native/opt"
-% export OPENSSL_INSTALL="/workspace/Native/opt"
-% export CMAKE_PARAMS="-DCMAKE_C_COMPILER=/workspace/Native/musl-install/bin/musl-gcc -DOQS_PROVIDER_BUILD_STATIC=ON -DCMAKE_INSTALL_PREFIX=/workspace/Native/opt"
-% ./scripts/fullbuild.sh
-% cmake --install _build
+configuring networking
 
 % # Networking 
 
@@ -190,8 +200,6 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 % - param LIBUKNETDEV_EINFO_LIBPARAM
 % - bridge see above
 
-% - Printf fails need: 
-% drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
 
 % # TLS networking
 
@@ -253,6 +261,20 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 
 % - TODO '-Wl,-rpath,$(LIBRPATH)' is not configured for the docker file, is not needed since we do not use the openssl bin, but if we want to we need to adjust this
 
+networking with openssl s_server/s_client
+
+using different signature/kem algorithms
+
+% to use kem algorithm:
+% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -groups x25519_kyber512
+% https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
+
+% split up the sig oqs speed c implementation 
+
+% find a way to use send-to-pi efficiently again maybe rsync
+
+acceleration with kvm
+
 % # kvm on pi
 
 % - first getrandom was not implemented, patch proposed on discord, did not work bc depends on lots of other patches
@@ -266,65 +288,16 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 % - updating to the most recent commit of unikraft helped, commit Tue Mar 18 5050e9f11e57a17bd18d4f1a3478010b329c6855
 % - unikraft needs patch in poll -> poll_select
 
-% # To run the unikernel
-% qemu-system-aarch64 -kernel build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic
-
-% # Debugging 
-% qemu-system-aarch64 -s -S -cpu max -machine virt -m 128M -nodefaults -no-acpi -display none -serial stdio -kernel build/ssl_uk_qemu-arm64 -append verbose
-
-% gdb --eval-command="target remote :1234" build/ssl_uk_qemu-arm64.dbg
-
-% # reproducing the libraries
-
-% libraries so far are used in the static library form .a and built manually
-% create repoducible way to build libraries inside the uk_build_aarch64 docker file
-% patched musl version is setup to compile the libraries
-% libraries are compiled inside the docker container 
-% everything is installed in the folder /opt/oqssa
-
-% # unified setup
-
-% call ./setup.sh in the folders Container/Native
-% will generate openssl link that starts openssl binary in container
-
-% # tests
-
-% use liboqs tests and oqsprovider tests
-
-% never finishes in a loop
-% gdb still steps through
-% stdout is not working anymore
-% on next print call everything gets stuck
-
-% Single stepping until exit from function OQS_KEM_bike_l1_decode,
-% which has no line number information.
-% memcpy (dest=0x403ab840, src=0x403aa600, n=1541) at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
-% 23              for (; (uintptr_t)s % 4 && n; n--) *d++ = *s++;
-% (gdb) finish
-% Run till exit from #0  memcpy (dest=0x403ab840, src=0x403aa600, n=1541)
-%     at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
-% 0x0000000040224764 in OQS_KEM_bike_l1_decode ()
-% Value returned is $22 = (void *) 0x403ab840
-% (gdb) call printf("Hi\n")
-
-% 320 440 
-% br OQS_KEM_bike_l1_decode
-% br OQS_KEM_bike_l1_gf2x_mod_mul
-% br OQS_KEM_bike_l1_gf2x_mod_mul_with_ctx
-
-% gf2x_mod_mul_with_ctx
-% between 1000 1500#
-
-% uses karatsuba algorithms with recursion
-% solution increase stack size to make it run (8 Pages so far)
-
-% not all tests pass bc not all algorithms are enabled
-% TODO do we need to support all of them?
-
-% done in ssl_uk_test also prints the version available ciphers and
-% TODO does a self connection to check if everything works
 
 
+alternative virtualization
+docker 
+native
+
+% networking for the different virtualization technologies requires different addresses explain this
+
+
+benchmarks
 % # benchmarks
 
 % internal benchmarks done in oqs_uk_speed also taken from liboqs, test the speed of KEM and Signature algorithms
@@ -361,28 +334,6 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 
 % TODO find a way to reliably kill the openssl processes, with s_client you have to use Q in stdin to terminate it, Unikraft does not have stdin, find a way to terminate this as well, s_server does neet ctrl-c, the binaries we provide (Unikraft/openssl) are scripts that then execute the right configuration with e.g. qemu, if we cancel this script maybe qemu is not termianted as well
 
-% # on pi 
-
-% CMake Error at CMakeLists.txt:64 (find_package):
-%   By not providing "Findliboqs.cmake" in CMAKE_MODULE_PATH this project has
-%   asked CMake to find a package configuration file provided by "liboqs", but
-%   CMake did not find one.
-
-%   Could not find a package configuration file provided by "liboqs" with any
-%   of the following names:
-
-%     liboqsConfig.cmake
-%     liboqs-config.cmake
-
-%   Add the installation prefix of "liboqs" to CMAKE_PREFIX_PATH or set
-%   "liboqs_DIR" to a directory containing one of the above files.  If "liboqs"
-%   provides a separate development package or SDK, be sure it has been
-%   installed.
-
-% TODO setup script did not work, few changes are made on the pi cant push move manually
-
-
-% IMPORTANT Container does not work with oqsprovider yet, fix this
 
 % # first results of power measurement
 
@@ -453,13 +404,6 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 % - add memory benchmark
 % - write report
 
-% to use kem algorithm:
-% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -groups x25519_kyber512
-% https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
-
-% split up the sig oqs speed c implementation 
-
-% find a way to use send-to-pi efficiently again maybe rsync
 
 
 % # TODOs
@@ -532,16 +476,16 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 % 	\label{fig:aisec-logo}
 % \end{figure}
 
-% \subsection{Example Subsection}
-% Text text text text text text text text text text text text text text text text
-% text text text text text text text text text text text text text text text text.
 
-% \subsubsection{Example Subsubsection}
-% Text text text text text text text text text text text text text text text text
-% text text text text text text text text text text text text text text text text.
+error handling
 
-% \paragraph{Example Paragraph}
-% Text text text text text text text text text text text text text text text text
-% text text text text text text text text text text text text text text text text.
+% error handling the unikernel
+% # .config
+% - select none in arm cpu
+% - select kvm for platform
+% - enable exactly one tty
+
+% - Printf fails need: 
+% drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
 
 \end{document}
