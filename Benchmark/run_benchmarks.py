@@ -18,8 +18,8 @@ SIG_ALGORITHMS = [
     "Dilithium2",
     "Dilithium3",
     "Falcon-1024",
+    "ECDSA",
     "RSA-2048",
-    "DSA-2048",
 ]
 KEM_ALGORITHMS = [
     "Kyber512",
@@ -29,7 +29,7 @@ KEM_ALGORITHMS = [
     "FrodoKEM-640-SHAKE",
     "Kyber768",
     "Kyber1024",
-    "RSA-2048",
+    "ECDHE",
 ]
 STAGES = [
     "primitives",
@@ -395,7 +395,7 @@ def run_s_server(virt, sig, kem):
         kem,
         "-accept",
         "443",
-        "-www",
+        "-www"
     ]
     print(" ".join(cmd))
     return subprocess.Popen(
@@ -435,12 +435,14 @@ def run_s_client(virt, sig, kem):
 def run_s_time(virt, time, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
+    
     if virt == "unikraft":
         ca_crt = f"Benchmark/pki/CA_{sig}.crt"
     elif virt == "docker": 
         ca_crt = f"/workspace/Benchmark/pki/CA_{sig}.crt"
     else:
         ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
+        
     cmd = [
         openssl_version,
         "s_time",
@@ -504,20 +506,7 @@ def setup_certificates(sig):
         ca_key_src = ["-key", ca_key]
         dir_key_src = ["-key", dir_key]
 
-    elif sig == "DSA":
-        cmd = [
-            get_virt_bin("native", "openssl"),
-            "dsaparam",
-            "-genkey",
-            "2048",
-            "-out",
-            ca_key,
-        ]
-        print(" ".join(cmd))
-        prc = subprocess.run(cmd, stdout=subprocess.PIPE)
-        if prc.returncode != 0:
-            raise Exception(f"ecparam failed with return code: {prc.returncode}")
-
+    elif sig == "ECDSA":
         cmd = [
             get_virt_bin("native", "openssl"),
             "ecparam",
@@ -634,7 +623,7 @@ def get_group(kem):
         "FrodoKEM-640-SHAKE": "frodo640shake",
         "Kyber768": "kyber768",
         "Kyber1024": "kyber1024",
-        "RSA-2048": "rsa2048",
+        "ECDHE" : "secp256r1"
     }[kem]
 
 
@@ -647,7 +636,7 @@ def get_sig(sig):
         "Dilithium3": "Dilithium3",
         "Falcon-1024": "falcon1024",
         "RSA-2048": "RSA-2048",
-        "DSA": "DSA",
+        "ECDSA": "ECDSA",
     }[sig]
 
 
