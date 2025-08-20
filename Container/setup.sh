@@ -13,7 +13,8 @@ if [ "$1" == "clean" ]; then
 fi  
 
 docker network create -d bridge alpine-bench-net
-docker build -t alpine-bench -f $SCRIPT_DIR/alpine-bench-aarch64 $SCRIPT_DIR
+docker build --platform linux/arm64 -t alpine-bench-epqciuoe -f $SCRIPT_DIR/alpine-bench-aarch64 $SCRIPT_DIR
+docker save -o $SCRIPT_DIR/alpine_bench.tar alpine-bench-epqciuoe
 
 cat << EOF > $SCRIPT_DIR/openssl
 #!/usr/bin/env bash
@@ -24,7 +25,7 @@ docker run \\
     -it --rm \\
     -p 442:442 \\
     --add-host host.docker.internal=host-gateway \\
-    alpine-bench \\
+    alpine-bench-epqciuoe \\
     openssl \$*
 EOF
 
@@ -37,7 +38,7 @@ docker run \\
     -it --rm \\
     -p 442:442 \\
     --add-host host.docker.internal=host-gateway \\
-    alpine-bench \\
+    alpine-bench-epqciuoe \\
     sh
 EOF
 
@@ -48,12 +49,10 @@ docker run \\
     --network=alpine-bench-net \\
     -v \$(pwd):/workspace \\
     -it --rm \\
-    alpine-bench \\
+    alpine-bench-epqciuoe \\
     /local/oqs_speed/benchmark \$*
 EOF
 
 chmod a+x $SCRIPT_DIR/openssl
 chmod a+x $SCRIPT_DIR/sh
 chmod a+x $SCRIPT_DIR/benchmark
-
-# docker save -o alpine_bench.tar alpine-bench

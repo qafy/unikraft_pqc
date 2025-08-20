@@ -28,6 +28,10 @@
 #include <openssl/dsa.h>
 #include <openssl/rsa.h>
 
+
+OQS_STATUS sig_vanilla_rsa2048(uint64_t duration, bool noKeygen, bool noSign, bool noVerify);
+OQS_STATUS sig_vanilla_ecdsa(uint64_t duration, bool noKeygen, bool noSign, bool noVerify);
+
 static void fullcycle(OQS_SIG *sig, uint8_t *public_key, uint8_t *secret_key, uint8_t *signature, size_t signature_len, uint8_t *message, size_t message_len)
 {
 	if (OQS_SIG_keypair(sig, public_key, secret_key) != OQS_SUCCESS)
@@ -45,143 +49,6 @@ static void fullcycle(OQS_SIG *sig, uint8_t *public_key, uint8_t *secret_key, ui
 		printf("verify error. Exiting.\n");
 		exit(-1);
 	}
-}
-static OQS_STATUS sig_speed_ossl_wrapper(const char *sig_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeygen, bool noSign, bool noVerify)
-{
-	OSSL_LIB_CTX *app_libctx = NULL;
-	char *propq = NULL;
-	EVP_PKEY *pkey = NULL;
-	EVP_PKEY_CTX *ctx_params = NULL;
-	EVP_PKEY *pkey_params = NULL;
-	EVP_PKEY_CTX *sig_gen_ctx = NULL;
-	EVP_PKEY_CTX *sig_sign_ctx = NULL;
-	EVP_PKEY_CTX *sig_verify_ctx = NULL;
-	unsigned char md[32];
-	unsigned char *sig;
-	char sfx[100];
-	size_t md_len = 32;
-	size_t max_sig_len, sig_len;
-	unsigned int bits;
-	OSSL_PARAM params[] = {OSSL_PARAM_END, OSSL_PARAM_END};
-	int use_params = 0;
-
-	/* only sign little data to avoid measuring digest performance */
-	memset(md, 0, 32);
-
-	/* no string after rsa<bitcnt> permitted: */
-	if (strlen(sig_name) < 100 + 4 /* rsa+digit */
-		&& sscanf(sig_name, "rsa%u%s", &bits, sfx) == 1)
-	{
-		params[0] = OSSL_PARAM_construct_uint("bits",
-											  &bits);
-		use_params = 1;
-	}
-
-	if (strncmp(sig_name, "dsa", 3) == 0)
-	{
-		ctx_params = EVP_PKEY_CTX_new_id(EVP_PKEY_DSA, NULL);
-		if (ctx_params == NULL || EVP_PKEY_paramgen_init(ctx_params) <= 0 || EVP_PKEY_CTX_set_dsa_paramgen_bits(ctx_params, atoi(sig_name + 3)) <= 0 || EVP_PKEY_paramgen(ctx_params, &pkey_params) <= 0 || (sig_gen_ctx = EVP_PKEY_CTX_new(pkey_params, NULL)) == NULL || EVP_PKEY_keygen_init(sig_gen_ctx) <= 0)
-		{
-			fprintf(stderr, "Error initializing classic keygen ctx for %s.\n",
-					sig_name);
-			return OQS_ERROR;
-		}
-	}
-
-	if (sig_gen_ctx == NULL)
-		sig_gen_ctx = EVP_PKEY_CTX_new_from_name(app_libctx,
-												 use_params == 1 ? "RSA" : sig_name,
-												 propq);
-
-	if (!sig_gen_ctx || EVP_PKEY_keygen_init(sig_gen_ctx) <= 0 || (use_params && EVP_PKEY_CTX_set_params(sig_gen_ctx, params) <= 0))
-	{
-		fprintf(stderr, "Error initializing keygen ctx for %s.\n",
-				sig_name);
-		return OQS_ERROR;
-	}
-	if (EVP_PKEY_keygen(sig_gen_ctx, &pkey) <= 0)
-	{
-		fprintf(stderr,
-				"Error while generating signature EVP_PKEY for %s.\n",
-				sig_name);
-		return OQS_ERROR;
-	}
-	/* Now prepare signature data structs */
-	sig_sign_ctx = EVP_PKEY_CTX_new_from_pkey(app_libctx,
-											  pkey,
-											  propq);
-	if (sig_sign_ctx == NULL || EVP_PKEY_sign_init(sig_sign_ctx) <= 0 || (use_params == 1 && (EVP_PKEY_CTX_set_rsa_padding(sig_sign_ctx, 1) <= 0)) || EVP_PKEY_sign(sig_sign_ctx, NULL, &max_sig_len, md, md_len) <= 0)
-	{
-		fprintf(stderr,
-				"Error while initializing signing data structs for %s.\n",
-				sig_name);
-		return OQS_ERROR;
-	}
-	sig = malloc(sig_len = max_sig_len);
-	if (sig == NULL)
-	{
-		fprintf(stderr, "MemAlloc error in sign for %s.\n", sig_name);
-		return OQS_ERROR;
-	}
-	if (EVP_PKEY_sign(sig_sign_ctx, sig, &sig_len, md, md_len) <= 0)
-	{
-		fprintf(stderr, "Signing error for %s.\n", sig_name);
-		return OQS_ERROR;
-	}
-	/* Now prepare verify data structs */
-	memset(md, 0, 32);
-	sig_verify_ctx = EVP_PKEY_CTX_new_from_pkey(app_libctx,
-												pkey,
-												propq);
-	if (sig_verify_ctx == NULL || EVP_PKEY_verify_init(sig_verify_ctx) <= 0 || (use_params == 1 && (EVP_PKEY_CTX_set_rsa_padding(sig_verify_ctx, 1) <= 0)))
-	{
-		fprintf(stderr,
-				"Error while initializing verify data structs for %s.\n",
-				sig_name);
-		return OQS_ERROR;
-	}
-	if (EVP_PKEY_verify(sig_verify_ctx, sig, sig_len, md, md_len) <= 0)
-	{
-		fprintf(stderr, "Verify error for %s.\n", sig_name);
-		return OQS_ERROR;
-	}
-	if (EVP_PKEY_verify(sig_verify_ctx, sig, sig_len, md, md_len) <= 0)
-	{
-		fprintf(stderr, "Verify 2 error for %s.\n", sig_name);
-		return OQS_ERROR;
-	}
-	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", sig_name, "", "", "", "", "", "");
-
-	
-	if (!doFullCycle)
-	{
-		if (!noKeygen)
-			TIME_OPERATION_SECONDS(EVP_PKEY_keygen(sig_gen_ctx, &pkey), "keygen", duration)
-		if (!noSign)
-			TIME_OPERATION_SECONDS(EVP_PKEY_sign(sig_sign_ctx, sig, &sig_len, md, md_len), "sign", duration)
-		if (!noVerify)
-			TIME_OPERATION_SECONDS(EVP_PKEY_verify(sig_verify_ctx, sig, sig_len, md, md_len), "verify", duration)
-	}
-	else
-	{
-		fprintf(stderr, "Not implemented\n");
-		return OQS_ERROR;
-	}
-
-	if (printInfo)
-	{
-		fprintf(stderr, "Not implemented\n");
-		return OQS_ERROR;
-	}
-	return OQS_SUCCESS;
-
-	// for (count = 0; COND(kems_c[testnum][0]); count++) {
-	//     EVP_PKEY_keygen(ctx, &pkey);
-	//     /* TBD: How much does free influence runtime? */
-	//     EVP_PKEY_free(pkey);
-	//     pkey = NULL;
-	// }
-	return OQS_SUCCESS;
 }
 
 static OQS_STATUS sig_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeygen, bool noSign, bool noVerify)
@@ -291,9 +158,9 @@ int main_speed_sig(int argc, char **argv)
 	bool noVerify = false;
 	bool noSign = false;
 
-	bool noOQS = false;
+	bool do_rsa = false;
+	bool do_ecdsa = false;
 	OQS_SIG *single_sig = NULL;
-	const char *non_oqs_name = NULL;
 
 	OQS_init();
 	OQS_randombytes_switch_algorithm(OQS_RAND_alg_openssl);
@@ -356,18 +223,16 @@ int main_speed_sig(int argc, char **argv)
 			noVerify = true;
 			continue;
 		}
-		else if ((strcmp(argv[i], "RSA") == 0))
+		else if ((strcmp(argv[i], "RSA-2048") == 0))
 		{
-			non_oqs_name = "rsa2048";
-			noOQS = true;
-			single_sig = (OQS_SIG *) 1;
+			do_rsa = true;
+			single_sig = (OQS_SIG *)1;
 			break;
 		}
-		else if ((strcmp(argv[i], "DSA") == 0))
+		else if ((strcmp(argv[i], "ECDSA") == 0))
 		{
-			non_oqs_name = "dsa2048";
-			noOQS = true;
-			single_sig = (OQS_SIG *) 1;
+			do_ecdsa = true;
+			single_sig = (OQS_SIG *)1;
 			break;
 		}
 		else
@@ -409,19 +274,24 @@ int main_speed_sig(int argc, char **argv)
 	PRINT_TIMER_HEADER
 	if (single_sig != NULL)
 	{
-		if (noOQS)
-		{	
-			rc = sig_speed_ossl_wrapper(non_oqs_name, duration, printSigInfo, doFullCycle, noKeygen, noSign, noVerify);
+		if (do_rsa)
+		{
+			rc = sig_vanilla_rsa2048(duration, noKeygen, noSign, noVerify);
+		}
+		else if (do_ecdsa)
+		{
+			rc = sig_vanilla_ecdsa(duration, noKeygen, noSign, noVerify);
 		}
 		else
 		{
 			rc = sig_speed_wrapper(single_sig->method_name, duration, printSigInfo, doFullCycle, noKeygen, noSign, noVerify);
 		}
+		
 		if (rc != OQS_SUCCESS)
 		{
 			ret = EXIT_FAILURE;
 		}
-		//OQS_SIG_free(single_sig);
+		// OQS_SIG_free(single_sig);
 	}
 	else
 	{
@@ -433,10 +303,9 @@ int main_speed_sig(int argc, char **argv)
 				ret = EXIT_FAILURE;
 			}
 		}
-		if (noOQS)
-		{
-			rc = sig_speed_ossl_wrapper(single_sig->method_name, duration, printSigInfo, doFullCycle, noKeygen, noSign, noVerify);
-		}
+
+		rc = sig_vanilla_rsa2048(duration, noKeygen, noSign, noVerify);
+		rc = sig_vanilla_ecdsa(duration, noKeygen, noSign, noVerify);
 	}
 	PRINT_TIMER_FOOTER
 	OQS_destroy();

@@ -22,6 +22,8 @@
 #include <openssl/rsa.h>
 #include <openssl/err.h>
 
+OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign);
+
 static void fullcycletest(OQS_KEM *kem, uint8_t *public_key, uint8_t *secret_key, uint8_t *ciphertext, uint8_t *shared_secret_e, uint8_t *shared_secret_d)
 {
 	if (OQS_KEM_keypair(kem, public_key, secret_key) != OQS_SUCCESS)
@@ -39,210 +41,6 @@ static void fullcycletest(OQS_KEM *kem, uint8_t *public_key, uint8_t *secret_key
 		printf("Error during KEM decaps. Exiting.\n");
 		exit(-1);
 	}
-}
-
-static OQS_STATUS kem_ossl_speed_wrapper(const char *kem_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeyGen, bool noEncaps, bool noDecaps)
-{
-	OSSL_LIB_CTX *app_libctx = NULL;
-	static const char *app_propq = NULL;
-	EVP_PKEY *pkey = NULL;
-	EVP_PKEY_CTX *kem_gen_ctx = NULL;
-	EVP_PKEY_CTX *kem_encaps_ctx = NULL;
-	EVP_PKEY_CTX *kem_decaps_ctx = NULL;
-	size_t send_secret_len, out_len;
-	size_t rcv_secret_len;
-	char *name;
-	unsigned char *out = NULL, *send_secret = NULL, *rcv_secret;
-	unsigned int bits;
-	char sfx[100];
-	OSSL_PARAM params[] = {OSSL_PARAM_END, OSSL_PARAM_END};
-	int use_params = 0;
-	enum kem_type_t
-	{
-		KEM_RSA = 1,
-		KEM_EC,
-		KEM_X25519,
-		KEM_X448
-	} kem_type;
-
-	/* no string after rsa<bitcnt> permitted: */
-	if (strlen(kem_name) < 100 + 4 /* rsa+digit */
-		&& sscanf(kem_name, "rsa%u%s", &bits, sfx) == 1)
-		kem_type = KEM_RSA;
-	else if (strncmp(kem_name, "EC", 2) == 0)
-		kem_type = KEM_EC;
-	else if (strcmp(kem_name, "X25519") == 0)
-		kem_type = KEM_X25519;
-	else if (strcmp(kem_name, "X448") == 0)
-		kem_type = KEM_X448;
-	else 
-		kem_type = 0;
-
-	if (ERR_peek_error())
-	{
-		fprintf(stderr,
-				"WARNING: the error queue contains previous unhandled errors.\n");
-		return 1;
-	}
-
-	if (kem_type == KEM_RSA)
-	{
-		params[0] = OSSL_PARAM_construct_uint("bits",
-											  &bits);
-		use_params = 1;
-	}
-	else if (kem_type == KEM_EC) {
-		name = (char *)(kem_name + 2);
-		params[0] = OSSL_PARAM_construct_utf8_string("group",
-											name, 0);
-		use_params = 1;
-	}
-	kem_gen_ctx = EVP_PKEY_CTX_new_from_name(app_libctx, "EC", app_propq);
-
-	if ((!kem_gen_ctx || EVP_PKEY_keygen_init(kem_gen_ctx) <= 0) || (use_params && EVP_PKEY_CTX_set_params(kem_gen_ctx, params) <= 0))
-	{
-		fprintf(stderr, "Error initializing keygen ctx for %s.\n",
-				kem_name);
-		return 1;
-	}
-	if (EVP_PKEY_keygen(kem_gen_ctx, &pkey) <= 0)
-	{
-		fprintf(stderr, "Error while generating KEM EVP_PKEY.\n");
-		ERR_print_errors_fp(stderr);
-		return 1;
-	}
-	/* Now prepare encaps data structs */
-	kem_encaps_ctx = EVP_PKEY_CTX_new_from_pkey(app_libctx,
-												pkey,
-												app_propq);
-	if (kem_encaps_ctx == NULL) {
-		fprintf(stderr, "kem_encaps_ctx == NULL\n");
-		return 1;
-	}
-	if (EVP_PKEY_encapsulate_init(kem_encaps_ctx, NULL) <= 0) {
-		fprintf(stderr, "EVP_PKEY_encapsulate_init failed\n");
-		ERR_print_errors_fp(stderr);
-		return 1;
-	}
-	if (kem_type == KEM_RSA && EVP_PKEY_CTX_set_kem_op(kem_encaps_ctx, "RSASVE") <= 0) {
-		fprintf(stderr, "EVP_PKEY_CTX_set_kem_op failed, should only happen with RSA\n");
-		return 1;
-	}
-	if (kem_type == KEM_EC || kem_type == KEM_X25519 || kem_type == KEM_X448) {
-		if (EVP_PKEY_CTX_set_kem_op(kem_encaps_ctx, "DHKEM") <= 0) {
-			fprintf(stderr, "EVP_PKEY_CTX_set_kem_op failed\n");
-			return 1;
-		}
-	}
-
-	if (EVP_PKEY_encapsulate(kem_encaps_ctx, NULL, &out_len, NULL, &send_secret_len) <= 0)
-	{
-		fprintf(stderr,
-				"Error while initializing encaps data structs for %s.\n",
-				kem_name);
-		return 1;
-	}
-	out = malloc(out_len);
-	send_secret = malloc(send_secret_len);
-	if (out == NULL || send_secret == NULL)
-	{
-		fprintf(stderr, "MemAlloc error in encaps for %s.\n", kem_name);
-		return 1;
-	}
-	if (EVP_PKEY_encapsulate(kem_encaps_ctx, out, &out_len,
-							 send_secret, &send_secret_len) <= 0)
-	{
-		fprintf(stderr, "Encaps error for %s.\n", kem_name);
-		return 1;
-	}
-	/* Now prepare decaps data structs */
-	kem_decaps_ctx = EVP_PKEY_CTX_new_from_pkey(app_libctx,
-												pkey,
-												app_propq);
-	if (kem_decaps_ctx == NULL || EVP_PKEY_decapsulate_init(kem_decaps_ctx, NULL) <= 0 || (kem_type == KEM_RSA && EVP_PKEY_CTX_set_kem_op(kem_decaps_ctx, "RSASVE") <= 0) || ((kem_type == KEM_EC || kem_type == KEM_X25519 || kem_type == KEM_X448) && EVP_PKEY_CTX_set_kem_op(kem_decaps_ctx, "DHKEM") <= 0) || EVP_PKEY_decapsulate(kem_decaps_ctx, NULL, &rcv_secret_len, out, out_len) <= 0)
-	{
-		fprintf(stderr,
-				"Error while initializing decaps data structs for %s.\n",
-				kem_name);
-		return 1;
-	}
-	rcv_secret = malloc(rcv_secret_len);
-	if (rcv_secret == NULL)
-	{
-		fprintf(stderr, "MemAlloc failure in decaps for %s.\n",
-				kem_name);
-		return 1;
-	}
-	if (EVP_PKEY_decapsulate(kem_decaps_ctx, rcv_secret,
-							 &rcv_secret_len, out, out_len) <= 0 ||
-		rcv_secret_len != send_secret_len || memcmp(send_secret, rcv_secret, send_secret_len))
-	{
-		fprintf(stderr, "Decaps error for %s.\n", kem_name);
-		return 1;
-	}
-	// To test if the OSSL implementation is working without errors uncomment this code block
-
-	//printf("Doing %s %s ops for %ds: \n", kem_name, "keygen", duration);
-
-	EVP_PKEY_CTX *ctx = kem_gen_ctx;
-	int count;
-
-	for (count = 0; count < 10; count++) {
-	    if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
-			fprintf(stderr, "keygen failed\n");
-			return OQS_ERROR;
-		}
-	    /*
-	     * runtime defined to quite some degree by randomness,
-	     * so performance overhead of _free doesn't impact
-	     * results significantly. In any case this test is
-	     * meant to permit relative algorithm performance
-	     * comparison.
-	     */
-	    EVP_PKEY_free(pkey);
-	    pkey = NULL;
-	}
-
-	ctx = kem_encaps_ctx;
-
-	for (count = 0; count < 10; count++) {
-	    if (EVP_PKEY_encapsulate(ctx, out, &out_len, send_secret, &send_secret_len) <= 0) {
-			fprintf(stderr, "encaps failed\n");
-			return OQS_ERROR;
-		}
-	}
-
-	//printf("Doing %s %s ops for %ds: \n", kem_name, "decaps", duration);
-
-	ctx = kem_decaps_ctx;
-
-	for (count = 0; count < 10; count++) {
-	    if (EVP_PKEY_decapsulate(ctx, send_secret, &send_secret_len, out, out_len) <= 0)
-	        return OQS_ERROR;
-	}
-
-	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", kem_name, "", "", "", "", "", "");
-	if (!doFullCycle)
-	{
-		if (!noKeyGen)
-			TIME_OPERATION_SECONDS(EVP_PKEY_keygen(kem_gen_ctx, &pkey), "keygen", duration)
-		if (!noEncaps)
-			TIME_OPERATION_SECONDS(EVP_PKEY_encapsulate(kem_encaps_ctx, out, &out_len, send_secret, &send_secret_len), "encaps", duration)
-		if (!noDecaps)
-			TIME_OPERATION_SECONDS(EVP_PKEY_decapsulate(kem_decaps_ctx, send_secret, &send_secret_len, out, out_len), "decaps", duration)
-	}
-	else
-	{
-		fprintf(stderr, "Not implemented\n");
-		return OQS_ERROR;
-	}
-
-	if (printInfo)
-	{
-		fprintf(stderr, "Not implemented\n");
-		return OQS_ERROR;
-	}
-	return OQS_SUCCESS;
 }
 
 static OQS_STATUS kem_speed_wrapper(const char *method_name, uint64_t duration, bool printInfo, bool doFullCycle, bool noKeyGen, bool noEncaps, bool noDecaps)
@@ -415,7 +213,7 @@ int main_speed_kem(int argc, char **argv)
 		}
 		else
 		{
-			if (!strcmp(argv[i], "RSA"))
+			if (!strcmp(argv[i], "ECDHE"))
 			{
 				ecdhe = true;
 				break;
@@ -458,10 +256,10 @@ int main_speed_kem(int argc, char **argv)
 	//rsa2048
 	if (single_kem != NULL || ecdhe)
 	{
-		;
+		
 		if (ecdhe)
 		{
-			rc = kem_ossl_speed_wrapper("rsa2048", duration, printKemInfo, doFullCycle, noKeyGen, noEncaps, noDecaps);
+			rc = kem_vanilla(duration, noKeyGen, noEncaps);
 		}
 		else
 		{
@@ -484,7 +282,7 @@ int main_speed_kem(int argc, char **argv)
 				ret = EXIT_FAILURE;
 			}
 		}
-		rc = kem_ossl_speed_wrapper("rsa2048", duration, printKemInfo, doFullCycle, noKeyGen, noEncaps, noDecaps);
+		rc = kem_vanilla(duration, noKeyGen, noEncaps);
 		if (rc != OQS_SUCCESS)
 		{
 			ret = EXIT_FAILURE;

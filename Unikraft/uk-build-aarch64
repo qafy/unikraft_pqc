@@ -7,6 +7,7 @@ RUN set -e ;\
     apt-get install -q=2 --yes \
         qemu-system-aarch64 \
         nano \
+        bsdmainutils \
         python3 \
         python-is-python3 \
         python3-yaml \

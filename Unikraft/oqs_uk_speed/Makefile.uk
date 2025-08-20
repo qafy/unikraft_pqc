@@ -5,6 +5,7 @@ $(eval $(call addlib,appopenssl))
 ################################################################################
 # Sources
 ################################################################################
+APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/speed_vanilla.c
 APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/speed_common.c
 APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/speed_kem.c
 APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/speed_sig.c

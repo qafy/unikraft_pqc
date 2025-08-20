@@ -12,7 +12,7 @@
 # This definition stops the following lines choking if HOME isn't
 # defined.
 HOME			= .
-DEFAULT_GROUPS  = x25519:x448:kyber512:bikel1:hqc128:frodo640aes:frodo640shake:kyber768:kyber1024
+DEFAULT_GROUPS  = x25519:x448:kyber512:bikel1:hqc128:frodo640aes:frodo640shake:kyber768:kyber1024:secp256r1
 
 # Use this in order to automatically load providers.
 openssl_conf = openssl_init

@@ -30,8 +30,12 @@ cd ..
 
 cat << EOF > $SCRIPT_DIR/openssl
 #!/usr/bin/env bash
+SCRIPT_PATH=\$(realpath "\$0")
+SCRIPT_DIR=\$(dirname "\$SCRIPT_PATH")
+
 qemu-system-aarch64 \\
-	-kernel $SCRIPT_DIR/ssl_uk_bin/build/ssl_uk_qemu-arm64 \\
+    -enable-kvm \\
+	-kernel \$SCRIPT_DIR/ssl_uk_bin/build/ssl_uk_qemu-arm64 \\
 	-machine virt -cpu max -m 128M \\
 	-nographic \\
 	-netdev bridge,id=en0,br=virbr0 \\
@@ -45,8 +49,11 @@ chmod a+x $SCRIPT_DIR/openssl
 
 cat << EOF > $SCRIPT_DIR/test
 #!/usr/bin/env bash
+SCRIPT_PATH=\$(realpath "\$0")
+SCRIPT_DIR=\$(dirname "\$SCRIPT_PATH")
+
 qemu-system-aarch64 \\
-    -kernel $SCRIPT_DIR/ssl_uk_test/build/ssl_uk_qemu-arm64 \\
+    -kernel \$SCRIPT_DIR/ssl_uk_test/build/ssl_uk_qemu-arm64 \\
     -machine virt -cpu max -m 128M \\
     -nographic
 EOF
@@ -56,10 +63,15 @@ chmod a+x $SCRIPT_DIR/test
 
 cat << EOF > $SCRIPT_DIR/benchmark
 #!/usr/bin/env bash
+SCRIPT_PATH=\$(realpath "\$0")
+SCRIPT_DIR=\$(dirname "\$SCRIPT_PATH")
+SEED=\$(hexdump -vn32 -e'8/4 "0x%08X "' /dev/urandom)
 qemu-system-aarch64 \\
-    -kernel $SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \\
+    -enable-kvm \\
+    -append "random.seed=[\${SEED}] -- \$*" \\
+    -kernel \$SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \\
     -append " -- \$*" \\
-    -machine virt -cpu max -m 64M \\
+    -machine virt -cpu max -m 1G \\
     -nographic
 EOF
 
