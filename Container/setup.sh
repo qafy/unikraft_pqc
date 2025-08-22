@@ -18,10 +18,13 @@ docker save -o $SCRIPT_DIR/alpine_bench.tar alpine-bench-epqciuoe
 
 cat << EOF > $SCRIPT_DIR/openssl
 #!/usr/bin/env bash
+if [ -z "\${OUTER_MOUNT_PATH}" ]; then
+    OUTER_MOUNT_PATH=\$(pwd)
+fi
 docker run \\
     --name alpine_bench_\$(whoami) \\
     --network=alpine-bench-net \\
-    -v \$(pwd):/workspace \\
+    -v \$OUTER_MOUNT_PATH:/workspace \
     -it --rm \\
     -p 442:442 \\
     --add-host host.docker.internal=host-gateway \\
@@ -31,10 +34,13 @@ EOF
 
 cat << EOF > $SCRIPT_DIR/sh
 #!/usr/bin/env bash
+if [ -z "\${OUTER_MOUNT_PATH}" ]; then
+    OUTER_MOUNT_PATH=\$(pwd)
+fi
 docker run \\
     --name alpine_bench_\$(whoami) \\
     --network=alpine-bench-net \\
-    -v \$(pwd):/workspace \\
+    -v \$OUTER_MOUNT_PATH:/workspace \
     -it --rm \\
     -p 442:442 \\
     --add-host host.docker.internal=host-gateway \\
@@ -47,7 +53,6 @@ cat << EOF > $SCRIPT_DIR/benchmark
 docker run \\
     --name alpine_bench_\$(whoami) \\
     --network=alpine-bench-net \\
-    -v \$(pwd):/workspace \\
     -it --rm \\
     alpine-bench-epqciuoe \\
     /local/oqs_speed/benchmark \$*
