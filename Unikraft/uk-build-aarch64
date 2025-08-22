@@ -30,6 +30,7 @@ RUN set -e ;\
         cmake \
         git \
         ninja-build \
+        docker.io \
         libncurses-dev ;\
     rm -rf /var/lib/apt/lists/* ;
 
