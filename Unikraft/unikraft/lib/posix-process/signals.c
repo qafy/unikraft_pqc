@@ -1,12 +1,9 @@
 /* SPDX-License-Identifier: BSD-3-Clause */
 /*
- * Authors:  Mihai Pogonaru <pogonarumihai@gmail.com>
- *		     Teodora Serbanescu <teo.serbanescu16@gmail.com>
- *		     Felipe Huici <felipe.huici@neclab.eu>
- *		     Bernard Rizzo <b.rizzo@student.uliege.be>
+ * Authors: Simon Kuenzer <simon.kuenzer@neclab.eu>
  *
- * Copyright (c) 2021, University Politehnica of Bucharest.
- * All rights reserved.
+ * Copyright (c) 2022, NEC Laboratories Europe GmbH, NEC Corporation.
+ *                     All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,33 +29,36 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
-#ifndef __UK_PROCESS_SIGSET_H__
-#define __UK_PROCESS_SIGSET_H__
 
-#include <signal.h>
+#include <uk/config.h>
+#include <uk/arch/lcpu.h>
+#include <uk/process.h>
+#include <uk/print.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#if CONFIG_LIBPOSIX_PROCESS_CLONE
+static int uk_posix_clone_sighand(const struct clone_args *cl_args,
+				  size_t cl_args_len __unused,
+				  struct uk_thread *child __unused,
+				  struct uk_thread *parent __unused)
+{
+	/* CLONE_SIGHAND and CLONE_CLEAR_SIGHAND should not be together */
+	if (unlikely((cl_args->flags & (CLONE_SIGHAND | CLONE_CLEAR_SIGHAND))
+		     == (CLONE_SIGHAND | CLONE_CLEAR_SIGHAND)))
+		return -EINVAL;
+	/* CLONE_SIGHAND requires CLONE_VM */
+	if (unlikely((cl_args->flags & CLONE_SIGHAND)
+		     && !(cl_args->flags & CLONE_VM)))
+		return -EINVAL;
+	/* CLONE_THREAD requires CLONE_SIGHAND */
+	if (unlikely((cl_args->flags & CLONE_THREAD)
+		     && !(cl_args->flags & CLONE_SIGHAND)))
+		return -EINVAL;
 
-/* Kernel-side definition of sigset_t */
-typedef unsigned long uk_sigset_t;
-
-#define uk_sigemptyset(_ptr)		(*(_ptr) = 0)
-#define uk_sigfillset(_ptr)		(*(_ptr) = ~((uk_sigset_t)0))
-#define uk_sigaddset(_ptr, _signo)	(*(_ptr) |= (1UL << ((_signo) - 1)))
-#define uk_sigdelset(_ptr, _signo)	(*(_ptr) &= ~(1UL << ((_signo) - 1)))
-#define uk_sigcopyset(_ptr1, _ptr2)	(*(_ptr1) = *(_ptr2))
-#define uk_sigandset(_ptr1, _ptr2)	(*(_ptr1) &= *(_ptr2))
-#define uk_sigorset(_ptr1, _ptr2)	(*(_ptr1) |= *(_ptr2))
-#define uk_sigreverseset(_ptr)		(*(_ptr) = ~(*(_ptr)))
-#define uk_sigismember(_ptr, _signo)	(*(_ptr) & (1UL << ((_signo) - 1)))
-#define uk_sigisempty(_ptr)		(*(_ptr) == 0)
-
-#ifdef __cplusplus
+	UK_WARN_STUBBED();
+	return 0;
 }
-#endif
 
-#endif /* __UK_PROCESS_SIGSET_H__ */
+UK_POSIX_CLONE_HANDLER(CLONE_SIGHAND | CLONE_CLEAR_SIGHAND, false,
+		       uk_posix_clone_sighand, 0x0);
+#endif /* CONFIG_LIBPOSIX_PROCESS_CLONE */

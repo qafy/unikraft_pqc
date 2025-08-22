@@ -30,31 +30,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- #include <string.h>
- #include <sys/random.h>
- #include <uk/essentials.h>
- #include <uk/random.h>
- #include <uk/syscall.h>
- 
- UK_SYSCALL_R_DEFINE(ssize_t, getrandom,
-			 void *, buf, size_t, buflen,
-			 unsigned int, flags)
- {
-	 int rc;
- 
-	 /* Observed behavior is that for a 0-length buffer, the value in buf is
-	  * never checked and the syscall shortcuts to success.
-	  * Documentation does not specifically state this, but userspace apps
-	  * have been seen to rely on getrandom(NULL, 0, ...) returning success.
-	  */
-	 if (unlikely(!buflen))
-		 return 0;
-	 if (unlikely(!buf))
-		 return -EFAULT;
- 
-	 rc = uk_random_fill_buffer(buf, buflen);
-	 if (unlikely(rc))
-		 return -ENOSYS;
- 
-	 return buflen;
- }
+#include <string.h>
+#include <sys/random.h>
+#include <uk/essentials.h>
+#include <uk/random.h>
+#include <uk/syscall.h>
+
+UK_SYSCALL_R_DEFINE(ssize_t, getrandom,
+		    void *, buf, size_t, buflen,
+		    unsigned int, flags)
+{
+	int rc;
+
+	UK_ASSERT(buf);
+
+	rc = uk_random_fill_buffer(buf, buflen);
+	if (unlikely(rc))
+		return -ENOSYS;
+
+	return buflen;
+}

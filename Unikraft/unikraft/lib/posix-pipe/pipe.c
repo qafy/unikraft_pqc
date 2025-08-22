@@ -6,7 +6,6 @@
 
 #include <string.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 
 #include <uk/atomic.h>
 #include <uk/alloc.h>
@@ -14,11 +13,7 @@
 #include <uk/file/nops.h>
 #include <uk/posix-fd.h>
 #include <uk/posix-pipe.h>
-
-#if CONFIG_LIBPOSIX_FDTAB
-#include <uk/posix-fdtab.h>
 #include <uk/syscall.h>
-#endif /* CONFIG_LIBPOSIX_FDTAB */
 
 
 #define PIPE_SIZE (1L << CONFIG_LIBPOSIX_PIPE_SIZE_ORDER)
@@ -38,12 +33,6 @@
 	(((start) == (lim)) ? PIPE_SIZE : PIPE_SPACE(start, lim))
 
 static const char PIPE_VOLID[] = "pipe_vol";
-
-#define PIPE_R_FNAME "pipe:read"
-#define PIPE_R_FNAME_LEN (sizeof(PIPE_R_FNAME) - 1)
-
-#define PIPE_W_FNAME "pipe:write"
-#define PIPE_W_FNAME_LEN (sizeof(PIPE_W_FNAME) - 1)
 
 typedef __u32 pipeidx;
 
@@ -134,11 +123,11 @@ static void pipebuf_iovwrite(char *buf, pipeidx head,
 		_pipebuf_write(buf, head, (const char *)iov[i].iov_base, n);
 }
 
-static ssize_t _iovsz(const struct iovec *iov, size_t iovcnt)
+static ssize_t _iovsz(const struct iovec *iov, int iovcnt)
 {
 	size_t ret = 0;
 
-	for (size_t i = 0; i < iovcnt; i++)
+	for (int i = 0; i < iovcnt; i++)
 		if (iov[i].iov_len) {
 			if (likely(iov[i].iov_base))
 				ret += iov[i].iov_len;
@@ -149,8 +138,8 @@ static ssize_t _iovsz(const struct iovec *iov, size_t iovcnt)
 }
 
 static ssize_t pipe_read(const struct uk_file *f,
-			 const struct iovec *iov, size_t iovcnt,
-			 size_t off, long flags __unused)
+			 const struct iovec *iov, int iovcnt,
+			 off_t off, long flags __unused)
 {
 	ssize_t toread;
 	struct pipe_node *d;
@@ -237,8 +226,8 @@ static ssize_t pipe_read(const struct uk_file *f,
 }
 
 static ssize_t pipe_write(const struct uk_file *f,
-			  const struct iovec *iov, size_t iovcnt,
-			  size_t off, long flags)
+			  const struct iovec *iov, int iovcnt,
+			  off_t off, long flags)
 {
 	struct pipe_node *d;
 	struct pipe_msg *tail;
@@ -319,21 +308,10 @@ out_full:
 	return -EAGAIN;
 }
 
-static int pipe_getstat(const struct uk_file *f, unsigned mask __unused,
-			struct uk_statx *arg)
-{
-	/* All data is immediately available, ignore mask */
-	arg->stx_mask = UK_STATX_TYPE | UK_STATX_MODE | UK_STATX_INO;
-	arg->stx_blksize = 1;
-	arg->stx_mode = S_IFIFO | 0600;
-	arg->stx_ino = (uintptr_t)f;
-	return 0;
-}
-
 static const struct uk_file_ops rpipe_ops = {
 	.read = pipe_read,
 	.write = uk_file_nop_write,
-	.getstat = pipe_getstat,
+	.getstat = uk_file_nop_getstat,
 	.setstat = uk_file_nop_setstat,
 	.ctl = uk_file_nop_ctl
 };
@@ -341,7 +319,7 @@ static const struct uk_file_ops rpipe_ops = {
 static const struct uk_file_ops wpipe_ops = {
 	.read = uk_file_nop_read,
 	.write = pipe_write,
-	.getstat = pipe_getstat,
+	.getstat = uk_file_nop_getstat,
 	.setstat = uk_file_nop_setstat,
 	.ctl = uk_file_nop_ctl
 };
@@ -422,7 +400,6 @@ int uk_pipefile_create(struct uk_file *pipes[2])
 	return 0;
 }
 
-#if CONFIG_LIBPOSIX_FDTAB
 /* Internal syscalls */
 
 #define _OPEN_FLAGS (O_CLOEXEC|O_NONBLOCK|O_DIRECT)
@@ -446,15 +423,13 @@ int uk_sys_pipe(int pipefd[2], int flags)
 		return r;
 
 	oflags = (flags & _OPEN_FLAGS) | UKFD_O_NOSEEK;
-	r = uk_fdtab_open_named(pipes[0], O_RDONLY | oflags,
-				PIPE_R_FNAME, PIPE_R_FNAME_LEN);
+	r = uk_fdtab_open(pipes[0], O_RDONLY|oflags);
 	if (unlikely(r < 0))
 		goto err_free;
 
 	rpipe = r;
 
-	r = uk_fdtab_open_named(pipes[1], O_WRONLY | oflags,
-				PIPE_W_FNAME, PIPE_W_FNAME_LEN);
+	r = uk_fdtab_open(pipes[1], O_WRONLY|oflags);
 	if (unlikely(r < 0))
 		goto err_close;
 
@@ -483,4 +458,3 @@ UK_SYSCALL_R_DEFINE(int, pipe2, int *, pipefd, int, flags)
 {
 	return uk_sys_pipe(pipefd, flags);
 }
-#endif /* CONFIG_LIBPOSIX_FDTAB */

@@ -29,9 +29,6 @@
 
 static const char EPOLL_VOLID[] = "epoll_vol";
 
-#define EPOLL_FNAME "epollfd"
-#define EPOLL_FNAME_LEN (sizeof(EPOLL_FNAME) - 1)
-
 #define EPOLL_EVENTS \
 	(UKFD_POLLIN|UKFD_POLLOUT|EPOLLRDHUP|EPOLLPRI|UKFD_POLL_ALWAYS)
 #define EPOLL_OPTS (EPOLLET|EPOLLONESHOT|EPOLLWAKEUP|EPOLLEXCLUSIVE)
@@ -252,8 +249,7 @@ static void epoll_register(const struct uk_file *epf, struct epoll_entry *ent,
 	UK_ASSERT(!ent->legacy);
 #endif /* CONFIG_LIBVFSCORE */
 
-	ev = uk_pollq_poll_register(&ent->f->state->pollq, &ent->tick, 1,
-				    ent->f);
+	ev = uk_pollq_poll_register(&ent->f->state->pollq, &ent->tick, 1);
 	if (register_finalizer)
 		uk_file_finalizer_register(ent->f, &ent->fin);
 	if (ev) {
@@ -460,7 +456,7 @@ int uk_sys_epoll_create(int flags)
 	if (flags & EPOLL_CLOEXEC)
 		mode |= O_CLOEXEC;
 
-	ret = uk_fdtab_open_named(f, mode, EPOLL_FNAME, EPOLL_FNAME_LEN);
+	ret = uk_fdtab_open(f, mode);
 	uk_file_release(f);
 	return ret;
 }
@@ -551,7 +547,7 @@ int uk_sys_epoll_ctl(const struct uk_file *epf, int op, int fd,
 		fdrop(sf.vfile);
 	else
 #endif /* CONFIG_LIBVFSCORE */
-		uk_ofile_release(sf.ofile);
+		uk_fdtab_ret(sf.ofile);
 
 	return ret;
 }
@@ -676,7 +672,7 @@ UK_SYSCALL_R_DEFINE(int, epoll_ctl, int, epfd, int, op, int, fd,
 	if (unlikely(!of))
 		return -EBADF;
 	r = uk_sys_epoll_ctl(of->file, op, fd, event);
-	uk_ofile_release(of);
+	uk_fdtab_ret(of);
 	return r;
 }
 
@@ -691,7 +687,7 @@ UK_SYSCALL_R_DEFINE(int, epoll_pwait2, int, epfd, struct epoll_event *, events,
 		return -EBADF;
 	r = uk_sys_epoll_pwait2(of->file, events, maxevents,
 				timeout, sigmask, sigsetsize);
-	uk_ofile_release(of);
+	uk_fdtab_ret(of);
 	return r;
 }
 
@@ -710,7 +706,7 @@ UK_LLSYSCALL_R_DEFINE(int, epoll_pwait, int, epfd, struct epoll_event *, events,
 		return -EBADF;
 	r = uk_sys_epoll_pwait(of->file, events, maxevents,
 			       timeout, sigmask, sigsetsize);
-	uk_ofile_release(of);
+	uk_fdtab_ret(of);
 	return r;
 }
 
@@ -724,6 +720,6 @@ UK_SYSCALL_R_DEFINE(int, epoll_wait, int, epfd, struct epoll_event *, events,
 		return -EBADF;
 	r = uk_sys_epoll_pwait(of->file, events, maxevents,
 			       timeout, NULL, 0);
-	uk_ofile_release(of);
+	uk_fdtab_ret(of);
 	return r;
 }

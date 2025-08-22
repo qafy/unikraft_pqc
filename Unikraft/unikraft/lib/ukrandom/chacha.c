@@ -218,10 +218,10 @@ int uk_swrand_cmdline_init(struct uk_random_driver **drv)
 	 *       a way to tell whether a param has been set other
 	 *       than checking against its value.
 	 */
-	// if (!memcmp(seedv, seedv_cmdl, seedc)) {
-	// 	uk_pr_debug("Seed not set in the cmdline\n");
-	// 	return -ENOTSUP;
-	// }
+	if (!memcmp(seedv, seedv_cmdl, seedc)) {
+		uk_pr_debug("Seed not set in the cmdline\n");
+		return -ENOTSUP;
+	}
 
 	uk_pr_warn("Passing the seed via the cmdline is potentially insecure\n");
 	uk_pr_info("Initializing the random number generator...\n");

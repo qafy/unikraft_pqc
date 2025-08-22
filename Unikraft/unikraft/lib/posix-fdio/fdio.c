@@ -77,7 +77,7 @@ ssize_t uk_sys_preadv(struct uk_ofile *of, const struct iovec *iov, int iovcnt,
 	for (;;) {
 		if (iolock)
 			uk_file_rlock(f);
-		r = uk_file_read(f, iov, (size_t)iovcnt, offset, flags);
+		r = uk_file_read(f, iov, iovcnt, offset, flags);
 		if (iolock)
 			uk_file_runlock(f);
 		if (!_SHOULD_BLOCK(r, mode))
@@ -96,7 +96,7 @@ ssize_t uk_sys_readv(struct uk_ofile *of, const struct iovec *iov, int iovcnt)
 {
 	ssize_t r;
 	long flags;
-	size_t off;
+	off_t off;
 	const struct uk_file *f;
 	int seekable;
 	int iolock;
@@ -124,7 +124,7 @@ ssize_t uk_sys_readv(struct uk_ofile *of, const struct iovec *iov, int iovcnt)
 
 		if (iolock)
 			uk_file_rlock(f);
-		r = uk_file_read(f, iov, (size_t)iovcnt, off, flags);
+		r = uk_file_read(f, iov, iovcnt, off, flags);
 		if (iolock)
 			uk_file_runlock(f);
 		if (!_SHOULD_BLOCK(r, mode))
@@ -152,7 +152,7 @@ ssize_t uk_sys_preadv2(struct uk_ofile *of, const struct iovec *iov, int iovcnt,
 		       off_t offset, int flags)
 {
 	ssize_t r;
-	size_t off;
+	off_t off;
 	long xflags;
 	const struct uk_file *f;
 	unsigned int mode;
@@ -192,7 +192,7 @@ ssize_t uk_sys_preadv2(struct uk_ofile *of, const struct iovec *iov, int iovcnt,
 
 		if (iolock)
 			uk_file_rlock(f);
-		r = uk_file_read(f, iov, (size_t)iovcnt, off, xflags);
+		r = uk_file_read(f, iov, iovcnt, off, xflags);
 		if (iolock)
 			uk_file_runlock(f);
 		if (!_SHOULD_BLOCK(r, mode))
@@ -237,7 +237,7 @@ ssize_t uk_sys_pwritev(struct uk_ofile *of, const struct iovec *iov, int iovcnt,
 	for (;;) {
 		if (iolock)
 			uk_file_wlock(f);
-		r = uk_file_write(f, iov, (size_t)iovcnt, offset, flags);
+		r = uk_file_write(f, iov, iovcnt, offset, flags);
 		if (iolock)
 			uk_file_wunlock(f);
 		if (!_SHOULD_BLOCK(r, mode))
@@ -292,7 +292,7 @@ ssize_t uk_sys_writev(struct uk_ofile *of, const struct iovec *iov, int iovcnt)
 		}
 
 		if (likely(off >= 0))
-			r = uk_file_write(f, iov, (size_t)iovcnt, off, flags);
+			r = uk_file_write(f, iov, iovcnt, off, flags);
 		else
 			r = off;
 
@@ -372,7 +372,7 @@ ssize_t uk_sys_pwritev2(struct uk_ofile *of, const struct iovec *iov,
 		}
 
 		if (likely(off >= 0))
-			r = uk_file_write(f, iov, (size_t)iovcnt, off, xflags);
+			r = uk_file_write(f, iov, iovcnt, off, xflags);
 		else
 			r = off;
 
@@ -386,10 +386,8 @@ ssize_t uk_sys_pwritev2(struct uk_ofile *of, const struct iovec *iov,
 	}
 
 	if (use_pos) {
-		if (r >= 0) {
-			UK_ASSERT(off >= 0);
+		if (r >= 0)
 			of->pos = off + r;
-		}
 		_of_unlock(of);
 	}
 
@@ -409,6 +407,8 @@ off_t uk_sys_lseek(struct uk_ofile *of, off_t offset, int whence)
 
 	mode = of->mode;
 
+	if (unlikely(!_CAN_WRITE(mode)))
+		return -EINVAL;
 	if (unlikely(!_IS_SEEKABLE(mode)))
 		return -ESPIPE;
 
@@ -417,17 +417,12 @@ off_t uk_sys_lseek(struct uk_ofile *of, off_t offset, int whence)
 	_of_lock(of);
 	if (whence == SEEK_END) {
 		const struct uk_file *f = of->file;
-		ssize_t eof;
 
 		if (iolock)
 			uk_file_rlock(f);
-		eof = fdio_get_eof(f);
+		offset = fdio_get_eof(f);
 		if (iolock)
 			uk_file_runlock(f);
-		if (eof >= 0)
-			offset += eof;
-		else
-			offset = eof;
 	} else if (whence == SEEK_CUR) {
 		offset += of->pos;
 	}

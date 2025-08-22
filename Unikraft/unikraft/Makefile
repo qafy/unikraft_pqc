@@ -378,8 +378,6 @@ EACHOLIB_ALIBS :=
 EACHOLIB_ALIBS-y :=
 EACHOLIB_LOCALS :=
 EACHOLIB_LOCALS-y :=
-EACHOLIB_EXPORTS :=
-EACHOLIB_EXPORTS-y :=
 
 # Pull in the user's configuration file
 ifeq ($(filter $(noconfig_targets),$(MAKECMDGOALS)),)

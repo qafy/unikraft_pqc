@@ -58,8 +58,6 @@
 #include "vfs.h"
 #include <vfscore/fs.h>
 
-#include <uk/posix-time.h>
-
 extern struct task *main_task;
 
 static int
@@ -433,7 +431,7 @@ exit:
 }
 
 int
-vfscore_fsync(struct vfscore_file *fp)
+sys_fsync(struct vfscore_file *fp)
 {
 	struct vnode *vp;
 	int error;
@@ -1188,7 +1186,7 @@ sys_truncate(char *path, off_t length)
 }
 
 int
-vfscore_ftruncate(struct vfscore_file *fp, off_t length)
+sys_ftruncate(struct vfscore_file *fp, off_t length)
 {
 	struct vnode *vp;
 	int error;
@@ -1239,8 +1237,7 @@ static int uk_posix_clone_fs(const struct clone_args *cl_args,
 			     struct uk_thread *child __unused,
 			     struct uk_thread *parent __unused)
 {
-	if (unlikely(!(cl_args->flags & CLONE_FS) &&
-		     !(cl_args->flags & CLONE_VM))) {
+	if (unlikely(!(cl_args->flags & CLONE_FS))) {
 		uk_pr_warn("Separate filesystem information for children are not supported (CLONE_FS absent)\n");
 		return -ENOTSUP;
 	}
@@ -1318,15 +1315,14 @@ static int is_timeval_valid(const struct timeval *time)
 /*
  * Convert a timeval struct to a timespec one.
  */
-static int convert_timeval(struct timespec *to, const struct timeval *from)
+static void convert_timeval(struct timespec *to, const struct timeval *from)
 {
 	if (from) {
 		to->tv_sec = from->tv_sec;
 		to->tv_nsec = from->tv_usec * 1000; // Convert microseconds to nanoseconds
-		return 0;
+	} else {
+		clock_gettime(CLOCK_REALTIME, to);
 	}
-
-	return uk_sys_clock_gettime(CLOCK_REALTIME, to);
 }
 
 int
@@ -1342,27 +1338,8 @@ sys_utimes(char *path, const struct timeval *times, int flags)
 		return EINVAL;
 
 	// Convert each element of timeval array to the timespec type
-	error = convert_timeval(&timespec_times[0], times ? times + 0 : NULL);
-	if (unlikely(error)) {
-		/*
-		 * convert_timeval calls clock_gettime which should not have
-		 * positive return values so do a sanity check here in the
-		 * error case instead of having it in the success path as
-		 * well.
-		 */
-		UK_ASSERT(error < 0);
-		/*
-		 * However, at the end, this function returns positive
-		 * error values.
-		 */
-		return -error;
-	}
-
-	error = convert_timeval(&timespec_times[1], times ? times + 1 : NULL);
-	if (unlikely(error)) {
-		UK_ASSERT(error < 0);
-		return -error;
-	}
+	convert_timeval(&timespec_times[0], times ? times + 0 : NULL);
+	convert_timeval(&timespec_times[1], times ? times + 1 : NULL);
 
 	if (flags & AT_SYMLINK_NOFOLLOW) {
 		struct dentry *ddp;
@@ -1404,15 +1381,14 @@ static int timespec_is_valid(const struct timespec *time)
 		time->tv_nsec == UTIME_OMIT);
 }
 
-static int timespec_init(struct timespec *out, const struct timespec *in)
+static void timespec_init(struct timespec *out, const struct timespec *in)
 {
-	if (in == NULL || in->tv_nsec == UTIME_NOW)
-		return uk_sys_clock_gettime(CLOCK_REALTIME, out);
-
-	out->tv_sec = in->tv_sec;
-	out->tv_nsec = in->tv_nsec;
-
-	return 0;
+	if (in == NULL || in->tv_nsec == UTIME_NOW) {
+		clock_gettime(CLOCK_REALTIME, out);
+	} else {
+		out->tv_sec = in->tv_sec;
+		out->tv_nsec = in->tv_nsec;
+	}
 }
 
 int
@@ -1436,39 +1412,11 @@ sys_utimensat(int dirfd, const char *pathname, const struct timespec times[2],
 			     !timespec_is_valid(&times[1])))
 			return EINVAL;
 
-		error = timespec_init(&timespec_times[0], times + 0);
-		if (unlikely(error)) {
-			/*
-			 * timespec_init calls clock_gettime which should not
-			 * have positive return values so do a sanity check
-			 * here in the error case instead of having it in the
-			 * success path as well.
-			 */
-			UK_ASSERT(error < 0);
-			/*
-			 * However, at the end, this function returns positive
-			 * error values.
-			 */
-			return -error;
-		}
-
-		error = timespec_init(&timespec_times[1], times + 1);
-		if (unlikely(error)) {
-			UK_ASSERT(error < 0);
-			return -error;
-		}
+		timespec_init(&timespec_times[0], times + 0);
+		timespec_init(&timespec_times[1], times + 1);
 	} else {
-		error = timespec_init(&timespec_times[0], NULL);
-		if (unlikely(error)) {
-			UK_ASSERT(error < 0);
-			return -error;
-		}
-
-		error = timespec_init(&timespec_times[1], NULL);
-		if (unlikely(error)) {
-			UK_ASSERT(error < 0);
-			return -error;
-		}
+		timespec_init(&timespec_times[0], NULL);
+		timespec_init(&timespec_times[1], NULL);
 	}
 
 	/* utimensat should return ENOENT when pathname is empty */
@@ -1559,7 +1507,7 @@ sys_futimens(int fd, const struct timespec times[2])
 }
 
 int
-vfscore_fallocate(struct vfscore_file *fp, int mode, off_t offset, off_t len)
+sys_fallocate(struct vfscore_file *fp, int mode, off_t offset, off_t len)
 {
 	int error;
 	struct vnode *vp;
@@ -1621,8 +1569,11 @@ sys_chmod(const char *path, mode_t mode)
 }
 
 int
-vfscore_fchmod(struct vfscore_file *f, mode_t mode)
+sys_fchmod(int fd, mode_t mode)
 {
+	struct vfscore_file *f = vfscore_get_file(fd);
+	if (!f)
+		return EBADF;
 	// Posix is ambivalent on what fchmod() should do on an fd that does not
 	// refer to a real file. It suggests an implementation may (but not must)
 	// fail EINVAL on a pipe, can behave in an "unspecified" manner on a
@@ -1634,6 +1585,6 @@ vfscore_fchmod(struct vfscore_file *f, mode_t mode)
 	if (f->f_dentry->d_mount->m_flags & MNT_RDONLY) {
 		return EROFS;
 	} else {
-		return vn_setmode(f->f_dentry->d_vnode, mode & UK_ALLPERMS);
+		return vn_setmode(f->f_dentry->d_vnode, mode);
 	}
 }
