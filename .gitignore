@@ -21,3 +21,13 @@ pki/
 Native/benchmark 
 Container/benchmark
 Unikraft/benchmark
+
+Container/alpine_bench.tar
+
+Report/*.log
+Report/*.aux
+Report/*.bcf
+Report/*.out
+Report/*.toc
+Report/*.run.xml
+Report/*.fls
