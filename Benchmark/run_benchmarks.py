@@ -548,7 +548,7 @@ def setup_certificates(sig):
         ca_crt,
         "-nodes",
         "-subj",
-        "/CN=Test CA",
+        "/CN=Test",
         "-days",
         "365",
     ] + ca_key_src
