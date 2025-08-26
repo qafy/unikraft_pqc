@@ -20,6 +20,7 @@ Clone the repo like this to avoid a large download size:
 git clone --depth 1 git@gitlab.cc-asp.fraunhofer.de:aisec-pin/positron/epqciuoe.git
 ```
 
+
 The first thing we need for the setup is a bridge as we use bridge networking for our Unikernel. To enable bridge networking run the following: 
 
 ```bash
@@ -31,7 +32,12 @@ sudo mkdir /etc/qemu
 sudo echo "allow virbr0" > /etc/qemu/bridge.conf
 ```
 
-The repository contains the 3 folders Container, Native, Unikraft which all contain a configuration for openssl (with liboqs). To build them first run 'setup.sh'. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. The script will also create a benchmark script that measures the speed of primitive operations (e.g. keygen, sign, verify) of the oqs library. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+The repository contains the 3 folders Container, Native, Unikraft which all contain a configuration for openssl (with liboqs). To build them first run the setup script:
+
+```bash
+./setup.sh 
+```
+ If you are on x86_64/amd64 run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes` as the setup script requires the entire setup to be build on arm64/aarch64. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
 
 ```bash
 Native/openssl req -x509 -new \
@@ -59,6 +65,15 @@ Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA
 Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
 Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
 
+```
+The script will also create a benchmark script that measures the speed of primitive operations (e.g. keygen, sign, verify) of the oqs library. To execute primitive benchmarks and tests (only for Unikraft) run:
+
+```bash
+Unikraft/benchmark sig ECDSA
+Native/benchmark kem ECDHE
+Container/benchmark kem Kyber512
+
+Unikraft/test
 ```
 
 # Evaluation
