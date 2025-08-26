@@ -9,7 +9,7 @@ IP=172.21.21.1
 
 rsync -avz  --exclude='.git' --exclude='.vscode' --exclude='.DS_Store' \
             --exclude="*.d" --exclude="*.o" --exclude="*.o.cmd" \
-            --exclude="Native/local" --exclude "Container/alpine_bench.tar" \
+            --exclude="Native/local" \
             $SCRIPT_DIR $USER@$IP:/home/$USER/Desktop/
 
 # Install the container and the openssl library on the device
