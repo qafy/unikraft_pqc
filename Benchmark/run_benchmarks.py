@@ -111,10 +111,8 @@ def main():
     try:
         if "primitives" in args.stages:
             print("Evaluating speed of primitive operations of liboqs algorithms:")
-
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                for sig in args.sig:
+            for sig in args.sig:
+                for virt in args.virt:
                     prc = run_primitive(virt, "sig", sig, args.primitives_time)
                     ret = prc.wait()
                     if ret != 0:
@@ -122,7 +120,8 @@ def main():
                     res = eval_res_primitive(prc, virt, "sig", sig)
                     global_res = merge_dicts(res, global_res)
 
-                for kem in args.kem:
+            for kem in args.kem:
+                for virt in args.virt:
                     prc = run_primitive(virt, "kem", kem, args.primitives_time)
                     ret = prc.wait()
                     if ret != 0:
@@ -135,11 +134,9 @@ def main():
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
 
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                print("")
-                for sig in args.sig:
-                    for kem in args.kem:
+            for sig in args.sig:
+                for kem in args.kem:
+                    for virt in args.virt:
                         setup_certificates(get_sig(sig))
                         print("")
 
@@ -159,9 +156,9 @@ def main():
 
         if "primitives_memory" in args.stages:
             print("Evaluating memory consumption of primitive operations:")
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                for sig in args.sig:
+
+            for sig in args.sig:
+                for virt in args.virt:
                     prc = run_primitive(virt, "sig", sig, args.primitives_time)
                     time.sleep(0.1)  # wait for benchmark to start
                     prc2 = run_top(prc.pid)
@@ -174,7 +171,8 @@ def main():
                     res = eval_res_primitives_top(prc2, virt, "sig", sig)
                     global_res = merge_dicts(res, global_res)
 
-                for kem in args.kem:
+            for kem in args.kem:
+                for virt in args.virt:
                     prc = run_primitive(virt, "kem", kem, args.primitives_time)
                     time.sleep(0.1)  # wait for benchmark to start
                     prc2 = run_top(prc.pid)
@@ -192,11 +190,10 @@ def main():
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
 
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                print("")
-                for sig in args.sig:
-                    for kem in args.kem:
+            for sig in args.sig:
+                for kem in args.kem:
+                    for virt in args.virt:
+
                         setup_certificates(get_sig(sig))
                         print("")
 
@@ -218,9 +215,9 @@ def main():
 
         if "primitives_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                for sig in args.sig:
+
+            for sig in args.sig:
+                for virt in args.virt:
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {sig} keygen for {args.primitives_time} seconds")
@@ -246,7 +243,8 @@ def main():
                     prc.wait()
                     print("Finished")
 
-                for kem in args.kem:
+            for kem in args.kem:
+                for virt in args.virt:
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} keygen for {args.primitives_time} seconds")
@@ -278,12 +276,10 @@ def main():
             print("Executing primitives for manual evaluation of power consumption:")
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
-
-            for virt in args.virt:
-                print(f"Running with virtualization method: {virt}")
-                print("")
-                for sig in args.sig:
-                    for kem in args.kem:
+            
+            for sig in args.sig:
+                for kem in args.kem:
+                    for virt in args.virt:
                         setup_certificates(get_sig(sig))
                         print("")
 
@@ -395,7 +391,7 @@ def run_s_server(virt, sig, kem):
         kem,
         "-accept",
         "443",
-        "-www"
+        "-www",
     ]
     print(" ".join(cmd))
     return subprocess.Popen(
@@ -435,14 +431,14 @@ def run_s_client(virt, sig, kem):
 def run_s_time(virt, time, sig, kem):
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
-    
+
     if virt == "unikraft":
         ca_crt = f"Benchmark/pki/CA_{sig}.crt"
-    elif virt == "docker": 
+    elif virt == "docker":
         ca_crt = f"/workspace/Benchmark/pki/CA_{sig}.crt"
     else:
         ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
-        
+
     cmd = [
         openssl_version,
         "s_time",
@@ -548,7 +544,7 @@ def setup_certificates(sig):
         ca_crt,
         "-nodes",
         "-subj",
-        "/CN=Test",
+        "/CN=testca",
         "-days",
         "365",
     ] + ca_key_src
@@ -623,7 +619,7 @@ def get_group(kem):
         "FrodoKEM-640-SHAKE": "frodo640shake",
         "Kyber768": "kyber768",
         "Kyber1024": "kyber1024",
-        "ECDHE" : "secp256r1"
+        "ECDHE": "secp256r1",
     }[kem]
 
 
