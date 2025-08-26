@@ -186,7 +186,7 @@ UK_LLSYSCALL_R_DEFINE(int, openat, int, dirfd, const char *, pathname,
 		      int, flags, int, mode)
 {
 	if (pathname[0] == '/' || dirfd == AT_FDCWD) {
-		return uk_syscall_r_open((long int)pathname, flags, mode);
+		return uk_syscall_do_open((long int)pathname, flags, mode);
 	}
 
 	struct vfscore_file *fp;
@@ -208,7 +208,7 @@ UK_LLSYSCALL_R_DEFINE(int, openat, int, dirfd, const char *, pathname,
 	vn_unlock(vp);
 	fdrop(fp);
 
-	error = uk_syscall_r_open((long int)p, flags, mode);
+	error = uk_syscall_do_open((long int)p, flags, mode);
 
 	return error;
 }
@@ -236,10 +236,11 @@ int openat(int dirfd, const char *pathname, int flags, ...)
 LFS64(openat);
 #endif /* UK_LIBC_SYSCALLS */
 
-UK_SYSCALL_DEFINE(int, creat, const char*, pathname, mode_t, mode)
+UK_SYSCALL_R_DEFINE(int, creat, const char*, pathname, mode_t, mode)
 {
-	return uk_syscall_e_open((long int) pathname,
-		O_CREAT|O_WRONLY|O_TRUNC, mode);
+	return uk_syscall_do_open((long int)pathname,
+				  O_CREAT | O_WRONLY | O_TRUNC,
+				  mode);
 }
 
 #ifdef creat64
@@ -626,39 +627,6 @@ ssize_t vfscore_write(struct vfscore_file *fp, const void *buf, size_t count)
 	else
 		trace_vfs_write_ret(bytes);
 	return bytes;
-}
-
-UK_TRACEPOINT(trace_vfs_fsync, "%d", int);
-UK_TRACEPOINT(trace_vfs_fsync_ret, "");
-UK_TRACEPOINT(trace_vfs_fsync_err, "%d", int);
-
-UK_SYSCALL_R_DEFINE(int, fsync, int, fd)
-{
-	struct vfscore_file *fp;
-	int error;
-
-	trace_vfs_fsync(fd);
-	error = fget(fd, &fp);
-	if (error)
-		goto out_error;
-
-	error = sys_fsync(fp);
-	fdrop(fp);
-
-	if (error)
-		goto out_error;
-	trace_vfs_fsync_ret();
-	return 0;
-
-	out_error:
-	trace_vfs_fsync_err(error);
-	return -error;
-}
-
-UK_SYSCALL_R_DEFINE(int, fdatasync, int, fd)
-{
-	// TODO: See if we can do less than fsync().
-	return fsync(fd);
 }
 
 static int __fxstatat_helper(int ver __unused, int dirfd, const char *pathname,
@@ -1197,7 +1165,7 @@ UK_SYSCALL_R_DEFINE(int, mkdirat, int, dirfd,
 	int error;
 
 	if (pathname[0] == '/' || dirfd == AT_FDCWD)
-		return uk_syscall_r_mkdir((long) pathname, (long) mode);
+		return uk_syscall_do_mkdir((long) pathname, (long) mode);
 
 	error = fget(dirfd, &fp);
 	if (error)
@@ -1215,7 +1183,7 @@ UK_SYSCALL_R_DEFINE(int, mkdirat, int, dirfd,
 	vn_unlock(vp);
 	fdrop(fp);
 
-	error = uk_syscall_r_mkdir((long) p, (long) mode);
+	error = uk_syscall_do_mkdir((long) p, (long) mode);
 
 	return error;
 }
@@ -1560,9 +1528,9 @@ UK_SYSCALL_R_DEFINE(int, unlinkat, int, dirfd, const char*, pathname, int, flags
 {
 	if (pathname[0] == '/' || dirfd == AT_FDCWD) {
 		if (flags & AT_REMOVEDIR)
-			return uk_syscall_r_rmdir((long)pathname);
+			return uk_syscall_do_rmdir((long)pathname);
 		else
-			return uk_syscall_r_unlink((long)pathname);
+			return uk_syscall_do_unlink((long)pathname);
 	}
 
 	struct vfscore_file *fp;
@@ -1584,9 +1552,9 @@ UK_SYSCALL_R_DEFINE(int, unlinkat, int, dirfd, const char*, pathname, int, flags
 	fdrop(fp);
 
 	if (flags & AT_REMOVEDIR)
-		return uk_syscall_r_rmdir((long)p);
+		return uk_syscall_do_rmdir((long)p);
 	else
-		return uk_syscall_r_unlink((long)p);
+		return uk_syscall_do_unlink((long)p);
 }
 
 UK_TRACEPOINT(trace_vfs_stat, "\"%s\" %#x", const char*, struct stat*);
@@ -1696,7 +1664,7 @@ UK_SYSCALL_R_DEFINE(int, lstat, const char*, pathname, struct stat*, st)
 }
 
 /* The fstat syscall is no longer implemented here; need to declare */
-long uk_syscall_r_fstat(long dirfd, long st);
+long uk_syscall_do_fstat(long dirfd, long st);
 
 static int __fxstatat_helper(int ver __unused, int dirfd, const char *pathname,
 		struct stat *st, int flags)
@@ -1704,12 +1672,12 @@ static int __fxstatat_helper(int ver __unused, int dirfd, const char *pathname,
 	if (!pathname || !st)
 		return -EFAULT;
 	if (pathname[0] == '/' || dirfd == AT_FDCWD) {
-		return uk_syscall_r_stat((long) pathname, (long) st);
+		return uk_syscall_do_stat((long) pathname, (long) st);
 	}
 	// If AT_EMPTY_PATH and pathname is an empty string, fstatat() operates on
 	// dirfd itself, and in that case it doesn't have to be a directory.
 	if ((flags & AT_EMPTY_PATH) && !pathname[0]) {
-		return uk_syscall_r_fstat((long) dirfd, (long) st);
+		return uk_syscall_do_fstat((long) dirfd, (long) st);
 	}
 
 	struct vfscore_file *fp;
@@ -1731,9 +1699,9 @@ static int __fxstatat_helper(int ver __unused, int dirfd, const char *pathname,
 	fdrop(fp);
 
 	if (flags & AT_SYMLINK_NOFOLLOW)
-		error = uk_syscall_r_lstat((long) p, (long) st);
+		error = uk_syscall_do_lstat((long) p, (long) st);
 	else
-		error = uk_syscall_r_stat((long) p, (long) st);
+		error = uk_syscall_do_stat((long) p, (long) st);
 
 	return error;
 }
@@ -2096,13 +2064,13 @@ UK_SYSCALL_R_DEFINE(int, faccessat, int, dirfd, const char*, pathname, int, mode
 	if (flags & AT_SYMLINK_NOFOLLOW) {
 		struct stat st;
 
-		error = uk_syscall_r_lstat((long)p, (long)&st);
+		error = uk_syscall_do_lstat((long)p, (long)&st);
 		/* Check if the file is an actual symlink */
 		if (error == 0 && S_ISLNK(st.st_mode))
 			UK_CRASH("UNIMPLEMENTED: faccessat() with AT_SYMLINK_NOFOLLOW\n");
 	}
 
-	error = uk_syscall_r_access((long)p, (long)mode);
+	error = uk_syscall_do_access((long)p, (long)mode);
 
 out_error:
 	return error;
@@ -2110,7 +2078,7 @@ out_error:
 
 int euidaccess(const char *pathname, int mode)
 {
-	return uk_syscall_r_access((long) pathname, (long) mode);
+	return uk_syscall_do_access((long) pathname, (long) mode);
 }
 
 __weak_alias(euidaccess,eaccess);
@@ -2179,39 +2147,6 @@ UK_SYSCALL_R_DEFINE(int, truncate, const char*, pathname, off_t, length)
 
 LFS64(truncate);
 
-UK_TRACEPOINT(trace_vfs_ftruncate, "%d %#x", int, off_t);
-UK_TRACEPOINT(trace_vfs_ftruncate_ret, "");
-UK_TRACEPOINT(trace_vfs_ftruncate_err, "%d", int);
-
-UK_SYSCALL_R_DEFINE(int, ftruncate, int, fd, off_t, length)
-{
-	trace_vfs_ftruncate(fd, length);
-	struct vfscore_file *fp;
-	int error;
-
-	error = fget(fd, &fp);
-	if (error)
-		goto out_error;
-
-	error = sys_ftruncate(fp, length);
-	fdrop(fp);
-
-	if (error)
-		goto out_error;
-	trace_vfs_ftruncate_ret();
-	return 0;
-
-	out_error:
-	trace_vfs_ftruncate_err(error);
-	return -error;
-}
-
-#ifdef ftruncate64
-#undef ftruncate64
-#endif
-
-LFS64(ftruncate);
-
 UK_SYSCALL_DEFINE(ssize_t, readlink, const char *, pathname, char *, buf, size_t, bufsize)
 {
 	struct task *t = main_task;
@@ -2241,39 +2176,6 @@ UK_SYSCALL_DEFINE(ssize_t, readlink, const char *, pathname, char *, buf, size_t
 	errno = error;
 	return -1;
 }
-
-UK_TRACEPOINT(trace_vfs_fallocate, "%d %d %#x %#x", int, int, loff_t, loff_t);
-UK_TRACEPOINT(trace_vfs_fallocate_ret, "");
-UK_TRACEPOINT(trace_vfs_fallocate_err, "%d", int);
-
-UK_SYSCALL_R_DEFINE(int, fallocate, int, fd, int, mode, loff_t, offset, loff_t, len)
-{
-	struct vfscore_file *fp;
-	int error;
-
-	trace_vfs_fallocate(fd, mode, offset, len);
-	error = fget(fd, &fp);
-	if (error)
-		goto out_error;
-
-	error = sys_fallocate(fp, mode, offset, len);
-	fdrop(fp);
-
-	if (error)
-		goto out_error;
-	trace_vfs_fallocate_ret();
-	return 0;
-
-	out_error:
-	trace_vfs_fallocate_err(error);
-	return -error;
-}
-
-#ifdef fallocate64
-#undef fallocate64
-#endif
-
-LFS64(fallocate);
 
 UK_TRACEPOINT(trace_vfs_utimes, "\"%s\"", const char*);
 UK_TRACEPOINT(trace_vfs_utimes_ret, "");
@@ -2431,9 +2333,9 @@ UK_SYSCALL_R_DEFINE(int, utime, const char *, pathname,
 		times[0].tv_usec = 0;
 		times[1].tv_sec = t->modtime;
 		times[1].tv_usec = 0;
-		return uk_syscall_r_utimes((long) pathname, (long) times);
+		return uk_syscall_do_utimes((long) pathname, (long) times);
 	} else {
-		return uk_syscall_r_utimes((long) pathname, (long) NULL);
+		return uk_syscall_do_utimes((long) pathname, (long) NULL);
 	}
 }
 
@@ -2460,32 +2362,6 @@ UK_SYSCALL_R_DEFINE(int, chmod, const char*, pathname, mode_t, mode)
 out_error:
 	trace_vfs_chmod_err(error);
 	return -error;
-}
-
-UK_TRACEPOINT(trace_vfs_fchmod, "\"%d\" 0%0o", int, mode_t);
-UK_TRACEPOINT(trace_vfs_fchmod_ret, "");
-
-UK_SYSCALL_R_DEFINE(int, fchmod, int, fd, mode_t, mode)
-{
-	trace_vfs_fchmod(fd, mode);
-	int error = sys_fchmod(fd, mode & UK_ALLPERMS);
-	trace_vfs_fchmod_ret();
-	if (error) {
-		return -error;
-	}
-
-	return 0;
-}
-
-UK_TRACEPOINT(trace_vfs_fchown, "\"%d\" %d %d", int, uid_t, gid_t);
-UK_TRACEPOINT(trace_vfs_fchown_ret, "");
-
-UK_SYSCALL_R_DEFINE(int, fchown, int, fd, uid_t, owner, gid_t, group)
-{
-	trace_vfs_fchown(fd, owner, group);
-	UK_WARN_STUBBED();
-	trace_vfs_fchown_ret();
-	return 0;
 }
 
 UK_SYSCALL_R_DEFINE(int, chown, const char*, path, uid_t, owner, gid_t, group)

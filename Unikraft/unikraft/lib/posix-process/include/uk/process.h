@@ -37,6 +37,8 @@
 #include <arch/clone.h>
 #include <uk/config.h>
 #include <stdbool.h>
+#include <sys/resource.h>
+#include <sys/types.h> /* pid_t */
 #if CONFIG_LIBUKSCHED
 #include <uk/thread.h>
 #endif
@@ -131,6 +133,24 @@
 #endif
 #endif /* CONFIG_LIBPOSIX_PROCESS_CLONE */
 
+int uk_sys_prlimit64(int pid, unsigned int resource,
+		     struct rlimit *new_limit, struct rlimit *old_limit);
+
+static inline int uk_sys_getrlimit(int resource, struct rlimit *rlim)
+{
+	return uk_sys_prlimit64(0, resource, NULL, rlim);
+}
+
+static inline int uk_sys_setrlimit(int resource, const struct rlimit *rlim)
+{
+	return uk_sys_prlimit64(0, resource,
+				DECONST(struct rlimit *, rlim), NULL);
+}
+
+pid_t uk_sys_gettid(void);
+pid_t uk_sys_getppid(void);
+pid_t uk_sys_getpid(void);
+
 #if CONFIG_LIBUKSCHED
 int uk_posix_process_create(struct uk_alloc *a,
 			    struct uk_thread *thread,
@@ -199,5 +219,14 @@ struct uk_posix_clonetab_entry {
 				 UK_PRIO_LATEST)
 
 #endif /* CONFIG_LIBPOSIX_PROCESS_CLONE */
+
+#if CONFIG_LIBPOSIX_PROCESS_EXECVE
+
+/* Data delivered to the handlers of the POSIX_PROCESS_EXECVE_EVENT */
+struct posix_process_execve_event_data {
+	struct uk_thread *thread;
+};
+
+#endif /* CONFIG_LIBPOSIX_PROCESS_EXECVE */
 
 #endif /* __UK_PROCESS_H__ */

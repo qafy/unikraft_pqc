@@ -29,6 +29,12 @@ ssize_t vfscore_write(struct vfscore_file *fp, const void *buf, size_t count);
 int vfscore_lseek(struct vfscore_file *fp, off_t off, int type, off_t *origin);
 
 int vfscore_fstat(struct vfscore_file *fp, struct stat *st);
+int vfscore_fchmod(struct vfscore_file *fp, mode_t mode);
+
+int vfscore_fsync(struct vfscore_file *fp);
+
+int vfscore_ftruncate(struct vfscore_file *fp, off_t length);
+int vfscore_fallocate(struct vfscore_file *fp, int mode, off_t off, off_t len);
 
 int vfscore_fcntl(struct vfscore_file *fp, unsigned int cmd, unsigned long arg);
 int vfscore_ioctl(struct vfscore_file *fp, unsigned long request, void *buf);

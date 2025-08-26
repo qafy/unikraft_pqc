@@ -70,7 +70,6 @@ SEED=\$(hexdump -vn32 -e'8/4 "0x%08X "' /dev/urandom)
 qemu-system-aarch64 \\
     -append "ssl_uk random.seed=[\${SEED}] -- \$*" \\
     -kernel \$SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \\
-    -append " -- \$*" \\
     -machine virt -cpu max -m 1G \\
     -nographic \\
     \$KVM_SUPPORT

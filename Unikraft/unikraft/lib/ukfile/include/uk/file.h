@@ -36,8 +36,8 @@ struct uk_file;
 
 /* I/O */
 typedef ssize_t (*uk_file_io_func)(const struct uk_file *f,
-				   const struct iovec *iov, int iovcnt,
-				   off_t off, long flags);
+				   const struct iovec *iov, size_t iovcnt,
+				   size_t off, long flags);
 
 /* Info (stat-like & chXXX-like) */
 typedef int (*uk_file_getstat_func)(const struct uk_file *f,
@@ -130,13 +130,34 @@ static inline void uk_file_state_wunlock(struct uk_file_state *st)
 }
 
 /*
+ * File state contains one crucial aspect of files: event handling.
+ *
+ * This can be done by drivers in two ways: managed and polled.
+ * Managed (the default) requires the driver to signal both rising and falling
+ * edges of events, leaving ukfile to manage everything else.
+ * Polled drivers, conversely, maintain events internally and provide a callback
+ * for retrieving their instantaneous levels, and are thus only required to
+ * signal rising edges of events.
+ * Polled drivers are configured via LIBUKFILE_POLLED.
+ */
+/*
  * We define initializers separate from an initial values.
  * The former can only be used in (static) variable initializations, while the
  * latter is meant for assigning to variables or as anonymous data structures.
  */
+#if CONFIG_LIBUKFILE_POLLED
+#define UK_FILE_POLLED_STATE_INITIALIZER(name, pollfunc) { \
+	.iolock = UK_RWLOCK_INITIALIZER((name).iolock, 0), \
+	.pollq = UK_POLLQ_EDGE_INITIALIZER((name).pollq, (pollfunc)) \
+}
+#define UK_FILE_POLLED_STATE_INIT_VALUE(name, pollfunc) \
+	((struct uk_file_state)UK_FILE_POLLED_STATE_INITIALIZER( \
+		(name), (pollfunc)))
+#endif /* CONFIG_LIBUKFILE_POLLED */
+
 #define UK_FILE_STATE_EVENTS_INITIALIZER(name, ev) { \
 	.iolock = UK_RWLOCK_INITIALIZER((name).iolock, 0), \
-	.pollq = UK_POLLQ_EVENTS_INITIALIZER((name).pollq, (ev)) \
+	.pollq = UK_POLLQ_LEVEL_EVENTS_INITIALIZER((name).pollq, (ev)) \
 }
 #define UK_FILE_STATE_EVENTS_INIT_VALUE(name, ev) \
 	((struct uk_file_state)UK_FILE_STATE_EVENTS_INITIALIZER((name), (ev)))
@@ -183,6 +204,7 @@ typedef struct uk_file_finref uk_file_refcnt;
 
 #define uk_file_refcnt_acquire		uk_file_finref_acquire
 #define uk_file_refcnt_acquire_weak	uk_file_finref_acquire_weak
+#define uk_file_refcnt_try_acquire	uk_file_finref_try_acquire
 #define uk_file_refcnt_release		uk_file_finref_release
 #define uk_file_refcnt_release_weak	uk_file_finref_release_weak
 
@@ -196,6 +218,7 @@ typedef struct uk_swrefcount uk_file_refcnt;
 
 #define uk_file_refcnt_acquire		uk_swrefcount_acquire
 #define uk_file_refcnt_acquire_weak	uk_swrefcount_acquire_weak
+#define uk_file_refcnt_try_acquire	uk_swrefcount_try_acquire
 #define uk_file_refcnt_release		uk_swrefcount_release
 #define uk_file_refcnt_release_weak	uk_swrefcount_release_weak
 
@@ -219,16 +242,16 @@ struct uk_file {
 /* Operations inlines */
 static inline
 ssize_t uk_file_read(const struct uk_file *f,
-		     const struct iovec *iov, int iovcnt,
-		     off_t off, long flags)
+		     const struct iovec *iov, size_t iovcnt,
+		     size_t off, long flags)
 {
 	return f->ops->read(f, iov, iovcnt, off, flags);
 }
 
 static inline
 ssize_t uk_file_write(const struct uk_file *f,
-		      const struct iovec *iov, int iovcnt,
-		      off_t off, long flags)
+		      const struct iovec *iov, size_t iovcnt,
+		      size_t off, long flags)
 {
 	return f->ops->write(f, iov, iovcnt, off, flags);
 }
@@ -266,6 +289,12 @@ static inline
 void uk_file_acquire_weak(const struct uk_file *f)
 {
 	uk_file_refcnt_acquire_weak(f->refcnt);
+}
+
+static inline
+int uk_file_try_acquire(const struct uk_file *f)
+{
+	return uk_file_refcnt_try_acquire(f->refcnt);
 }
 
 static inline
@@ -331,14 +360,14 @@ static inline void uk_file_wunlock(const struct uk_file *f)
 static inline
 uk_pollevent uk_file_poll_immediate(const struct uk_file *f, uk_pollevent req)
 {
-	return uk_pollq_poll_immediate(&f->state->pollq, req);
+	return uk_pollq_poll_level(&f->state->pollq, req, f);
 }
 
 static inline
 uk_pollevent uk_file_poll_until(const struct uk_file *f, uk_pollevent req,
 				__nsec deadline)
 {
-	return uk_pollq_poll_until(&f->state->pollq, req, deadline);
+	return uk_pollq_poll_until(&f->state->pollq, req, deadline, f);
 }
 
 static inline

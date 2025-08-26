@@ -2,7 +2,6 @@ config LIBUKFILE
 	bool "ukfile: Common support for files"
 	select LIBUKATOMIC
 	select LIBUKLOCK
-	select LIBUKLOCK_MUTEX
 	select LIBUKLOCK_RWLOCK
 	select LIBUKSCHED
 	select LIBNOLIBC if !HAVE_LIBC
@@ -12,4 +11,8 @@ config LIBUKFILE_CHAINUPDATE
 	bool
 
 config LIBUKFILE_FINALIZERS
+	bool
+	select LIBUKLOCK_MUTEX
+
+config LIBUKFILE_POLLED
 	bool

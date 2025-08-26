@@ -6,6 +6,7 @@ SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 if [ "$1" == "clean" ]; then
     docker network rm alpine-bench-net 2>/dev/null
     docker image rm alpine-bench 2>/dev/null
+    rm $SCRIPT_DIR/alpine_bench.tar
     rm $SCRIPT_DIR/openssl
     rm $SCRIPT_DIR/sh
     rm $SCRIPT_DIR/benchmark

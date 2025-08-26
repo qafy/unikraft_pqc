@@ -9,7 +9,7 @@ if docker inspect --format '{{.State.Running}}' "$CONTAINER_NAME" 1>/dev/null 2>
     docker exec -it $CONTAINER_NAME bash
 else
     echo "Starting new container: $CONTAINER_NAME"
-    docker build -t uk-build-epqciuoe -f ./Unikraft/uk-build-aarch64 . 
+    docker build --platform linux/arm64 -t uk-build-epqciuoe -f ./Unikraft/uk-build-aarch64 . 
     # 2>/dev/null
     docker run \
         --hostname uk-build \

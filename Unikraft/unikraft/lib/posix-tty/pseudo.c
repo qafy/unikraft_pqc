@@ -22,30 +22,32 @@ static const char VOID_VOLID[] = "void_vol";
 static const char ZERO_VOLID[] = "zero_vol";
 
 static ssize_t null_read(const struct uk_file *f __maybe_unused,
-			 const struct iovec *iov __unused, int iovcnt __unused,
-			 off_t off __unused, long flags __unused)
+			 const struct iovec *iov __unused,
+			 size_t iovcnt __unused,
+			 size_t off __unused, long flags __unused)
 {
 	UK_ASSERT(f->vol == NULL_VOLID);
 	return 0;
 }
 
 static ssize_t void_read(const struct uk_file *f __maybe_unused,
-			 const struct iovec *iov __unused, int iovcnt __unused,
-			 off_t off __unused, long flags __unused)
+			 const struct iovec *iov __unused,
+			 size_t iovcnt __unused,
+			 size_t off __unused, long flags __unused)
 {
 	UK_ASSERT(f->vol == VOID_VOLID);
 	return -EAGAIN;
 }
 
 static ssize_t zero_read(const struct uk_file *f __maybe_unused,
-			 const struct iovec *iov, int iovcnt,
-			 off_t off __unused, long flags __unused)
+			 const struct iovec *iov, size_t iovcnt,
+			 size_t off __unused, long flags __unused)
 {
 	ssize_t total = 0;
 
 	UK_ASSERT(f->vol == ZERO_VOLID);
 
-	for (int i = 0; i < iovcnt; i++) {
+	for (size_t i = 0; i < iovcnt; i++) {
 		if (unlikely(!iov[i].iov_base && iov[i].iov_len))
 			return -EFAULT;
 		memset(iov[i].iov_base, 0, iov[i].iov_len);
@@ -55,15 +57,15 @@ static ssize_t zero_read(const struct uk_file *f __maybe_unused,
 }
 
 static ssize_t null_write(const struct uk_file *f __maybe_unused,
-			  const struct iovec *iov, int iovcnt,
-			  off_t off __unused, long flags __unused)
+			  const struct iovec *iov, size_t iovcnt,
+			  size_t off __unused, long flags __unused)
 {
 	ssize_t total = 0;
 
 	UK_ASSERT(f->vol == NULL_VOLID || f->vol == ZERO_VOLID ||
 		  f->vol == VOID_VOLID);
 
-	for (int i = 0; i < iovcnt; i++)
+	for (size_t i = 0; i < iovcnt; i++)
 		total += iov[i].iov_len;
 	return total;
 }
