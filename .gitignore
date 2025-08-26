@@ -5,6 +5,7 @@
 Native/local
 Native/src
 Native/openssl
+Native/oqs_speed/benchmark
 
 Container/openssl
 Container/sh
@@ -31,3 +32,4 @@ Report/*.out
 Report/*.toc
 Report/*.run.xml
 Report/*.fls
+
