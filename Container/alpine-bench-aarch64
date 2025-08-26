@@ -37,6 +37,7 @@ RUN ./Configure \
     --with-rand-seed=getrandom \
     '-Wl,-rpath,$(LIBRPATH)' \
     no-shared \
+    no-tests \
     no-async \
     no-docs \
     no-zlib \
