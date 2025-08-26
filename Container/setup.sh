@@ -12,6 +12,11 @@ if [ "$1" == "clean" ]; then
     exit
 fi  
 
+if [ "$1" == "install" ]; then 
+    docker load -i $SCRIPT_DIR/alpine_bench.tar
+    exit
+fi
+
 docker network create -d bridge alpine-bench-net
 docker build --platform linux/arm64 -t alpine-bench-epqciuoe -f $SCRIPT_DIR/alpine-bench-aarch64 $SCRIPT_DIR
 docker save -o $SCRIPT_DIR/alpine_bench.tar alpine-bench-epqciuoe
