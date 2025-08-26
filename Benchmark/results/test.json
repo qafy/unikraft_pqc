@@ -1,0 +1,3367 @@
+{
+    "primitive": {
+        "native": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 14.0,
+                        "total_time": 5.07,
+                        "mean_us": 362172.571,
+                        "stddev_us": 617.731,
+                        "mean_ns": 362172142.0,
+                        "stddev_ns": 617852.0
+                    },
+                    "encaps": {
+                        "iterations": 2.0,
+                        "total_time": 5.508,
+                        "mean_us": 2754052.5,
+                        "stddev_us": 1141.5,
+                        "mean_ns": 2754052224.0,
+                        "stddev_ns": 1141888.0
+                    },
+                    "decaps": {
+                        "iterations": 1887.0,
+                        "total_time": 5.001,
+                        "mean_us": 2650.424,
+                        "stddev_us": 8.591,
+                        "mean_ns": 2650334.0,
+                        "stddev_ns": 8581.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 811.0,
+                        "total_time": 5.002,
+                        "mean_us": 6167.09,
+                        "stddev_us": 15.249,
+                        "mean_ns": 6166977.0,
+                        "stddev_ns": 15237.0
+                    },
+                    "encaps": {
+                        "iterations": 35.0,
+                        "total_time": 5.059,
+                        "mean_us": 144541.114,
+                        "stddev_us": 47.643,
+                        "mean_ns": 144540950.0,
+                        "stddev_ns": 47563.0
+                    },
+                    "decaps": {
+                        "iterations": 583.0,
+                        "total_time": 5.004,
+                        "mean_us": 8582.7,
+                        "stddev_us": 24.996,
+                        "mean_ns": 8582602.0,
+                        "stddev_ns": 24988.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 266.0,
+                        "total_time": 5.016,
+                        "mean_us": 18857.305,
+                        "stddev_us": 5204.766,
+                        "mean_ns": 18857206.0,
+                        "stddev_ns": 5204756.0
+                    },
+                    "encaps": {
+                        "iterations": 7803.0,
+                        "total_time": 5.0,
+                        "mean_us": 640.786,
+                        "stddev_us": 8.182,
+                        "mean_ns": 640678.0,
+                        "stddev_ns": 8176.0
+                    },
+                    "decaps": {
+                        "iterations": 55622.0,
+                        "total_time": 5.0,
+                        "mean_us": 89.894,
+                        "stddev_us": 1.863,
+                        "mean_ns": 89807.0,
+                        "stddev_ns": 1811.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 30779.0,
+                        "total_time": 5.0,
+                        "mean_us": 162.451,
+                        "stddev_us": 2.64,
+                        "mean_ns": 162365.0,
+                        "stddev_ns": 2608.0
+                    },
+                    "encaps": {
+                        "iterations": 10568.0,
+                        "total_time": 5.0,
+                        "mean_us": 473.128,
+                        "stddev_us": 271.751,
+                        "mean_ns": 473042.0,
+                        "stddev_ns": 271750.0
+                    },
+                    "decaps": {
+                        "iterations": 31953.0,
+                        "total_time": 5.0,
+                        "mean_us": 156.483,
+                        "stddev_us": 1.923,
+                        "mean_ns": 156396.0,
+                        "stddev_ns": 1889.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 16503.0,
+                        "total_time": 5.0,
+                        "mean_us": 302.98,
+                        "stddev_us": 32.817,
+                        "mean_ns": 302890.0,
+                        "stddev_ns": 32814.0
+                    },
+                    "encaps": {
+                        "iterations": 6715.0,
+                        "total_time": 5.001,
+                        "mean_us": 744.803,
+                        "stddev_us": 435.318,
+                        "mean_ns": 744705.0,
+                        "stddev_ns": 435311.0
+                    },
+                    "decaps": {
+                        "iterations": 19013.0,
+                        "total_time": 5.0,
+                        "mean_us": 262.99,
+                        "stddev_us": 2.428,
+                        "mean_ns": 262900.0,
+                        "stddev_ns": 2378.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 94.0,
+                        "total_time": 5.005,
+                        "mean_us": 53240.021,
+                        "stddev_us": 11795.438,
+                        "mean_ns": 53239846.0,
+                        "stddev_ns": 11795427.0
+                    },
+                    "encaps": {
+                        "iterations": 3797.0,
+                        "total_time": 5.001,
+                        "mean_us": 1317.041,
+                        "stddev_us": 10.161,
+                        "mean_ns": 1316913.0,
+                        "stddev_ns": 10146.0
+                    },
+                    "decaps": {
+                        "iterations": 28566.0,
+                        "total_time": 5.0,
+                        "mean_us": 175.035,
+                        "stddev_us": 4.327,
+                        "mean_ns": 174948.0,
+                        "stddev_ns": 4303.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 118438.0,
+                        "total_time": 5.0,
+                        "mean_us": 42.216,
+                        "stddev_us": 2.241,
+                        "mean_ns": 42129.0,
+                        "stddev_ns": 2216.0
+                    },
+                    "encaps": {
+                        "iterations": 52480.0,
+                        "total_time": 5.0,
+                        "mean_us": 95.275,
+                        "stddev_us": 3.321,
+                        "mean_ns": 95180.0,
+                        "stddev_ns": 3309.0
+                    },
+                    "decaps": {
+                        "iterations": 17369.0,
+                        "total_time": 5.0,
+                        "mean_us": 287.882,
+                        "stddev_us": 3.023,
+                        "mean_ns": 287791.0,
+                        "stddev_ns": 2997.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 9.0,
+                        "total_time": 5.252,
+                        "mean_us": 583565.333,
+                        "stddev_us": 233155.061,
+                        "mean_ns": 583565113.0,
+                        "stddev_ns": 233155214.0
+                    },
+                    "encaps": {
+                        "iterations": 1007.0,
+                        "total_time": 5.004,
+                        "mean_us": 4968.734,
+                        "stddev_us": 252.135,
+                        "mean_ns": 4968639.0,
+                        "stddev_ns": 252117.0
+                    },
+                    "decaps": {
+                        "iterations": 37545.0,
+                        "total_time": 5.0,
+                        "mean_us": 133.175,
+                        "stddev_us": 1.5,
+                        "mean_ns": 133087.0,
+                        "stddev_ns": 1456.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 101654.0,
+                        "total_time": 5.0,
+                        "mean_us": 49.187,
+                        "stddev_us": 11.026,
+                        "mean_ns": 49100.0,
+                        "stddev_ns": 11021.0
+                    },
+                    "encaps": {
+                        "iterations": 91795.0,
+                        "total_time": 5.0,
+                        "mean_us": 54.469,
+                        "stddev_us": 1.126,
+                        "mean_ns": 54382.0,
+                        "stddev_ns": 1023.0
+                    },
+                    "decaps": {
+                        "iterations": 111814.0,
+                        "total_time": 5.0,
+                        "mean_us": 44.717,
+                        "stddev_us": 1.041,
+                        "mean_ns": 44631.0,
+                        "stddev_ns": 938.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 91.0,
+                        "total_time": 5.002,
+                        "mean_us": 54965.176,
+                        "stddev_us": 371.902,
+                        "mean_ns": 54965124.0,
+                        "stddev_ns": 371858.0
+                    },
+                    "encaps": {
+                        "iterations": 1785.0,
+                        "total_time": 5.001,
+                        "mean_us": 2801.908,
+                        "stddev_us": 5.552,
+                        "mean_ns": 2801825.0,
+                        "stddev_ns": 5532.0
+                    },
+                    "decaps": {
+                        "iterations": 115.0,
+                        "total_time": 5.032,
+                        "mean_us": 43755.261,
+                        "stddev_us": 18.495,
+                        "mean_ns": 43755113.0,
+                        "stddev_ns": 18433.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 744.0,
+                        "total_time": 5.002,
+                        "mean_us": 6722.574,
+                        "stddev_us": 167.512,
+                        "mean_ns": 6722469.0,
+                        "stddev_ns": 167486.0
+                    },
+                    "encaps": {
+                        "iterations": 373.0,
+                        "total_time": 5.001,
+                        "mean_us": 13408.764,
+                        "stddev_us": 27.655,
+                        "mean_ns": 13408673.0,
+                        "stddev_ns": 27631.0
+                    },
+                    "decaps": {
+                        "iterations": 247.0,
+                        "total_time": 5.013,
+                        "mean_us": 20296.939,
+                        "stddev_us": 32.893,
+                        "mean_ns": 20296859.0,
+                        "stddev_ns": 32828.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 295.0,
+                        "total_time": 5.012,
+                        "mean_us": 16988.325,
+                        "stddev_us": 268.496,
+                        "mean_ns": 16988193.0,
+                        "stddev_ns": 268473.0
+                    },
+                    "encaps": {
+                        "iterations": 289.0,
+                        "total_time": 5.003,
+                        "mean_us": 17311.142,
+                        "stddev_us": 39.497,
+                        "mean_ns": 17311036.0,
+                        "stddev_ns": 39505.0
+                    },
+                    "decaps": {
+                        "iterations": 291.0,
+                        "total_time": 5.01,
+                        "mean_us": 17218.055,
+                        "stddev_us": 15.223,
+                        "mean_ns": 17217940.0,
+                        "stddev_ns": 15222.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 877.0,
+                        "total_time": 5.005,
+                        "mean_us": 5706.762,
+                        "stddev_us": 148.38,
+                        "mean_ns": 5706673.0,
+                        "stddev_ns": 148400.0
+                    },
+                    "encaps": {
+                        "iterations": 772.0,
+                        "total_time": 5.006,
+                        "mean_us": 6484.381,
+                        "stddev_us": 9.937,
+                        "mean_ns": 6484298.0,
+                        "stddev_ns": 9899.0
+                    },
+                    "decaps": {
+                        "iterations": 774.0,
+                        "total_time": 5.004,
+                        "mean_us": 6465.656,
+                        "stddev_us": 9.118,
+                        "mean_ns": 6465577.0,
+                        "stddev_ns": 9109.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 70457.0,
+                        "total_time": 5.0,
+                        "mean_us": 70.966,
+                        "stddev_us": 13.364,
+                        "mean_ns": 70876.0,
+                        "stddev_ns": 13355.0
+                    },
+                    "encaps": {
+                        "iterations": 59504.0,
+                        "total_time": 5.0,
+                        "mean_us": 84.028,
+                        "stddev_us": 17.055,
+                        "mean_ns": 83938.0,
+                        "stddev_ns": 17050.0
+                    },
+                    "decaps": {
+                        "iterations": 68262.0,
+                        "total_time": 5.0,
+                        "mean_us": 73.248,
+                        "stddev_us": 1.38,
+                        "mean_ns": 73160.0,
+                        "stddev_ns": 1345.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 47283.0,
+                        "total_time": 5.0,
+                        "mean_us": 105.748,
+                        "stddev_us": 16.151,
+                        "mean_ns": 105647.0,
+                        "stddev_ns": 16145.0
+                    },
+                    "encaps": {
+                        "iterations": 41893.0,
+                        "total_time": 5.0,
+                        "mean_us": 119.352,
+                        "stddev_us": 1.649,
+                        "mean_ns": 119251.0,
+                        "stddev_ns": 1625.0
+                    },
+                    "decaps": {
+                        "iterations": 46214.0,
+                        "total_time": 5.0,
+                        "mean_us": 108.193,
+                        "stddev_us": 1.454,
+                        "mean_ns": 108104.0,
+                        "stddev_ns": 1444.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 84780.0,
+                        "total_time": 5.0,
+                        "mean_us": 58.976,
+                        "stddev_us": 1.762,
+                        "mean_ns": 58873.0,
+                        "stddev_ns": 1724.0
+                    },
+                    "encaps": {
+                        "iterations": 20535.0,
+                        "total_time": 5.0,
+                        "mean_us": 243.491,
+                        "stddev_us": 2.402,
+                        "mean_ns": 243364.0,
+                        "stddev_ns": 2366.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        },
+        "docker": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 12.0,
+                        "total_time": 5.066,
+                        "mean_us": 422195.0,
+                        "stddev_us": 1343.918,
+                        "mean_ns": 422194624.0,
+                        "stddev_ns": 1343880.0
+                    },
+                    "encaps": {
+                        "iterations": 2.0,
+                        "total_time": 6.315,
+                        "mean_us": 3157739.0,
+                        "stddev_us": 9306.0,
+                        "mean_ns": 3157738752.0,
+                        "stddev_ns": 9306368.0
+                    },
+                    "decaps": {
+                        "iterations": 1685.0,
+                        "total_time": 5.003,
+                        "mean_us": 2969.114,
+                        "stddev_us": 27.035,
+                        "mean_ns": 2969011.0,
+                        "stddev_ns": 27010.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 718.0,
+                        "total_time": 5.0,
+                        "mean_us": 6963.969,
+                        "stddev_us": 260.621,
+                        "mean_ns": 6963844.0,
+                        "stddev_ns": 260584.0
+                    },
+                    "encaps": {
+                        "iterations": 32.0,
+                        "total_time": 5.152,
+                        "mean_us": 160999.312,
+                        "stddev_us": 6194.578,
+                        "mean_ns": 160999072.0,
+                        "stddev_ns": 6194520.0
+                    },
+                    "decaps": {
+                        "iterations": 503.0,
+                        "total_time": 5.006,
+                        "mean_us": 9951.964,
+                        "stddev_us": 75.785,
+                        "mean_ns": 9951882.0,
+                        "stddev_ns": 75743.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 276.0,
+                        "total_time": 5.002,
+                        "mean_us": 18124.877,
+                        "stddev_us": 5339.928,
+                        "mean_ns": 18124743.0,
+                        "stddev_ns": 5339915.0
+                    },
+                    "encaps": {
+                        "iterations": 7827.0,
+                        "total_time": 5.001,
+                        "mean_us": 638.884,
+                        "stddev_us": 11.146,
+                        "mean_ns": 638761.0,
+                        "stddev_ns": 11133.0
+                    },
+                    "decaps": {
+                        "iterations": 54578.0,
+                        "total_time": 5.0,
+                        "mean_us": 91.613,
+                        "stddev_us": 1.866,
+                        "mean_ns": 91512.0,
+                        "stddev_ns": 1809.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 31032.0,
+                        "total_time": 5.0,
+                        "mean_us": 161.129,
+                        "stddev_us": 19.22,
+                        "mean_ns": 161028.0,
+                        "stddev_ns": 19209.0
+                    },
+                    "encaps": {
+                        "iterations": 10545.0,
+                        "total_time": 5.0,
+                        "mean_us": 474.165,
+                        "stddev_us": 272.972,
+                        "mean_ns": 474064.0,
+                        "stddev_ns": 272974.0
+                    },
+                    "decaps": {
+                        "iterations": 32369.0,
+                        "total_time": 5.0,
+                        "mean_us": 154.47,
+                        "stddev_us": 1.888,
+                        "mean_ns": 154359.0,
+                        "stddev_ns": 1853.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 16713.0,
+                        "total_time": 5.0,
+                        "mean_us": 299.186,
+                        "stddev_us": 15.802,
+                        "mean_ns": 299089.0,
+                        "stddev_ns": 15764.0
+                    },
+                    "encaps": {
+                        "iterations": 6863.0,
+                        "total_time": 5.0,
+                        "mean_us": 728.546,
+                        "stddev_us": 418.643,
+                        "mean_ns": 728438.0,
+                        "stddev_ns": 418635.0
+                    },
+                    "decaps": {
+                        "iterations": 19398.0,
+                        "total_time": 5.0,
+                        "mean_us": 257.77,
+                        "stddev_us": 2.306,
+                        "mean_ns": 257676.0,
+                        "stddev_ns": 2272.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 101.0,
+                        "total_time": 5.01,
+                        "mean_us": 49603.129,
+                        "stddev_us": 11049.103,
+                        "mean_ns": 49602895.0,
+                        "stddev_ns": 11049088.0
+                    },
+                    "encaps": {
+                        "iterations": 3875.0,
+                        "total_time": 5.001,
+                        "mean_us": 1290.482,
+                        "stddev_us": 14.776,
+                        "mean_ns": 1290349.0,
+                        "stddev_ns": 14767.0
+                    },
+                    "decaps": {
+                        "iterations": 27854.0,
+                        "total_time": 5.0,
+                        "mean_us": 179.512,
+                        "stddev_us": 3.352,
+                        "mean_ns": 179416.0,
+                        "stddev_ns": 3336.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 115817.0,
+                        "total_time": 5.0,
+                        "mean_us": 43.172,
+                        "stddev_us": 8.579,
+                        "mean_ns": 43070.0,
+                        "stddev_ns": 8570.0
+                    },
+                    "encaps": {
+                        "iterations": 50981.0,
+                        "total_time": 5.0,
+                        "mean_us": 98.078,
+                        "stddev_us": 1.82,
+                        "mean_ns": 97971.0,
+                        "stddev_ns": 1780.0
+                    },
+                    "decaps": {
+                        "iterations": 17221.0,
+                        "total_time": 5.0,
+                        "mean_us": 290.345,
+                        "stddev_us": 5.033,
+                        "mean_ns": 290246.0,
+                        "stddev_ns": 5016.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 12.0,
+                        "total_time": 5.022,
+                        "mean_us": 418536.083,
+                        "stddev_us": 245077.397,
+                        "mean_ns": 418535616.0,
+                        "stddev_ns": 245077546.0
+                    },
+                    "encaps": {
+                        "iterations": 1001.0,
+                        "total_time": 5.005,
+                        "mean_us": 4999.524,
+                        "stddev_us": 262.281,
+                        "mean_ns": 4999422.0,
+                        "stddev_ns": 262275.0
+                    },
+                    "decaps": {
+                        "iterations": 37451.0,
+                        "total_time": 5.0,
+                        "mean_us": 133.508,
+                        "stddev_us": 1.736,
+                        "mean_ns": 133414.0,
+                        "stddev_ns": 1680.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 102078.0,
+                        "total_time": 5.0,
+                        "mean_us": 48.982,
+                        "stddev_us": 46.534,
+                        "mean_ns": 48884.0,
+                        "stddev_ns": 46530.0
+                    },
+                    "encaps": {
+                        "iterations": 92295.0,
+                        "total_time": 5.0,
+                        "mean_us": 54.175,
+                        "stddev_us": 3.426,
+                        "mean_ns": 54075.0,
+                        "stddev_ns": 3389.0
+                    },
+                    "decaps": {
+                        "iterations": 114721.0,
+                        "total_time": 5.0,
+                        "mean_us": 43.584,
+                        "stddev_us": 2.509,
+                        "mean_ns": 43472.0,
+                        "stddev_ns": 2457.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 113.0,
+                        "total_time": 5.011,
+                        "mean_us": 44345.85,
+                        "stddev_us": 3496.341,
+                        "mean_ns": 44345650.0,
+                        "stddev_ns": 3496288.0
+                    },
+                    "encaps": {
+                        "iterations": 2222.0,
+                        "total_time": 5.001,
+                        "mean_us": 2250.884,
+                        "stddev_us": 8.105,
+                        "mean_ns": 2250777.0,
+                        "stddev_ns": 8097.0
+                    },
+                    "decaps": {
+                        "iterations": 141.0,
+                        "total_time": 5.036,
+                        "mean_us": 35718.121,
+                        "stddev_us": 244.379,
+                        "mean_ns": 35717928.0,
+                        "stddev_ns": 244310.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 935.0,
+                        "total_time": 5.002,
+                        "mean_us": 5349.797,
+                        "stddev_us": 488.178,
+                        "mean_ns": 5349662.0,
+                        "stddev_ns": 488166.0
+                    },
+                    "encaps": {
+                        "iterations": 466.0,
+                        "total_time": 5.002,
+                        "mean_us": 10733.296,
+                        "stddev_us": 40.363,
+                        "mean_ns": 10733162.0,
+                        "stddev_ns": 40341.0
+                    },
+                    "decaps": {
+                        "iterations": 292.0,
+                        "total_time": 5.007,
+                        "mean_us": 17146.658,
+                        "stddev_us": 261.139,
+                        "mean_ns": 17146521.0,
+                        "stddev_ns": 261148.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 294.0,
+                        "total_time": 5.013,
+                        "mean_us": 17052.548,
+                        "stddev_us": 839.366,
+                        "mean_ns": 17052385.0,
+                        "stddev_ns": 839285.0
+                    },
+                    "encaps": {
+                        "iterations": 290.0,
+                        "total_time": 5.008,
+                        "mean_us": 17269.048,
+                        "stddev_us": 99.102,
+                        "mean_ns": 17268887.0,
+                        "stddev_ns": 99039.0
+                    },
+                    "decaps": {
+                        "iterations": 291.0,
+                        "total_time": 5.004,
+                        "mean_us": 17196.179,
+                        "stddev_us": 23.983,
+                        "mean_ns": 17196025.0,
+                        "stddev_ns": 23946.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 848.0,
+                        "total_time": 5.001,
+                        "mean_us": 5897.243,
+                        "stddev_us": 502.945,
+                        "mean_ns": 5897126.0,
+                        "stddev_ns": 502907.0
+                    },
+                    "encaps": {
+                        "iterations": 761.0,
+                        "total_time": 5.001,
+                        "mean_us": 6571.556,
+                        "stddev_us": 13.47,
+                        "mean_ns": 6571467.0,
+                        "stddev_ns": 13478.0
+                    },
+                    "decaps": {
+                        "iterations": 765.0,
+                        "total_time": 5.001,
+                        "mean_us": 6537.837,
+                        "stddev_us": 50.21,
+                        "mean_ns": 6537737.0,
+                        "stddev_ns": 50206.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 70617.0,
+                        "total_time": 5.0,
+                        "mean_us": 70.805,
+                        "stddev_us": 54.933,
+                        "mean_ns": 70701.0,
+                        "stddev_ns": 54927.0
+                    },
+                    "encaps": {
+                        "iterations": 61604.0,
+                        "total_time": 5.0,
+                        "mean_us": 81.164,
+                        "stddev_us": 2.111,
+                        "mean_ns": 81065.0,
+                        "stddev_ns": 2096.0
+                    },
+                    "decaps": {
+                        "iterations": 71781.0,
+                        "total_time": 5.0,
+                        "mean_us": 69.657,
+                        "stddev_us": 1.819,
+                        "mean_ns": 69549.0,
+                        "stddev_ns": 1757.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 48357.0,
+                        "total_time": 5.0,
+                        "mean_us": 103.398,
+                        "stddev_us": 67.09,
+                        "mean_ns": 103298.0,
+                        "stddev_ns": 67087.0
+                    },
+                    "encaps": {
+                        "iterations": 42711.0,
+                        "total_time": 5.0,
+                        "mean_us": 117.068,
+                        "stddev_us": 23.82,
+                        "mean_ns": 116964.0,
+                        "stddev_ns": 23816.0
+                    },
+                    "decaps": {
+                        "iterations": 47725.0,
+                        "total_time": 5.0,
+                        "mean_us": 104.768,
+                        "stddev_us": 3.168,
+                        "mean_ns": 104665.0,
+                        "stddev_ns": 3126.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 79603.0,
+                        "total_time": 5.0,
+                        "mean_us": 62.812,
+                        "stddev_us": 13.947,
+                        "mean_ns": 62708.0,
+                        "stddev_ns": 13933.0
+                    },
+                    "encaps": {
+                        "iterations": 20210.0,
+                        "total_time": 5.0,
+                        "mean_us": 247.413,
+                        "stddev_us": 8.976,
+                        "mean_ns": 247295.0,
+                        "stddev_ns": 8953.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        },
+        "unikraft": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 25.0,
+                        "total_time": 5.025,
+                        "mean_us": 201019.64,
+                        "stddev_us": 183.655,
+                        "mean_ns": 201019242.0,
+                        "stddev_ns": 183514.0
+                    },
+                    "encaps": {
+                        "iterations": 4.0,
+                        "total_time": 6.114,
+                        "mean_us": 1528597.25,
+                        "stddev_us": 572.263,
+                        "mean_ns": 1528596240.0,
+                        "stddev_ns": 572564.0
+                    },
+                    "decaps": {
+                        "iterations": 3441.0,
+                        "total_time": 5.0,
+                        "mean_us": 1453.135,
+                        "stddev_us": 6.518,
+                        "mean_ns": 1453027.0,
+                        "stddev_ns": 6497.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 1577.0,
+                        "total_time": 5.002,
+                        "mean_us": 3171.58,
+                        "stddev_us": 19.509,
+                        "mean_ns": 3171448.0,
+                        "stddev_ns": 19481.0
+                    },
+                    "encaps": {
+                        "iterations": 68.0,
+                        "total_time": 5.029,
+                        "mean_us": 73953.824,
+                        "stddev_us": 75.732,
+                        "mean_ns": 73953648.0,
+                        "stddev_ns": 75597.0
+                    },
+                    "decaps": {
+                        "iterations": 1172.0,
+                        "total_time": 5.003,
+                        "mean_us": 4269.038,
+                        "stddev_us": 17.186,
+                        "mean_ns": 4268880.0,
+                        "stddev_ns": 17190.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 120.0,
+                        "total_time": 5.015,
+                        "mean_us": 41789.608,
+                        "stddev_us": 15819.838,
+                        "mean_ns": 41789380.0,
+                        "stddev_ns": 15819808.0
+                    },
+                    "encaps": {
+                        "iterations": 446.0,
+                        "total_time": 5.01,
+                        "mean_us": 11233.276,
+                        "stddev_us": 33.37,
+                        "mean_ns": 11233119.0,
+                        "stddev_ns": 33346.0
+                    },
+                    "decaps": {
+                        "iterations": 38806.0,
+                        "total_time": 5.0,
+                        "mean_us": 128.849,
+                        "stddev_us": 2.176,
+                        "mean_ns": 128755.0,
+                        "stddev_ns": 2114.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 24009.0,
+                        "total_time": 5.0,
+                        "mean_us": 208.261,
+                        "stddev_us": 19.27,
+                        "mean_ns": 208158.0,
+                        "stddev_ns": 19258.0
+                    },
+                    "encaps": {
+                        "iterations": 5229.0,
+                        "total_time": 5.0,
+                        "mean_us": 956.271,
+                        "stddev_us": 616.328,
+                        "mean_ns": 956131.0,
+                        "stddev_ns": 616326.0
+                    },
+                    "decaps": {
+                        "iterations": 22157.0,
+                        "total_time": 5.0,
+                        "mean_us": 225.664,
+                        "stddev_us": 8.446,
+                        "mean_ns": 225551.0,
+                        "stddev_ns": 8437.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 13547.0,
+                        "total_time": 5.0,
+                        "mean_us": 369.102,
+                        "stddev_us": 24.785,
+                        "mean_ns": 369009.0,
+                        "stddev_ns": 24771.0
+                    },
+                    "encaps": {
+                        "iterations": 3310.0,
+                        "total_time": 5.001,
+                        "mean_us": 1511.013,
+                        "stddev_us": 1036.076,
+                        "mean_ns": 1510894.0,
+                        "stddev_ns": 1036064.0
+                    },
+                    "decaps": {
+                        "iterations": 13727.0,
+                        "total_time": 5.0,
+                        "mean_us": 364.251,
+                        "stddev_us": 3.549,
+                        "mean_ns": 364150.0,
+                        "stddev_ns": 3509.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 40.0,
+                        "total_time": 5.111,
+                        "mean_us": 127786.05,
+                        "stddev_us": 59541.097,
+                        "mean_ns": 127785788.0,
+                        "stddev_ns": 59540968.0
+                    },
+                    "encaps": {
+                        "iterations": 205.0,
+                        "total_time": 5.023,
+                        "mean_us": 24502.707,
+                        "stddev_us": 46.092,
+                        "mean_ns": 24502522.0,
+                        "stddev_ns": 46024.0
+                    },
+                    "decaps": {
+                        "iterations": 19305.0,
+                        "total_time": 5.0,
+                        "mean_us": 259.006,
+                        "stddev_us": 3.755,
+                        "mean_ns": 258909.0,
+                        "stddev_ns": 3723.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 122239.0,
+                        "total_time": 5.0,
+                        "mean_us": 40.904,
+                        "stddev_us": 2.513,
+                        "mean_ns": 40796.0,
+                        "stddev_ns": 2460.0
+                    },
+                    "encaps": {
+                        "iterations": 52200.0,
+                        "total_time": 5.0,
+                        "mean_us": 95.787,
+                        "stddev_us": 2.373,
+                        "mean_ns": 95635.0,
+                        "stddev_ns": 2329.0
+                    },
+                    "decaps": {
+                        "iterations": 17250.0,
+                        "total_time": 5.0,
+                        "mean_us": 289.859,
+                        "stddev_us": 3.629,
+                        "mean_ns": 289719.0,
+                        "stddev_ns": 3609.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 14.0,
+                        "total_time": 5.047,
+                        "mean_us": 360486.214,
+                        "stddev_us": 183349.895,
+                        "mean_ns": 360486012.0,
+                        "stddev_ns": 183349858.0
+                    },
+                    "encaps": {
+                        "iterations": 1005.0,
+                        "total_time": 5.001,
+                        "mean_us": 4976.374,
+                        "stddev_us": 265.084,
+                        "mean_ns": 4976211.0,
+                        "stddev_ns": 265063.0
+                    },
+                    "decaps": {
+                        "iterations": 37305.0,
+                        "total_time": 5.0,
+                        "mean_us": 134.032,
+                        "stddev_us": 21.265,
+                        "mean_ns": 133927.0,
+                        "stddev_ns": 21257.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 57853.0,
+                        "total_time": 5.0,
+                        "mean_us": 86.426,
+                        "stddev_us": 12.11,
+                        "mean_ns": 86314.0,
+                        "stddev_ns": 12099.0
+                    },
+                    "encaps": {
+                        "iterations": 47831.0,
+                        "total_time": 5.0,
+                        "mean_us": 104.536,
+                        "stddev_us": 2.171,
+                        "mean_ns": 104410.0,
+                        "stddev_ns": 2126.0
+                    },
+                    "decaps": {
+                        "iterations": 42564.0,
+                        "total_time": 5.0,
+                        "mean_us": 117.472,
+                        "stddev_us": 2.215,
+                        "mean_ns": 117347.0,
+                        "stddev_ns": 2189.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 91.0,
+                        "total_time": 5.007,
+                        "mean_us": 55016.505,
+                        "stddev_us": 69.365,
+                        "mean_ns": 55016325.0,
+                        "stddev_ns": 69285.0
+                    },
+                    "encaps": {
+                        "iterations": 1781.0,
+                        "total_time": 5.001,
+                        "mean_us": 2808.216,
+                        "stddev_us": 9.082,
+                        "mean_ns": 2808075.0,
+                        "stddev_ns": 9044.0
+                    },
+                    "decaps": {
+                        "iterations": 115.0,
+                        "total_time": 5.002,
+                        "mean_us": 43492.878,
+                        "stddev_us": 70.498,
+                        "mean_ns": 43492749.0,
+                        "stddev_ns": 70497.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 745.0,
+                        "total_time": 5.002,
+                        "mean_us": 6713.732,
+                        "stddev_us": 44.787,
+                        "mean_ns": 6713593.0,
+                        "stddev_ns": 44775.0
+                    },
+                    "encaps": {
+                        "iterations": 374.0,
+                        "total_time": 5.013,
+                        "mean_us": 13404.048,
+                        "stddev_us": 30.362,
+                        "mean_ns": 13403897.0,
+                        "stddev_ns": 30324.0
+                    },
+                    "decaps": {
+                        "iterations": 247.0,
+                        "total_time": 5.011,
+                        "mean_us": 20287.579,
+                        "stddev_us": 32.66,
+                        "mean_ns": 20287414.0,
+                        "stddev_ns": 32640.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 323.0,
+                        "total_time": 5.007,
+                        "mean_us": 15502.0,
+                        "stddev_us": 55.415,
+                        "mean_ns": 15501841.0,
+                        "stddev_ns": 55378.0
+                    },
+                    "encaps": {
+                        "iterations": 317.0,
+                        "total_time": 5.015,
+                        "mean_us": 15821.511,
+                        "stddev_us": 376.612,
+                        "mean_ns": 15821343.0,
+                        "stddev_ns": 376576.0
+                    },
+                    "decaps": {
+                        "iterations": 317.0,
+                        "total_time": 5.011,
+                        "mean_us": 15808.669,
+                        "stddev_us": 61.749,
+                        "mean_ns": 15808496.0,
+                        "stddev_ns": 61713.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 869.0,
+                        "total_time": 5.002,
+                        "mean_us": 5756.383,
+                        "stddev_us": 101.048,
+                        "mean_ns": 5756247.0,
+                        "stddev_ns": 101043.0
+                    },
+                    "encaps": {
+                        "iterations": 765.0,
+                        "total_time": 5.002,
+                        "mean_us": 6538.928,
+                        "stddev_us": 25.416,
+                        "mean_ns": 6538783.0,
+                        "stddev_ns": 25427.0
+                    },
+                    "decaps": {
+                        "iterations": 771.0,
+                        "total_time": 5.004,
+                        "mean_us": 6490.293,
+                        "stddev_us": 12.732,
+                        "mean_ns": 6490142.0,
+                        "stddev_ns": 12702.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 36558.0,
+                        "total_time": 5.0,
+                        "mean_us": 136.772,
+                        "stddev_us": 3.0,
+                        "mean_ns": 136655.0,
+                        "stddev_ns": 2966.0
+                    },
+                    "encaps": {
+                        "iterations": 30540.0,
+                        "total_time": 5.0,
+                        "mean_us": 163.721,
+                        "stddev_us": 3.121,
+                        "mean_ns": 163604.0,
+                        "stddev_ns": 3087.0
+                    },
+                    "decaps": {
+                        "iterations": 27248.0,
+                        "total_time": 5.0,
+                        "mean_us": 183.504,
+                        "stddev_us": 2.628,
+                        "mean_ns": 183384.0,
+                        "stddev_ns": 2599.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 24319.0,
+                        "total_time": 5.0,
+                        "mean_us": 205.603,
+                        "stddev_us": 20.056,
+                        "mean_ns": 205491.0,
+                        "stddev_ns": 20049.0
+                    },
+                    "encaps": {
+                        "iterations": 20909.0,
+                        "total_time": 5.0,
+                        "mean_us": 239.137,
+                        "stddev_us": 2.983,
+                        "mean_ns": 239025.0,
+                        "stddev_ns": 2946.0
+                    },
+                    "decaps": {
+                        "iterations": 18898.0,
+                        "total_time": 5.0,
+                        "mean_us": 264.587,
+                        "stddev_us": 3.277,
+                        "mean_ns": 264459.0,
+                        "stddev_ns": 3247.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 81866.0,
+                        "total_time": 5.0,
+                        "mean_us": 61.076,
+                        "stddev_us": 11.002,
+                        "mean_ns": 60920.0,
+                        "stddev_ns": 10994.0
+                    },
+                    "encaps": {
+                        "iterations": 19387.0,
+                        "total_time": 5.0,
+                        "mean_us": 257.913,
+                        "stddev_us": 21.221,
+                        "mean_ns": 257739.0,
+                        "stddev_ns": 21209.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        }
+    }
+}{
+    "tls": {
+        "native": {
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 10.0,
+                        "time": 0.08,
+                        "conn_p_user_sec": 125.0,
+                        "bytes_read": 72450.0
+                    },
+                    "real": {
+                        "connections": 10.0,
+                        "time": 32.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9435.0,
+                        "time": 13.09,
+                        "conn_p_user_sec": 720.78,
+                        "bytes_read": 44528201.0
+                    },
+                    "real": {
+                        "connections": 9435.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 1.18,
+                        "conn_p_user_sec": 9.32,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 193.0,
+                        "time": 19.31,
+                        "conn_p_user_sec": 9.99,
+                        "bytes_read": 909995.0
+                    },
+                    "real": {
+                        "connections": 193.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.39,
+                        "conn_p_user_sec": 28.21,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 599.0,
+                        "time": 17.08,
+                        "conn_p_user_sec": 35.07,
+                        "bytes_read": 2824285.0
+                    },
+                    "real": {
+                        "connections": 599.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.46,
+                        "conn_p_user_sec": 23.91,
+                        "bytes_read": 79761.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 427.0,
+                        "time": 15.36,
+                        "conn_p_user_sec": 27.8,
+                        "bytes_read": 2017575.0
+                    },
+                    "real": {
+                        "connections": 427.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.22,
+                        "conn_p_user_sec": 50.0,
+                        "bytes_read": 79805.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1082.0,
+                        "time": 14.8,
+                        "conn_p_user_sec": 73.11,
+                        "bytes_read": 5116778.0
+                    },
+                    "real": {
+                        "connections": 1082.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.09,
+                        "conn_p_user_sec": 122.22,
+                        "bytes_read": 79695.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9130.0,
+                        "time": 13.04,
+                        "conn_p_user_sec": 700.15,
+                        "bytes_read": 43088601.0
+                    },
+                    "real": {
+                        "connections": 9130.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.09,
+                        "conn_p_user_sec": 122.22,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8493.0,
+                        "time": 13.27,
+                        "conn_p_user_sec": 640.02,
+                        "bytes_read": 40098947.0
+                    },
+                    "real": {
+                        "connections": 8493.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.08,
+                        "conn_p_user_sec": 137.5,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8197.0,
+                        "time": 13.69,
+                        "conn_p_user_sec": 598.76,
+                        "bytes_read": 38701235.0
+                    },
+                    "real": {
+                        "connections": 8197.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 202.0,
+                        "time": 3.67,
+                        "conn_p_user_sec": 55.04,
+                        "bytes_read": 1463490.0
+                    },
+                    "real": {
+                        "connections": 202.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9547.0,
+                        "time": 13.23,
+                        "conn_p_user_sec": 721.62,
+                        "bytes_read": 45056841.0
+                    },
+                    "real": {
+                        "connections": 9547.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 116.0,
+                        "time": 13.52,
+                        "conn_p_user_sec": 8.58,
+                        "bytes_read": 839956.0
+                    },
+                    "real": {
+                        "connections": 116.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 193.0,
+                        "time": 19.26,
+                        "conn_p_user_sec": 10.02,
+                        "bytes_read": 909995.0
+                    },
+                    "real": {
+                        "connections": 193.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 171.0,
+                        "time": 7.82,
+                        "conn_p_user_sec": 21.87,
+                        "bytes_read": 1238211.0
+                    },
+                    "real": {
+                        "connections": 171.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 611.0,
+                        "time": 17.42,
+                        "conn_p_user_sec": 35.07,
+                        "bytes_read": 2880865.0
+                    },
+                    "real": {
+                        "connections": 611.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 152.0,
+                        "time": 7.96,
+                        "conn_p_user_sec": 19.1,
+                        "bytes_read": 1102152.0
+                    },
+                    "real": {
+                        "connections": 152.0,
+                        "time": 31.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 423.0,
+                        "time": 15.25,
+                        "conn_p_user_sec": 27.74,
+                        "bytes_read": 1998675.0
+                    },
+                    "real": {
+                        "connections": 423.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 181.0,
+                        "time": 5.53,
+                        "conn_p_user_sec": 32.73,
+                        "bytes_read": 1313155.0
+                    },
+                    "real": {
+                        "connections": 181.0,
+                        "time": 31.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1110.0,
+                        "time": 15.05,
+                        "conn_p_user_sec": 73.75,
+                        "bytes_read": 5249190.0
+                    },
+                    "real": {
+                        "connections": 1110.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 202.0,
+                        "time": 3.7,
+                        "conn_p_user_sec": 54.59,
+                        "bytes_read": 1463490.0
+                    },
+                    "real": {
+                        "connections": 202.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9145.0,
+                        "time": 13.44,
+                        "conn_p_user_sec": 680.43,
+                        "bytes_read": 43159401.0
+                    },
+                    "real": {
+                        "connections": 9145.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 201.0,
+                        "time": 3.68,
+                        "conn_p_user_sec": 54.62,
+                        "bytes_read": 1456647.0
+                    },
+                    "real": {
+                        "connections": 201.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8701.0,
+                        "time": 13.28,
+                        "conn_p_user_sec": 655.2,
+                        "bytes_read": 41081123.0
+                    },
+                    "real": {
+                        "connections": 8701.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 200.0,
+                        "time": 3.7,
+                        "conn_p_user_sec": 54.05,
+                        "bytes_read": 1449400.0
+                    },
+                    "real": {
+                        "connections": 200.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8290.0,
+                        "time": 13.69,
+                        "conn_p_user_sec": 605.55,
+                        "bytes_read": 39140381.0
+                    },
+                    "real": {
+                        "connections": 8290.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5836.0,
+                        "time": 12.96,
+                        "conn_p_user_sec": 450.31,
+                        "bytes_read": 42141756.0
+                    },
+                    "real": {
+                        "connections": 5836.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9565.0,
+                        "time": 13.22,
+                        "conn_p_user_sec": 723.52,
+                        "bytes_read": 44923047.0
+                    },
+                    "real": {
+                        "connections": 9565.0,
+                        "time": 31.0,
+                        "bytes_read": 4696.0
+                    }
+                }
+            },
+            "Falcon-512+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 19.08,
+                        "conn_p_user_sec": 9.91,
+                        "bytes_read": 1364013.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 193.0,
+                        "time": 19.25,
+                        "conn_p_user_sec": 10.03,
+                        "bytes_read": 905363.0
+                    },
+                    "real": {
+                        "connections": 193.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 596.0,
+                        "time": 17.4,
+                        "conn_p_user_sec": 34.25,
+                        "bytes_read": 4301332.0
+                    },
+                    "real": {
+                        "connections": 596.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 615.0,
+                        "time": 17.48,
+                        "conn_p_user_sec": 35.18,
+                        "bytes_read": 2884965.0
+                    },
+                    "real": {
+                        "connections": 615.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 419.0,
+                        "time": 15.38,
+                        "conn_p_user_sec": 27.24,
+                        "bytes_read": 3028113.0
+                    },
+                    "real": {
+                        "connections": 419.0,
+                        "time": 31.0,
+                        "bytes_read": 7227.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 428.0,
+                        "time": 15.45,
+                        "conn_p_user_sec": 27.7,
+                        "bytes_read": 2012028.0
+                    },
+                    "real": {
+                        "connections": 428.0,
+                        "time": 31.0,
+                        "bytes_read": 4701.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 1070.0,
+                        "time": 15.46,
+                        "conn_p_user_sec": 69.21,
+                        "bytes_read": 7737170.0
+                    },
+                    "real": {
+                        "connections": 1070.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1119.0,
+                        "time": 15.26,
+                        "conn_p_user_sec": 73.33,
+                        "bytes_read": 5264895.0
+                    },
+                    "real": {
+                        "connections": 1119.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5819.0,
+                        "time": 13.07,
+                        "conn_p_user_sec": 445.22,
+                        "bytes_read": 42018999.0
+                    },
+                    "real": {
+                        "connections": 5819.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 9251.0,
+                        "time": 13.64,
+                        "conn_p_user_sec": 678.23,
+                        "bytes_read": 43447841.0
+                    },
+                    "real": {
+                        "connections": 9251.0,
+                        "time": 31.0,
+                        "bytes_read": 4696.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5602.0,
+                        "time": 13.19,
+                        "conn_p_user_sec": 424.72,
+                        "bytes_read": 40463246.0
+                    },
+                    "real": {
+                        "connections": 5602.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8715.0,
+                        "time": 13.61,
+                        "conn_p_user_sec": 640.34,
+                        "bytes_read": 40946709.0
+                    },
+                    "real": {
+                        "connections": 8715.0,
+                        "time": 31.0,
+                        "bytes_read": 4698.0
+                    }
+                }
+            },
+            "Falcon-512+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5303.0,
+                        "time": 13.0,
+                        "conn_p_user_sec": 407.92,
+                        "bytes_read": 38303569.0
+                    },
+                    "real": {
+                        "connections": 5303.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 8333.0,
+                        "time": 13.71,
+                        "conn_p_user_sec": 607.8,
+                        "bytes_read": 39150711.0
+                    },
+                    "real": {
+                        "connections": 8333.0,
+                        "time": 31.0,
+                        "bytes_read": 4698.0
+                    }
+                }
+            }
+        },
+        "docker": {
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 12.0,
+                        "time": 0.11,
+                        "conn_p_user_sec": 109.09,
+                        "bytes_read": 86940.0
+                    },
+                    "real": {
+                        "connections": 12.0,
+                        "time": 33.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6817.0,
+                        "time": 12.26,
+                        "conn_p_user_sec": 556.04,
+                        "bytes_read": 32171241.0
+                    },
+                    "real": {
+                        "connections": 6817.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.98,
+                        "conn_p_user_sec": 11.22,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 215.0,
+                        "time": 17.62,
+                        "conn_p_user_sec": 12.2,
+                        "bytes_read": 1013725.0
+                    },
+                    "real": {
+                        "connections": 215.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.36,
+                        "conn_p_user_sec": 30.56,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 649.0,
+                        "time": 15.75,
+                        "conn_p_user_sec": 41.21,
+                        "bytes_read": 3060035.0
+                    },
+                    "real": {
+                        "connections": 649.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.47,
+                        "conn_p_user_sec": 23.4,
+                        "bytes_read": 79761.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 413.0,
+                        "time": 15.03,
+                        "conn_p_user_sec": 27.48,
+                        "bytes_read": 1951425.0
+                    },
+                    "real": {
+                        "connections": 413.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.26,
+                        "conn_p_user_sec": 42.31,
+                        "bytes_read": 79805.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1049.0,
+                        "time": 15.33,
+                        "conn_p_user_sec": 68.43,
+                        "bytes_read": 4960721.0
+                    },
+                    "real": {
+                        "connections": 1049.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.09,
+                        "conn_p_user_sec": 122.22,
+                        "bytes_read": 79695.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6491.0,
+                        "time": 12.49,
+                        "conn_p_user_sec": 519.7,
+                        "bytes_read": 30632521.0
+                    },
+                    "real": {
+                        "connections": 6491.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.09,
+                        "conn_p_user_sec": 122.22,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6481.0,
+                        "time": 12.91,
+                        "conn_p_user_sec": 502.01,
+                        "bytes_read": 30598283.0
+                    },
+                    "real": {
+                        "connections": 6481.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.11,
+                        "conn_p_user_sec": 100.0,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6180.0,
+                        "time": 12.72,
+                        "conn_p_user_sec": 485.85,
+                        "bytes_read": 29176961.0
+                    },
+                    "real": {
+                        "connections": 6180.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 194.0,
+                        "time": 4.2,
+                        "conn_p_user_sec": 46.19,
+                        "bytes_read": 1405530.0
+                    },
+                    "real": {
+                        "connections": 194.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6981.0,
+                        "time": 12.72,
+                        "conn_p_user_sec": 548.82,
+                        "bytes_read": 32945321.0
+                    },
+                    "real": {
+                        "connections": 6981.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 118.0,
+                        "time": 11.83,
+                        "conn_p_user_sec": 9.97,
+                        "bytes_read": 854438.0
+                    },
+                    "real": {
+                        "connections": 118.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 216.0,
+                        "time": 17.62,
+                        "conn_p_user_sec": 12.26,
+                        "bytes_read": 1018440.0
+                    },
+                    "real": {
+                        "connections": 216.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 167.0,
+                        "time": 7.4,
+                        "conn_p_user_sec": 22.57,
+                        "bytes_read": 1209247.0
+                    },
+                    "real": {
+                        "connections": 167.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 654.0,
+                        "time": 15.99,
+                        "conn_p_user_sec": 40.9,
+                        "bytes_read": 3083610.0
+                    },
+                    "real": {
+                        "connections": 654.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 137.0,
+                        "time": 7.68,
+                        "conn_p_user_sec": 17.84,
+                        "bytes_read": 993387.0
+                    },
+                    "real": {
+                        "connections": 137.0,
+                        "time": 31.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 418.0,
+                        "time": 15.3,
+                        "conn_p_user_sec": 27.32,
+                        "bytes_read": 1975050.0
+                    },
+                    "real": {
+                        "connections": 418.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 174.0,
+                        "time": 5.72,
+                        "conn_p_user_sec": 30.42,
+                        "bytes_read": 1262370.0
+                    },
+                    "real": {
+                        "connections": 174.0,
+                        "time": 31.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1051.0,
+                        "time": 15.18,
+                        "conn_p_user_sec": 69.24,
+                        "bytes_read": 4970179.0
+                    },
+                    "real": {
+                        "connections": 1051.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 182.0,
+                        "time": 3.93,
+                        "conn_p_user_sec": 46.31,
+                        "bytes_read": 1318590.0
+                    },
+                    "real": {
+                        "connections": 182.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6628.0,
+                        "time": 13.0,
+                        "conn_p_user_sec": 509.85,
+                        "bytes_read": 31279161.0
+                    },
+                    "real": {
+                        "connections": 6628.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 194.0,
+                        "time": 4.1,
+                        "conn_p_user_sec": 47.32,
+                        "bytes_read": 1405918.0
+                    },
+                    "real": {
+                        "connections": 194.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6554.0,
+                        "time": 12.85,
+                        "conn_p_user_sec": 510.04,
+                        "bytes_read": 30942989.0
+                    },
+                    "real": {
+                        "connections": 6554.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 194.0,
+                        "time": 4.13,
+                        "conn_p_user_sec": 46.97,
+                        "bytes_read": 1405918.0
+                    },
+                    "real": {
+                        "connections": 194.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6230.0,
+                        "time": 12.98,
+                        "conn_p_user_sec": 479.97,
+                        "bytes_read": 29413061.0
+                    },
+                    "real": {
+                        "connections": 6230.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4665.0,
+                        "time": 12.86,
+                        "conn_p_user_sec": 362.75,
+                        "bytes_read": 33685965.0
+                    },
+                    "real": {
+                        "connections": 4665.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 7023.0,
+                        "time": 12.73,
+                        "conn_p_user_sec": 551.69,
+                        "bytes_read": 32978389.0
+                    },
+                    "real": {
+                        "connections": 7023.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 215.0,
+                        "time": 17.73,
+                        "conn_p_user_sec": 12.13,
+                        "bytes_read": 1551655.0
+                    },
+                    "real": {
+                        "connections": 215.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 217.0,
+                        "time": 17.7,
+                        "conn_p_user_sec": 12.26,
+                        "bytes_read": 1017947.0
+                    },
+                    "real": {
+                        "connections": 217.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 624.0,
+                        "time": 15.72,
+                        "conn_p_user_sec": 39.69,
+                        "bytes_read": 4503408.0
+                    },
+                    "real": {
+                        "connections": 624.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 656.0,
+                        "time": 16.01,
+                        "conn_p_user_sec": 40.97,
+                        "bytes_read": 3077296.0
+                    },
+                    "real": {
+                        "connections": 656.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 406.0,
+                        "time": 15.1,
+                        "conn_p_user_sec": 26.89,
+                        "bytes_read": 2934162.0
+                    },
+                    "real": {
+                        "connections": 406.0,
+                        "time": 31.0,
+                        "bytes_read": 7227.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 420.0,
+                        "time": 15.27,
+                        "conn_p_user_sec": 27.5,
+                        "bytes_read": 1974420.0
+                    },
+                    "real": {
+                        "connections": 420.0,
+                        "time": 31.0,
+                        "bytes_read": 4701.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 988.0,
+                        "time": 15.05,
+                        "conn_p_user_sec": 65.65,
+                        "bytes_read": 7144228.0
+                    },
+                    "real": {
+                        "connections": 988.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1056.0,
+                        "time": 15.17,
+                        "conn_p_user_sec": 69.61,
+                        "bytes_read": 4968480.0
+                    },
+                    "real": {
+                        "connections": 1056.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4505.0,
+                        "time": 12.38,
+                        "conn_p_user_sec": 363.89,
+                        "bytes_read": 32530605.0
+                    },
+                    "real": {
+                        "connections": 4505.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6807.0,
+                        "time": 13.0,
+                        "conn_p_user_sec": 523.62,
+                        "bytes_read": 31963301.0
+                    },
+                    "real": {
+                        "connections": 6807.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4542.0,
+                        "time": 12.9,
+                        "conn_p_user_sec": 352.09,
+                        "bytes_read": 32806866.0
+                    },
+                    "real": {
+                        "connections": 4542.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6593.0,
+                        "time": 12.92,
+                        "conn_p_user_sec": 510.29,
+                        "bytes_read": 30971189.0
+                    },
+                    "real": {
+                        "connections": 6593.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Falcon-512+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4367.0,
+                        "time": 12.98,
+                        "conn_p_user_sec": 336.44,
+                        "bytes_read": 31542841.0
+                    },
+                    "real": {
+                        "connections": 4367.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 6267.0,
+                        "time": 13.15,
+                        "conn_p_user_sec": 476.58,
+                        "bytes_read": 29438639.0
+                    },
+                    "real": {
+                        "connections": 6267.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            }
+        },
+        "unikraft": {
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79695.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5572.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 26294841.0
+                    },
+                    "real": {
+                        "connections": 5572.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 32.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 190.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 895850.0
+                    },
+                    "real": {
+                        "connections": 190.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79651.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 589.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2777135.0
+                    },
+                    "real": {
+                        "connections": 589.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79761.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 428.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2022300.0
+                    },
+                    "real": {
+                        "connections": 428.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79805.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1036.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4899244.0
+                    },
+                    "real": {
+                        "connections": 1036.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79695.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5506.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25983321.0
+                    },
+                    "real": {
+                        "connections": 5506.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5153.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24327467.0
+                    },
+                    "real": {
+                        "connections": 5153.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79717.0
+                    },
+                    "real": {
+                        "connections": 11.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5238.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24728837.0
+                    },
+                    "real": {
+                        "connections": 5238.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 208.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1506960.0
+                    },
+                    "real": {
+                        "connections": 208.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5674.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 26776281.0
+                    },
+                    "real": {
+                        "connections": 5674.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 121.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 876161.0
+                    },
+                    "real": {
+                        "connections": 121.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 190.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 895850.0
+                    },
+                    "real": {
+                        "connections": 190.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 176.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1274416.0
+                    },
+                    "real": {
+                        "connections": 176.0,
+                        "time": 31.0,
+                        "bytes_read": 7241.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 590.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2781850.0
+                    },
+                    "real": {
+                        "connections": 590.0,
+                        "time": 31.0,
+                        "bytes_read": 4715.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 159.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1152909.0
+                    },
+                    "real": {
+                        "connections": 159.0,
+                        "time": 31.0,
+                        "bytes_read": 7251.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 431.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2036475.0
+                    },
+                    "real": {
+                        "connections": 431.0,
+                        "time": 31.0,
+                        "bytes_read": 4725.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 191.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1385705.0
+                    },
+                    "real": {
+                        "connections": 191.0,
+                        "time": 31.0,
+                        "bytes_read": 7255.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1027.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4856683.0
+                    },
+                    "real": {
+                        "connections": 1027.0,
+                        "time": 31.0,
+                        "bytes_read": 4729.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 214.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1550430.0
+                    },
+                    "real": {
+                        "connections": 214.0,
+                        "time": 31.0,
+                        "bytes_read": 7245.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5486.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 25888921.0
+                    },
+                    "real": {
+                        "connections": 5486.0,
+                        "time": 31.0,
+                        "bytes_read": 4719.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 214.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1550858.0
+                    },
+                    "real": {
+                        "connections": 214.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5245.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24761891.0
+                    },
+                    "real": {
+                        "connections": 5245.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128f-simple+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 214.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1550858.0
+                    },
+                    "real": {
+                        "connections": 214.0,
+                        "time": 31.0,
+                        "bytes_read": 7247.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5163.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 24374687.0
+                    },
+                    "real": {
+                        "connections": 5163.0,
+                        "time": 31.0,
+                        "bytes_read": 4721.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4356.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 31454676.0
+                    },
+                    "real": {
+                        "connections": 4356.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 5037.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 23648753.0
+                    },
+                    "real": {
+                        "connections": 5037.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1364013.0
+                    },
+                    "real": {
+                        "connections": 189.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 190.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 891290.0
+                    },
+                    "real": {
+                        "connections": 190.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 580.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4185860.0
+                    },
+                    "real": {
+                        "connections": 580.0,
+                        "time": 31.0,
+                        "bytes_read": 7217.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 592.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2777072.0
+                    },
+                    "real": {
+                        "connections": 592.0,
+                        "time": 31.0,
+                        "bytes_read": 4691.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 428.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3093156.0
+                    },
+                    "real": {
+                        "connections": 428.0,
+                        "time": 31.0,
+                        "bytes_read": 7227.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 434.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 2040234.0
+                    },
+                    "real": {
+                        "connections": 434.0,
+                        "time": 31.0,
+                        "bytes_read": 4701.0
+                    }
+                }
+            },
+            "Falcon-512+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 1002.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 7245462.0
+                    },
+                    "real": {
+                        "connections": 1002.0,
+                        "time": 31.0,
+                        "bytes_read": 7231.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 1027.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4832035.0
+                    },
+                    "real": {
+                        "connections": 1027.0,
+                        "time": 31.0,
+                        "bytes_read": 4705.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4259.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 30754239.0
+                    },
+                    "real": {
+                        "connections": 4259.0,
+                        "time": 31.0,
+                        "bytes_read": 7221.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4919.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 23094705.0
+                    },
+                    "real": {
+                        "connections": 4919.0,
+                        "time": 31.0,
+                        "bytes_read": 4695.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4116.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 29729868.0
+                    },
+                    "real": {
+                        "connections": 4116.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4711.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 22127567.0
+                    },
+                    "real": {
+                        "connections": 4711.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            },
+            "Falcon-512+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4022.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 29050906.0
+                    },
+                    "real": {
+                        "connections": 4022.0,
+                        "time": 31.0,
+                        "bytes_read": 7223.0
+                    }
+                },
+                "session_reuse": {
+                    "user": {
+                        "connections": 4662.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 21897414.0
+                    },
+                    "real": {
+                        "connections": 4662.0,
+                        "time": 31.0,
+                        "bytes_read": 4697.0
+                    }
+                }
+            }
+        }
+    }
+}

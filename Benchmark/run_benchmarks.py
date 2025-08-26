@@ -273,16 +273,21 @@ def main():
                     print("Finished")
 
         if "tls_power" in args.stages:
-            print("Executing primitives for manual evaluation of power consumption:")
+            print("Executing tls for manual evaluation of power consumption:")
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
+            
+            print("Generating certificates")
+            for sig in args.sig:
+                for kem in args.kem:
+                    for virt in args.virt:
+                        setup_certificates(get_sig(sig))  
+                        print("")
             
             for sig in args.sig:
                 for kem in args.kem:
                     for virt in args.virt:
-                        setup_certificates(get_sig(sig))
-                        print("")
-
+                    
                         print("Waiting to establish baseline")
                         time.sleep(5)
 

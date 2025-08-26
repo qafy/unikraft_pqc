@@ -52,8 +52,8 @@ encaps                               |      32937 |          3.000 |          91
 def main():
     # plot_power()
     # plot_table()
-    plot_bar_tls()
-    #plot_power()
+    #plot_bar_tls()
+    plot_power()
     
 
 
@@ -66,8 +66,11 @@ def plot_power():
     timestamps = [float(d.split(" ")[0]) - first_val for d in data][:show_values_num]
     voltages = [float(d.split(" ")[2]) for d in data][:show_values_num]
     amps = [float(d.split(" ")[3]) for d in data][:show_values_num]
-    wattage = [float(d.split(" ")[7]) for d in data][:show_values_num]
-
+    wattage = [amp * voltages[i] for i, amp in enumerate(amps)]
+    first_val_ws = float(data[0].split(" ")[7])
+    ws = [float(d.split(" ")[7]) - first_val for d in data][:show_values_num]
+    
+    # Voltage
     plt.figure(figsize=(10, 5))
     plt.plot(timestamps, voltages, linestyle="-", color="b", label="Volts")
 
@@ -82,9 +85,9 @@ def plot_power():
     plt.legend()
     plt.tight_layout()
 
-    # Show the plot
     plt.show()
 
+    # Amps
     plt.figure(figsize=(10, 5))
     plt.plot(timestamps, amps, linestyle="-", color="r", label="Amps")
 
@@ -99,33 +102,70 @@ def plot_power():
     plt.legend()
     plt.tight_layout()
 
-    # Show the plot
     plt.show()
 
+    
+    # Wattage
+    
+    # wattage_smooth = []
+    
+    # wattage_smooth.append((wattage[0] + wattage[1]) / 2)
+    # for i in range(1, len(wattage) - 1):
+    #     wattage_smooth.append((wattage[i - 1] + wattage[i] + wattage[i + 1]) / 3)
+    
+    # wattage_smooth.append((wattage[-1] + wattage[-2]) / 2)
+    amps_smooth = []
+    
+    amps_smooth.append((amps[0] + amps[1]) / 2)
+    for i in range(1, len(amps) - 1):
+        amps_smooth.append((amps[i - 1] + amps[i] + amps[i + 1]) / 3)
+    
+    amps_smooth.append((amps[-1] + amps[-2]) / 2)
+    
+    amps_temp = amps_smooth
+    amps_smooth = []
+    
+    amps_smooth.append((amps_temp[0] + amps_temp[1]) / 2)
+    for i in range(1, len(amps_temp) - 1):
+        amps_smooth.append((amps_temp[i - 1] + amps_temp[i] + amps_temp[i + 1]) / 3)
+    
+    amps_smooth.append((amps_temp[-1] + amps_temp[-2]) / 2)
+    
     plt.figure(figsize=(10, 5))
-    plt.plot(timestamps, amps, linestyle="-", color="g", label="Wattage")
+    plt.plot(timestamps, wattage, linestyle="-", color="g", label="Wattage")
+    plt.plot(timestamps, amps_smooth, linestyle="-", color="orange", label="Wattage Smooth")
 
     start_point_found = False
     x = 0
     x2 = 0
-    for i in range(len(wattage) - 1):
+    
+    time_first = timestamps[0]
+    time_buff = 0.0
+    
+    powers = []
+    for i in range(len(amps_smooth) - 1):
 
-        wattage_prev = wattage[i]
-        wattage_next = wattage[i + 1]
+        amps_prev = amps_smooth[i]
+        amps_next = amps_smooth[i + 1]
         # Define the rectangle parameters
-        difference = 0.035
-        if wattage_next - wattage_prev > difference and not start_point_found:
+        # if abs(amps_prev - amps_next) > difference and start_point_found:
+        #     print("end at " + str(i))
+        difference = 0.05
+        if amps_next - amps_prev > difference and not start_point_found:
             print("start at " + str(i))
             start_point_found = True
             x = i
+            time_buff = timestamps[i]
             continue 
-        
-        if abs(wattage_prev - wattage_next) > difference and start_point_found:
-            print("end at " + str(i))
-            x2 = i
+    
+        if  timestamps[i] - time_buff > 5.0 and start_point_found:
             start_point_found = False
+            x2 = i
+            powers.append(ws[x2] - ws[x])
             rect = plt.Rectangle((timestamps[x], 0.35), timestamps[x2] - timestamps[x], 0.5, linewidth=1, edgecolor='r', facecolor='none')
-            plt.gca().add_patch(rect)    
+            plt.gca().add_patch(rect)  
+    
+    print(powers)
     
     plt.title("Wattage")
     plt.xlabel("Time (seconds)")
@@ -238,7 +278,7 @@ def plot_bar_tls():
         "Falcon-1024+Kyber512",
         "Dilithium3+FrodoKEM-640-AES",
         "Falcon-1024+FrodoKEM-640-AES",
-        "Falxon-1024+BIKE-L1",
+        "Falcon-1024+BIKE-L1",
     ]
     
     native_values = [data["native"][x]["initial"]["real"]["connections"] for x in categories]
