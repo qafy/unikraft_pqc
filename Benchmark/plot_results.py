@@ -3,315 +3,833 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import json
+from matplotlib.gridspec import GridSpec
 
 SCRIPT_PATH = __file__
 SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
-# take this table as reference
-"""
-Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
------------------------------------- | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
-BIKE-L1                              |            |                |                 |            |                           |           
-keygen                               |        448 |          3.006 |        6710.393 |   1131.390 |                   6710376 |    1131394
-encaps                               |       8435 |          3.000 |         355.666 |      7.118 |                    355637 |       7119
-decaps                               |        584 |          3.000 |        5137.187 |     52.629 |                   5137154 |      52619
-BIKE-L3                              |            |                |                 |            |                           |           
-keygen                               |        145 |          3.012 |       20774.124 |    173.470 |                  20774093 |     173483
-encaps                               |       2748 |          3.001 |        1092.033 |     39.129 |                   1091991 |      39124
-decaps                               |        184 |          3.003 |       16323.158 |   2268.648 |                  16323104 |    2268661
-BIKE-L5                              |            |                |                 |            |                           |           
-keygen                               |         58 |          3.028 |       52202.828 |    775.223 |                  52202778 |     775254
-encaps                               |       1107 |          3.002 |        2711.478 |     29.496 |                   2711449 |      29495
-decaps                               |         75 |          3.001 |       40016.800 |    461.803 |                  40016759 |     461842
-Classic-McEliece-348864              |            |                |                 |            |                           |           
-keygen                               |         39 |          3.080 |       78985.897 |  45500.571 |                  78985886 |   45500607
-encaps                               |     146363 |          3.000 |          20.497 |      3.928 |                     20467 |       3930
-decaps                               |        154 |          3.014 |       19568.727 |    202.225 |                  19568721 |     202231
-Classic-McEliece-348864f             |            |                |                 |            |                           |           
-keygen                               |         91 |          3.013 |       33108.538 |    234.284 |                  33108508 |     234294
-encaps                               |     146759 |          3.000 |          20.442 |      3.588 |                     20411 |       3589
-decaps                               |        155 |          3.017 |       19461.697 |    105.317 |                  19461677 |     105319
-Classic-McEliece-460896              |            |                |                 |            |                           |           
-keygen                               |         13 |          3.055 |      234982.538 | 148376.994 |                 234982538 |  148376985
-encaps                               |      75227 |          3.000 |          39.880 |     13.330 |                     39849 |      13329
-decaps                               |         73 |          3.031 |       41517.041 |   3109.858 |                  41516979 |    3109859
-Classic-McEliece-460896f             |            |                |                 |            |                           |           
-keygen                               |         31 |          3.092 |       99732.645 |    831.247 |                  99732546 |     831292
-encaps                               |      78091 |          3.000 |          38.417 |     13.600 |                     38386 |      13600
-decaps                               |         74 |          3.030 |       40947.703 |    421.624 |                  40947674 |     421638
-Classic-McEliece-6688128             |            |                |                 |            |                           |           
-keygen                               |          8 |          3.132 |      391455.875 | 211565.113 |                 391455744 |  211565189
-encaps                               |      34355 |          3.000 |          87.324 |     27.387 |                     87292 |      27389
-decaps                               |         38 |          3.027 |       79651.263 |   2876.729 |                  79651240 |    2876728
-Classic-McEliece-6688128f            |            |                |                 |            |                           |           
-keygen                               |         17 |          3.088 |      181630.176 |  13414.894 |                 181630163 |   13414922
-encaps                               |      32937 |          3.000 |          91.085 |     27.984 |                     91053 |      27984
-"""
-
 
 def main():
-    # plot_power()
-    # plot_table()
-    #plot_bar_tls()
-    plot_power()
-    
+    plot_table_primitives()
+    #plot_table_tls()
+    plot_bar_tls_speed()
+    plot_bar_tls_power()
+    plot_bar_tls_energy()
+    # plot_bar_tls_speedup()
 
 
-def plot_power():
-    with open(os.path.join(SCRIPT_DIR, "results/primitives.power"), "r") as f:
-        data = f.readlines()[2:]
 
-    first_val = float(data[0].split(" ")[0])
-    show_values_num = len(data)
-    timestamps = [float(d.split(" ")[0]) - first_val for d in data][:show_values_num]
-    voltages = [float(d.split(" ")[2]) for d in data][:show_values_num]
-    amps = [float(d.split(" ")[3]) for d in data][:show_values_num]
-    wattage = [amp * voltages[i] for i, amp in enumerate(amps)]
-    first_val_ws = float(data[0].split(" ")[7])
-    ws = [float(d.split(" ")[7]) - first_val for d in data][:show_values_num]
-    
-    # Voltage
-    plt.figure(figsize=(10, 5))
-    plt.plot(timestamps, voltages, linestyle="-", color="b", label="Volts")
+def plot_table_primitives():
 
-    plt.title("Voltage")
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Volts")
-
-    plt.yticks(np.arange(0, 10, 1))
-    plt.xticks(np.arange(0, 1500, 10))
-
-    plt.grid()
-    plt.legend()
-    plt.tight_layout()
-
-    plt.show()
-
-    # Amps
-    plt.figure(figsize=(10, 5))
-    plt.plot(timestamps, amps, linestyle="-", color="r", label="Amps")
-
-    plt.title("Amps")
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Amps")
-
-    plt.yticks(np.arange(0, 10, 1))
-    plt.xticks(np.arange(0, 1500, 100))
-
-    plt.grid()
-    plt.legend()
-    plt.tight_layout()
-
-    plt.show()
-
-    
-    # Wattage
-    
-    # wattage_smooth = []
-    
-    # wattage_smooth.append((wattage[0] + wattage[1]) / 2)
-    # for i in range(1, len(wattage) - 1):
-    #     wattage_smooth.append((wattage[i - 1] + wattage[i] + wattage[i + 1]) / 3)
-    
-    # wattage_smooth.append((wattage[-1] + wattage[-2]) / 2)
-    amps_smooth = []
-    
-    amps_smooth.append((amps[0] + amps[1]) / 2)
-    for i in range(1, len(amps) - 1):
-        amps_smooth.append((amps[i - 1] + amps[i] + amps[i + 1]) / 3)
-    
-    amps_smooth.append((amps[-1] + amps[-2]) / 2)
-    
-    amps_temp = amps_smooth
-    amps_smooth = []
-    
-    amps_smooth.append((amps_temp[0] + amps_temp[1]) / 2)
-    for i in range(1, len(amps_temp) - 1):
-        amps_smooth.append((amps_temp[i - 1] + amps_temp[i] + amps_temp[i + 1]) / 3)
-    
-    amps_smooth.append((amps_temp[-1] + amps_temp[-2]) / 2)
-    
-    plt.figure(figsize=(10, 5))
-    plt.plot(timestamps, wattage, linestyle="-", color="g", label="Wattage")
-    plt.plot(timestamps, amps_smooth, linestyle="-", color="orange", label="Wattage Smooth")
-
-    start_point_found = False
-    x = 0
-    x2 = 0
-    
-    time_first = timestamps[0]
-    time_buff = 0.0
-    
-    powers = []
-    for i in range(len(amps_smooth) - 1):
-
-        amps_prev = amps_smooth[i]
-        amps_next = amps_smooth[i + 1]
-        # Define the rectangle parameters
-        # if abs(amps_prev - amps_next) > difference and start_point_found:
-        #     print("end at " + str(i))
-        difference = 0.05
-        if amps_next - amps_prev > difference and not start_point_found:
-            print("start at " + str(i))
-            start_point_found = True
-            x = i
-            time_buff = timestamps[i]
-            continue 
-    
-        if  timestamps[i] - time_buff > 5.0 and start_point_found:
-            start_point_found = False
-            x2 = i
-            powers.append(ws[x2] - ws[x])
-            rect = plt.Rectangle((timestamps[x], 0.35), timestamps[x2] - timestamps[x], 0.5, linewidth=1, edgecolor='r', facecolor='none')
-            plt.gca().add_patch(rect)  
-    
-    print(powers)
-    
-    plt.title("Wattage")
-    plt.xlabel("Time (seconds)")
-    plt.ylabel("Wattage")
-
-
-    plt.yticks(np.arange(0, 10, 1))
-    #plt.xticks(np.arange(0, 1500, 1))
-
-    plt.grid()
-    plt.legend()
-    plt.tight_layout()
-
-    # Show the plot
-    plt.show()
-
-    # with open(os.path.join(SCRIPT_DIR, "results/tls.power"), "r") as f:
-    #     data = f.readlines()[2:]
-
-    # first_val = float(data[0].split(" ")[0])
-    # show_values_num = len(data)
-    # timestamps = [float(d.split(" ")[0]) - first_val for d in data][:show_values_num]
-    # voltages = [float(d.split(" ")[2]) for d in data][:show_values_num]
-    # amps = [float(d.split(" ")[3]) for d in data][:show_values_num]
-    # wattage = [float(d.split(" ")[7]) for d in data][:show_values_num]
-
-    # plt.figure(figsize=(10, 5))
-    # plt.plot(timestamps, voltages, linestyle="-", color="b", label="Volts")
-
-    # plt.title("Voltage")
-    # plt.xlabel("Time (seconds)")
-    # plt.ylabel("Volts")
-
-    # plt.yticks(np.arange(0, 10, 1))
-    # plt.xticks(np.arange(0, 1500, 100))
-
-    # plt.grid()
-    # plt.legend()
-    # plt.tight_layout()
-
-    # # Show the plot
-    # plt.show()
-
-    # plt.figure(figsize=(10, 5))
-    # plt.plot(timestamps, amps, linestyle="-", color="r", label="Volts")
-
-    # plt.title("Amps")
-    # plt.xlabel("Time (seconds)")
-    # plt.ylabel("Amps")
-
-    # plt.yticks(np.arange(0, 10, 1))
-    # plt.xticks(np.arange(0, 1500, 100))
-
-    # plt.grid()
-    # plt.legend()
-    # plt.tight_layout()
-
-    # # Show the plot
-    # plt.show()
-
-    # plt.figure(figsize=(10, 5))
-    # plt.plot(timestamps, amps, linestyle="-", color="g", label="Wattage")
-
-    # plt.title("Wattage")
-    # plt.xlabel("Time (seconds)")
-    # plt.ylabel("Wattage")
-
-    # plt.yticks(np.arange(0, 10, 1))
-    # plt.xticks(np.arange(0, 1500, 10))
-
-    # plt.grid()
-    # plt.legend()
-    # plt.tight_layout()
-
-    # # Show the plot
-    # plt.show()
-
-
-def plot_table():
-    # Sample data
-    data = [
-        ["Cipher", "Time (s)", "Power (W)"],
-        ["BIKE-L1", 50, 0],
-        ["hi", 50, 500],
+    sigs = [
+    "SPHINCS+-SHA2-128s-simple",
+    "SPHINCS+-SHA2-128f-simple",
+    "Falcon-512",
+    "Dilithium2",
+    "Dilithium3",
+    "Falcon-1024",
+    #"ECDSA",
+    #"RSA-2048",
+    ]
+    kems = [
+        "Kyber512",
+        "BIKE-L1",
+        "HQC-128",
+        "FrodoKEM-640-AES",
+        "FrodoKEM-640-SHAKE",
+        "Kyber768",
+        "Kyber1024",
+       # "ECDHE",
     ]
 
-    # Create a figure and axis
-    fig, ax = plt.subplots()
+    # Time
+    with open(os.path.join(SCRIPT_DIR, "results/primitives_speed.json"), "r") as f:
+        data = json.load(f)["primitive"]
+    
+    fig = plt.figure(figsize=(12, 6))
+    height = len(sigs) + len(kems) + 2
+    gs = GridSpec(height, 12, figure=fig, wspace=0.0, hspace=0.0, height_ratios=[1 for _ in range(height - 1)]+ [4])
 
-    # Hide axes
-    ax.axis("tight")
-    ax.axis("off")
+    ax_cipher = fig.add_subplot(gs[1, 0:3])
+    ax_cipher.text(0.5, 0.5, "KEMs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[0, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (us)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[0, 6:9])
+    ax_power.text(0.5, 0.5, "Encapsulate (us)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[0, 9:12])
+    ax_energy.text(0.5, 0.5, "Decapsulate (us)", va="center", ha="center")
 
-    # Create the table
-    table = ax.table(cellText=data, loc="center", cellLoc="center")
+    ax_cipher = fig.add_subplot(gs[len(kems) + 3, 0:3])
+    ax_cipher.text(0.5, 0.5, "SIGs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[len(kems) + 2, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (us)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[len(kems) + 2, 6:9])
+    ax_power.text(0.5, 0.5, "Sign (us)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[len(kems) + 2, 9:12])
+    ax_energy.text(0.5, 0.5, "Verify (us)", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[1, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[1, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[1, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[len(kems) + 3, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[len(kems) + 3, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[len(kems) + 3, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[1, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[1, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[1, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[len(kems) + 3, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[len(kems) + 3, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[len(kems) + 3, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[1, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[1, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[1, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[len(kems) + 3, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[len(kems) + 3, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[len(kems) + 3, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    categories_table = [[x] for x in kems]
+    ax_cipher = fig.add_subplot(gs[2:len(kems) + 2, 0:3])
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    categories_table = [[x] for x in sigs]
+    ax_cipher = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 0:3])
+    
+    
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
 
-    # Display the table
+    nt_times = [[data["native"]["kem"][x]["keygen"]["mean_us"]] for x in kems]
+    ax1_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 3])
+    ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["kem"][x]["encaps"]["mean_us"]] for x in kems]
+    ax2_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 6])
+    ax2_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["kem"][x]["decaps"]["mean_us"]] for x in kems]
+    ax3_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 9])
+    ax3_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["keygen"]["mean_us"]] for x in sigs]
+    ax1_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 3])
+    ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["encaps"]["mean_us"]] for x in sigs]
+    ax2_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 6])
+    ax2_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["decaps"]["mean_us"]] for x in sigs]
+    ax3_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 9])
+    ax3_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["keygen"]["mean_us"]] for x in kems]
+    ax1_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 4])
+    ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["encaps"]["mean_us"]] for x in kems]
+    ax2_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 7])
+    ax2_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["decaps"]["mean_us"]] for x in kems]
+    ax3_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 10])
+    ax3_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["keygen"]["mean_us"]] for x in sigs]
+    ax1_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 4])
+    ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["encaps"]["mean_us"]] for x in sigs]
+    ax2_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 7])
+    ax2_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["decaps"]["mean_us"]] for x in sigs]
+    ax3_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 10])
+    ax3_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["keygen"]["mean_us"]] for x in kems]
+    ax1_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 5])
+    ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["encaps"]["mean_us"]] for x in kems]
+    ax2_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 8])
+    ax2_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["decaps"]["mean_us"]] for x in kems]
+    ax3_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 11])
+    ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["keygen"]["mean_us"]] for x in sigs]
+    ax1_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 5])
+    ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["encaps"]["mean_us"]] for x in sigs]
+    ax2_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 8])
+    ax2_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["decaps"]["mean_us"]] for x in sigs]
+    ax3_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 11])
+    ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    format_axes(fig)
+    fig.text(0.5, 0.01, 'Table 1: Time (us) of Traditional and Post-quantum Primitives.', ha='center')
     plt.show()
-    fig.savefig("figure.pdf", bbox_inches="tight")
+    
+    # Memory
+    with open(os.path.join(SCRIPT_DIR, "results/primitives_mem.json"), "r") as f:
+        data_mem = json.load(f)["primitive"]
+        
+    fig = plt.figure(figsize=(12, 6))
+    height = len(sigs) + len(kems) + 2
+    gs = GridSpec(height, 12, figure=fig, wspace=0.0, hspace=0.0, height_ratios=[1 for _ in range(height - 1)]+ [4])
+
+    ax_cipher = fig.add_subplot(gs[1, 0:3])
+    ax_cipher.text(0.5, 0.5, "KEMs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[0, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (MiB)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[0, 6:9])
+    ax_power.text(0.5, 0.5, "Encapsulate (MiB)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[0, 9:12])
+    ax_energy.text(0.5, 0.5, "Decapsulate (MiB)", va="center", ha="center")
+
+    ax_cipher = fig.add_subplot(gs[len(kems) + 3, 0:3])
+    ax_cipher.text(0.5, 0.5, "SIGs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[len(kems) + 2, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (MiB)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[len(kems) + 2, 6:9])
+    ax_power.text(0.5, 0.5, "Sign (MiB)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[len(kems) + 2, 9:12])
+    ax_energy.text(0.5, 0.5, "Verify (MiB)", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[1, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[1, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[1, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[len(kems) + 3, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[len(kems) + 3, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[len(kems) + 3, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[1, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[1, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[1, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[len(kems) + 3, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[len(kems) + 3, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[len(kems) + 3, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[1, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[1, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[1, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[len(kems) + 3, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[len(kems) + 3, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[len(kems) + 3, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    categories_table = [[x] for x in kems]
+    ax_cipher = fig.add_subplot(gs[2:len(kems) + 2, 0:3])
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    categories_table = [[x] for x in sigs]
+    ax_cipher = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 0:3])
+    
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
+
+    array_list = [[float(x)for x in data_mem["native"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 3])
+    ax1_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 6])
+    ax2_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 9])
+    ax3_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 3])
+    ax1_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 6])
+    ax2_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 9])
+    ax3_nt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 4])
+    ax1_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 7])
+    ax2_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 10])
+    ax3_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 4])
+    ax1_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 7])
+    ax2_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 10])
+    ax3_uk_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 5])
+    ax1_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 8])
+    ax2_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["kem"][x]["memory"]["used_mib"]] for x in kems]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 11])
+    ax3_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax1_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 5])
+    ax1_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax2_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 8])
+    ax2_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"]["sig"][x]["memory"]["used_mib"]] for x in sigs]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax3_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 11])
+    ax3_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    format_axes(fig)
+    fig.text(0.5, 0.01, 'Table 2: Memory (MiB) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.show()
+    
+    
+    # Power
+    with open(os.path.join(SCRIPT_DIR, "results/primitives_power.json"), "r") as f:
+        data = json.load(f)
+
+    
+    fig = plt.figure(figsize=(12, 6))
+    height = len(sigs) + len(kems) + 2
+    gs = GridSpec(height, 12, figure=fig, wspace=0.0, hspace=0.0, height_ratios=[1 for _ in range(height - 1)]+ [4])
+
+    ax_cipher = fig.add_subplot(gs[1, 0:3])
+    ax_cipher.text(0.5, 0.5, "KEMs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[0, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (mW)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[0, 6:9])
+    ax_power.text(0.5, 0.5, "Encapsulate (mW)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[0, 9:12])
+    ax_energy.text(0.5, 0.5, "Decapsulate (mW)", va="center", ha="center")
+
+    ax_cipher = fig.add_subplot(gs[len(kems) + 3, 0:3])
+    ax_cipher.text(0.5, 0.5, "SIGs", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[len(kems) + 2, 3:6])
+    ax_time.text(0.5, 0.5, "Keygen (mW)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[len(kems) + 2, 6:9])
+    ax_power.text(0.5, 0.5, "Sign (mW)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[len(kems) + 2, 9:12])
+    ax_energy.text(0.5, 0.5, "Verify (mW)", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[1, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[1, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[1, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_nt1 = fig.add_subplot(gs[len(kems) + 3, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[len(kems) + 3, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[len(kems) + 3, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[1, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[1, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[1, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_uk1 = fig.add_subplot(gs[len(kems) + 3, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[len(kems) + 3, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[len(kems) + 3, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[1, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[1, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[1, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    ax_cnt1 = fig.add_subplot(gs[len(kems) + 3, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[len(kems) + 3, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[len(kems) + 3, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    categories_table = [[x] for x in kems]
+    ax_cipher = fig.add_subplot(gs[2:len(kems) + 2, 0:3])
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    categories_table = [[x] for x in sigs]
+    ax_cipher = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 0:3])
+    
+    
+    ax_cipher.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
+
+    nt_times = [[data["native"]["kem"][x]["keygen"]["mean_mw"]] for x in kems]
+    ax1_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 3])
+    ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["kem"][x]["encaps"]["mean_mw"]] for x in kems]
+    ax2_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 6])
+    ax2_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["kem"][x]["decaps"]["mean_mw"]] for x in kems]
+    ax3_nt_table = fig.add_subplot(gs[2:len(kems) + 2, 9])
+    ax3_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["keygen"]["mean_mw"]] for x in sigs]
+    ax1_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 3])
+    ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["encaps"]["mean_mw"]] for x in sigs]
+    ax2_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 6])
+    ax2_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    nt_times = [[data["native"]["sig"][x]["decaps"]["mean_mw"]] for x in sigs]
+    ax3_nt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 9])
+    ax3_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["keygen"]["mean_mw"]] for x in kems]
+    ax1_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 4])
+    ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["encaps"]["mean_mw"]] for x in kems]
+    ax2_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 7])
+    ax2_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["kem"][x]["decaps"]["mean_mw"]] for x in kems]
+    ax3_uk_table = fig.add_subplot(gs[2:len(kems) + 2, 10])
+    ax3_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["keygen"]["mean_mw"]] for x in sigs]
+    ax1_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 4])
+    ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["encaps"]["mean_mw"]] for x in sigs]
+    ax2_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 7])
+    ax2_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    uk_times = [[data["unikraft"]["sig"][x]["decaps"]["mean_mw"]] for x in sigs]
+    ax3_uk_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 10])
+    ax3_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["keygen"]["mean_mw"]] for x in kems]
+    ax1_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 5])
+    ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["encaps"]["mean_mw"]] for x in kems]
+    ax2_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 8])
+    ax2_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["kem"][x]["decaps"]["mean_mw"]] for x in kems]
+    ax3_cnt_table = fig.add_subplot(gs[2:len(kems) + 2, 11])
+    ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["keygen"]["mean_mw"]] for x in sigs]
+    ax1_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 5])
+    ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["encaps"]["mean_mw"]] for x in sigs]
+    ax2_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 8])
+    ax2_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    cnt_times = [[data["docker"]["sig"][x]["decaps"]["mean_mw"]] for x in sigs]
+    ax3_cnt_table = fig.add_subplot(gs[len(kems) + 4:len(kems) + 4 + len(sigs), 11])
+    ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    format_axes(fig)
+    fig.text(0.5, 0.01, 'Table 3: Power Consumption (mW) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.show()
+        
 
 
-def plot_bar_tls():
-    with open(os.path.join(SCRIPT_DIR, "results/tls.json"), "r") as f:
+def plot_table_tls():
+    with open(os.path.join(SCRIPT_DIR, "results/tls_speed.json"), "r") as f:
         data = json.load(f)["tls"]
+
+    with open(os.path.join(SCRIPT_DIR, "results/tls_mem.json"), "r") as f:
+        data_mem = json.load(f)["tls"]
+        
+    with open(os.path.join(SCRIPT_DIR, "results/tls_power.json"), "r") as f:
+        data_power = json.load(f)
 
     # Data
     categories = [
-        "SPHINCS+-SHA2-128s-simple+Kyber512",
-        "Dilithium3+Kyber512",
-        "Falcon-1024+Kyber512",
-        "Dilithium3+FrodoKEM-640-AES",
-        "Falcon-1024+FrodoKEM-640-AES",
-        "Falcon-1024+BIKE-L1",
+    "Dilithium2+Kyber512",
+    "Falcon-512+Kyber512",
+    "Dilithium3+Kyber768",
+    "Falcon-1024+Kyber768",
+    "Dilithium3+Kyber1024",
+    "Falcon-1024+Kyber1024",
+    "SPHINCS+-SHA2-128s-simple+Kyber512",
+    "Dilithium2+BIKE-L1",
+    "Dilithium2+HQC-128",
+    "Dilithium2+FrodoKEM-640-AES",
+    "Dilithium2+FrodoKEM-640-SHAKE",
+    "RSA-2048+ECDHE",
+    "ECDSA+ECDHE"
     ]
     
-    native_values = [data["native"][x]["initial"]["real"]["connections"] for x in categories]
-    unikraft_values = [data["unikraft"][x]["initial"]["real"]["connections"] for x in categories]
-    docker_values= [data["docker"][x]["initial"]["real"]["connections"] for x in categories]
+    categories_shortened = [
+    "Dil2+Kyb5",
+    "Fal5+Kyb5",
+    "Dil3+Kyb7",
+    "Fal10+Kyb7",
+    "Dil3+Kyb10",
+    "Fal10+Kyb10",
+    "SPHIs+Kyb5",
+    "Dil2+BIKE",
+    "Dil2+HQC",
+    "Dil2+FrodAES",
+    "Dil2+FrodSHAKE",
+    "RSA+ECDHE",
+    "ECDSA+ECDHE"
+    ]
 
-    # Bar width
-    bar_width = 0.25
+    fig = plt.figure(figsize=(9, 3))
+    height = len(categories) + 2
+    gs = GridSpec(height, 15, figure=fig, wspace=0.0, hspace=0.0, height_ratios=[1 for _ in range(height - 1)]+ [4])
 
-    # X locations for the groups
-    x = np.arange(len(categories))
-
-    # Create bars
-    plt.barh(x - bar_width, native_values, height=bar_width, label='Native', color='b')
-    plt.barh(x, unikraft_values, height=bar_width, label='Unikraft', color='g')
-    plt.barh(x + bar_width, docker_values, height=bar_width, label='Docker', color='r')
+    ax_cipher = fig.add_subplot(gs[1, 0:3])
+    ax_cipher.text(0.5, 0.5, "Cipher", va="center", ha="center")
+    ax_time = fig.add_subplot(gs[0, 3:6])
+    ax_time.text(0.5, 0.5, "Time (ms)", va="center", ha="center")
+    ax_power = fig.add_subplot(gs[0, 6:9])
+    ax_power.text(0.5, 0.5, "Power (mW)", va="center", ha="center")
+    ax_energy = fig.add_subplot(gs[0, 9:12])
+    ax_energy.text(0.5, 0.5, "Energy (mJ)", va="center", ha="center")
+    ax_mem = fig.add_subplot(gs[0, 12:15])
+    ax_mem.text(0.5, 0.5, "Memory (MiB)", va="center", ha="center")
     
+    categories_table = [[x] for x in categories_shortened]
+    ax_ciphers = fig.add_subplot(gs[2:, 0:3])
+    ax_ciphers.table(cellText=categories_table, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    # Adding labels and title
-    plt.xlabel("Algorithms")
-    plt.ylabel("Connections")
-    plt.title("TLS Connections in 30 seconds")
-    #plt.xticks(x, categories)
-    plt.legend()
+    ax_nt1 = fig.add_subplot(gs[1, 3])
+    ax_nt1.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt2 = fig.add_subplot(gs[1, 6])
+    ax_nt2.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt3 = fig.add_subplot(gs[1, 9])
+    ax_nt3.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    ax_nt4 = fig.add_subplot(gs[1, 12])
+    ax_nt4.text(0.5, 0.5, "Ntv.", va="center", ha="center")
+    
+    nt_times = [[data["native"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax1_nt_table = fig.add_subplot(gs[2:, 3])
+    ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to power
+    nt_power = [[data["native"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax2_nt_table = fig.add_subplot(gs[2:, 6])
+    ax2_nt_table.table(cellText=nt_power, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to energy
+    nt_energy = [[data["native"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax3_nt_table = fig.add_subplot(gs[2:, 9])
+    ax3_nt_table.table(cellText=nt_energy, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["native"][x]["memory"]["used_mib"]] for x in categories]
+    nt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax4_nt_table = fig.add_subplot(gs[2:, 12])
+    ax4_nt_table.table(cellText=nt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    ax_uk1 = fig.add_subplot(gs[1, 4])
+    ax_uk1.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk2 = fig.add_subplot(gs[1, 7])
+    ax_uk2.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk3 = fig.add_subplot(gs[1, 10])
+    ax_uk3.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    ax_uk4 = fig.add_subplot(gs[1, 13])
+    ax_uk4.text(0.5, 0.5, "Uk.", va="center", ha="center")
+    
+    uk_times = [[data["unikraft"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax1_uk_table = fig.add_subplot(gs[2:, 4])
+    ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to power
+    uk_power = [[data["unikraft"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax2_uk_table = fig.add_subplot(gs[2:, 7])
+    ax2_uk_table.table(cellText=uk_power, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to energy
+    uk_energy = [[data["unikraft"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax3_uk_table = fig.add_subplot(gs[2:, 10])
+    ax3_uk_table.table(cellText=uk_energy, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["unikraft"][x]["memory"]["used_mib"]] for x in categories]
+    uk_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax4_uk_table = fig.add_subplot(gs[2:, 13])
+    ax4_uk_table.table(cellText=uk_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    ax_cnt1 = fig.add_subplot(gs[1, 5])
+    ax_cnt1.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt2 = fig.add_subplot(gs[1, 8])
+    ax_cnt2.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt3 = fig.add_subplot(gs[1, 11])
+    ax_cnt3.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    ax_cnt4 = fig.add_subplot(gs[1, 14])
+    ax_cnt4.text(0.5, 0.5, "Cntr.", va="center", ha="center")
+    
+    cnt_times = [[data["docker"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax1_cnt_table = fig.add_subplot(gs[2:, 5])
+    ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to power
+    cnt_power = [[data["docker"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax2_cnt_table = fig.add_subplot(gs[2:, 8])
+    ax2_cnt_table.table(cellText=cnt_power, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    # TODO change to energy
+    cnt_energy = [[data["docker"][x]["initial"]["real"]["connections"]] for x in categories]
+    ax3_cnt_table = fig.add_subplot(gs[2:, 11])
+    ax3_cnt_table.table(cellText=cnt_energy, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    array_list = [[float(x)for x in data_mem["docker"][x]["memory"]["used_mib"]] for x in categories]
+    cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    ax4_cnt_table = fig.add_subplot(gs[2:, 14])
+    ax4_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
+    
+    fig.text(0.5, 0.01, 'Table 3: Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.', ha='center')
+    format_axes(fig)
 
-    for i in range(len(categories)):
-        plt.text(-2, i - bar_width, categories[i], va='center', ha='right')
+    plt.show()
+
+
+def plot_bar_tls_speed():
+
+    categories = [
+    "Dilithium2+Kyber512",
+    "Falcon-512+Kyber512",
+    "Dilithium3+Kyber768",
+    "Falcon-1024+Kyber768",
+    "Dilithium3+Kyber1024",
+    "Falcon-1024+Kyber1024",
+    #"SPHINCS+-SHA2-128s-simple+Kyber512",
+    "Dilithium2+BIKE-L1",
+    "Dilithium2+HQC-128",
+    "Dilithium2+FrodoKEM-640-AES",
+    "Dilithium2+FrodoKEM-640-SHAKE",
+    "RSA-2048+ECDHE",
+    "ECDSA+ECDHE"
+    ]
+
+    with open(os.path.join(SCRIPT_DIR, "results/tls_speed.json"), "r") as f:
+        data = json.load(f)["tls"]
         
+    native_values = [
+        data["native"][x]["initial"]["real"]["connections"] for x in categories
+    ]
+    unikraft_values = [
+        data["unikraft"][x]["initial"]["real"]["connections"] for x in categories
+    ]
+    docker_values = [
+        data["docker"][x]["initial"]["real"]["connections"] for x in categories
+    ]
 
-    # Show the plot
+    bar_width = 0.175
+    bar_dist = 0.075
+
+    x = np.arange(len(categories))
+    plt.figure(figsize=(9, 5))
+
+   
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black")
+    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+
+    plt.xlabel("Connections (1/30s)")
+    plt.title("Figure 1: TLS Connections of Traditional and PQ TLS 1.3 handshakes")
+    plt.yticks(range(len(categories)), categories)
+    plt.legend()
     plt.tight_layout()
     plt.show()
 
+
+def plot_bar_tls_power():
+
+    categories = [
+    "Dilithium2+Kyber512",
+    "Falcon-512+Kyber512",
+    "Dilithium3+Kyber768",
+    "Falcon-1024+Kyber768",
+    "Dilithium3+Kyber1024",
+    "Falcon-1024+Kyber1024",
+    "SPHINCS+-SHA2-128s-simple+Kyber512",
+    "Dilithium2+BIKE-L1",
+    "Dilithium2+HQC-128",
+    "Dilithium2+FrodoKEM-640-AES",
+    "Dilithium2+FrodoKEM-640-SHAKE",
+    "RSA-2048+ECDHE",
+    "ECDSA+ECDHE"
+    ]
+
+    with open(os.path.join(SCRIPT_DIR, "results/tls_power.json"), "r") as f:
+        data = json.load(f)
+        
+    native_values = [
+        float(data["native"][x]["initial"]["user"]["mean_mw"]) for x in categories
+    ]
+    unikraft_values = [
+        float(data["unikraft"][x]["initial"]["user"]["mean_mw"]) for x in categories
+    ]
+    docker_values = [
+        float(data["docker"][x]["initial"]["user"]["mean_mw"]) for x in categories
+    ]
+
+    bar_width = 0.175
+    bar_dist = 0.075
+
+    x = np.arange(len(categories))
+    plt.figure(figsize=(9, 5))
+
+   
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black", )
+    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+
+    plt.xlabel("Average Power Consumption (mW)")
+    plt.title("Figure 2: Power Consumption of Traditional and PQ TLS 1.3 handshakes")
+    plt.yticks(range(len(categories)), categories)
+    plt.xlim(3000, 3600)  
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+    
+def plot_bar_tls_energy():
+
+    categories = [
+    "Dilithium2+Kyber512",
+    "Falcon-512+Kyber512",
+    "Dilithium3+Kyber768",
+    "Falcon-1024+Kyber768",
+    "Dilithium3+Kyber1024",
+    "Falcon-1024+Kyber1024",
+    "SPHINCS+-SHA2-128s-simple+Kyber512",
+    "Dilithium2+BIKE-L1",
+    "Dilithium2+HQC-128",
+    "Dilithium2+FrodoKEM-640-AES",
+    "Dilithium2+FrodoKEM-640-SHAKE",
+    "RSA-2048+ECDHE",
+    "ECDSA+ECDHE"
+    ]
+
+    with open(os.path.join(SCRIPT_DIR, "results/tls_power.json"), "r") as f:
+        data = json.load(f)
+        
+    native_values = [
+        float(data["native"][x]["initial"]["user"]["mean_mj"]) for x in categories
+    ]
+    unikraft_values = [
+        float(data["unikraft"][x]["initial"]["user"]["mean_mj"]) for x in categories
+    ]
+    docker_values = [
+        float(data["docker"][x]["initial"]["user"]["mean_mj"]) for x in categories
+    ]
+
+    bar_width = 0.175
+    bar_dist = 0.075
+
+    x = np.arange(len(categories))
+    plt.figure(figsize=(9, 5))
+
+   
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black", )
+    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+
+    plt.xlabel("Average Energy Consumption (mJ)")
+    plt.title("Figure 2: Energy Consumption of Traditional and PQ TLS 1.3 handshakes")
+    plt.yticks(range(len(categories)), categories)
+    plt.xlim(180000, 240000)  
+
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+ 
+    
+      
 def plot_bar_tls_mem():
     with open(os.path.join(SCRIPT_DIR, "results/tls_mem.json"), "r") as f:
         data = json.load(f)["tls"]
@@ -319,10 +837,10 @@ def plot_bar_tls_mem():
     # Data
     categories = [
         "SPHINCS+-SHA2-128s-simple+Kyber512",
-        "Dilithium3+Kyber512",
+       #"Dilithium3+Kyber512",
         "Falcon-1024+Kyber512",
         "SPHINCS+-SHA2-128s-simple+FrodoKEM-640-AES",
-        "Dilithium3+FrodoKEM-640-AES",
+        #"Dilithium3+FrodoKEM-640-AES",
         "Falcon-1024+FrodoKEM-640-AES",
     ]
     native_values = []
@@ -332,13 +850,13 @@ def plot_bar_tls_mem():
         for j in range(len(native_values[i])):
             native_values_float.append(float(native_values[i][j]))
         native_values.append(np.mean(native_values_float))
- 
+
     unikraft_values = [data["unikraft"][x]["memory"]["used_mib"] for x in categories]
     for i in range(len(unikraft_values)):
         for j in range(len(unikraft_values[i])):
             unikraft_values[i][j] = float(unikraft_values[i][j])
-    
-    docker_values= [data["docker"][x]["memory"]["used_mib"] for x in categories]
+
+    docker_values = [data["docker"][x]["memory"]["used_mib"] for x in categories]
     for i in range(len(docker_values)):
         for j in range(len(docker_values[i])):
             docker_values[i][j] = float(docker_values[i][j])
@@ -350,25 +868,32 @@ def plot_bar_tls_mem():
     x = np.arange(len(categories))
 
     # Create bars
-    plt.barh(x - bar_width, native_values, height=bar_width, label='Native', color='b')
-    plt.barh(x, unikraft_values, height=bar_width, label='Unikraft', color='g')
-    plt.barh(x + bar_width, docker_values, height=bar_width, label='Docker', color='r')
-    
-    
+    plt.barh(x - bar_width, native_values, height=bar_width, label="Native", color="b")
+    plt.barh(x, unikraft_values, height=bar_width, label="Unikraft", color="g")
+    plt.barh(x + bar_width, docker_values, height=bar_width, label="Docker", color="r")
+
     # Adding labels and title
     plt.xlabel("Algorithms")
     plt.ylabel("Connections")
     plt.title("TLS Connections in 30 seconds")
-    #plt.xticks(x, categories)
+    # plt.xticks(x, categories)
     plt.legend()
 
     for i in range(len(categories)):
-        plt.text(-2, i - bar_width, categories[i], va='center', ha='right')
-        
+        plt.text(-2, i - bar_width, categories[i], va="center", ha="right")
 
     # Show the plot
     plt.tight_layout()
     plt.show()
+
+def format_axes(fig):
+    for i, ax in enumerate(fig.axes):
+        ax.tick_params(labelbottom=False, labelleft=False, labelright=False)
+        ax.get_xaxis().set_ticks([])
+        ax.get_yaxis().set_ticks([])
+        # for spine in ax.spines.values():
+        #         spine.set_visible(False)
+        
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,636 @@
+{
+    "temp_start": "temp=43.3'C\n",
+    "tls": {
+        "native": {
+            "Dilithium2+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5936.0,
+                        "time": 14.35,
+                        "conn_p_user_sec": 413.66,
+                        "bytes_read": 42875728.0,
+                        "order": 0,
+                        "timestamp_start": "09:00:52.117346",
+                        "timestamp_stop": "09:01:54.008091",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5750.0,
+                        "time": 12.85,
+                        "conn_p_user_sec": 447.47,
+                        "bytes_read": 41520750.0,
+                        "order": 3,
+                        "timestamp_start": "09:04:15.418773",
+                        "timestamp_stop": "09:05:17.008912",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5191.0,
+                        "time": 14.71,
+                        "conn_p_user_sec": 352.89,
+                        "bytes_read": 37494593.0,
+                        "order": 6,
+                        "timestamp_start": "09:07:37.131857",
+                        "timestamp_stop": "09:08:39.006056",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4935.0,
+                        "time": 12.94,
+                        "conn_p_user_sec": 381.38,
+                        "bytes_read": 35645505.0,
+                        "order": 9,
+                        "timestamp_start": "09:10:59.163254",
+                        "timestamp_stop": "09:12:01.008358",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5071.0,
+                        "time": 14.89,
+                        "conn_p_user_sec": 340.56,
+                        "bytes_read": 36637975.0,
+                        "order": 12,
+                        "timestamp_start": "09:14:21.115748",
+                        "timestamp_stop": "09:15:23.006109",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4831.0,
+                        "time": 13.02,
+                        "conn_p_user_sec": 371.04,
+                        "bytes_read": 34903975.0,
+                        "order": 15,
+                        "timestamp_start": "09:17:45.108198",
+                        "timestamp_stop": "09:18:47.008921",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.09,
+                        "conn_p_user_sec": 122.22,
+                        "bytes_read": 79695.0,
+                        "order": 18,
+                        "timestamp_start": "09:21:07.096109",
+                        "timestamp_stop": "09:22:11.008345",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 191.0,
+                        "time": 19.33,
+                        "conn_p_user_sec": 9.88,
+                        "bytes_read": 1378829.0,
+                        "order": 21,
+                        "timestamp_start": "09:24:36.149588",
+                        "timestamp_stop": "09:25:38.095785",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 598.0,
+                        "time": 17.6,
+                        "conn_p_user_sec": 33.98,
+                        "bytes_read": 4316962.0,
+                        "order": 24,
+                        "timestamp_start": "09:27:57.982281",
+                        "timestamp_stop": "09:29:00.054588",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 422.0,
+                        "time": 15.58,
+                        "conn_p_user_sec": 27.09,
+                        "bytes_read": 3050638.0,
+                        "order": 27,
+                        "timestamp_start": "09:31:19.964001",
+                        "timestamp_stop": "09:32:22.066054",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 1072.0,
+                        "time": 15.67,
+                        "conn_p_user_sec": 68.41,
+                        "bytes_read": 7753776.0,
+                        "order": 30,
+                        "timestamp_start": "09:34:41.952251",
+                        "timestamp_stop": "09:35:44.033396",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "RSA-2048+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3103.0,
+                        "time": 7.46,
+                        "conn_p_user_sec": 415.95,
+                        "bytes_read": 22406763.0,
+                        "order": 33,
+                        "timestamp_start": "09:38:06.045242",
+                        "timestamp_stop": "09:39:08.007560",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "ECDSA+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 5782.0,
+                        "time": 15.57,
+                        "conn_p_user_sec": 371.36,
+                        "bytes_read": 41717130.0,
+                        "order": 36,
+                        "timestamp_start": "09:41:28.169273",
+                        "timestamp_stop": "09:42:30.008181",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            }
+        },
+        "docker": {
+            "Dilithium2+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4695.0,
+                        "time": 14.08,
+                        "conn_p_user_sec": 333.45,
+                        "bytes_read": 33911985.0,
+                        "order": 1,
+                        "timestamp_start": "09:01:59.054425",
+                        "timestamp_stop": "09:03:02.647302",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4514.0,
+                        "time": 12.13,
+                        "conn_p_user_sec": 372.14,
+                        "bytes_read": 32595594.0,
+                        "order": 4,
+                        "timestamp_start": "09:05:22.055936",
+                        "timestamp_stop": "09:06:24.667703",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4072.0,
+                        "time": 13.75,
+                        "conn_p_user_sec": 296.15,
+                        "bytes_read": 29412056.0,
+                        "order": 7,
+                        "timestamp_start": "09:08:44.057413",
+                        "timestamp_stop": "09:09:46.671370",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3911.0,
+                        "time": 12.63,
+                        "conn_p_user_sec": 309.66,
+                        "bytes_read": 28249153.0,
+                        "order": 10,
+                        "timestamp_start": "09:12:06.053476",
+                        "timestamp_stop": "09:13:08.627988",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4133.0,
+                        "time": 14.13,
+                        "conn_p_user_sec": 292.5,
+                        "bytes_read": 29860925.0,
+                        "order": 13,
+                        "timestamp_start": "09:15:28.051495",
+                        "timestamp_stop": "09:16:32.643766",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3853.0,
+                        "time": 12.76,
+                        "conn_p_user_sec": 301.96,
+                        "bytes_read": 27837925.0,
+                        "order": 16,
+                        "timestamp_start": "09:18:52.055706",
+                        "timestamp_stop": "09:19:54.623705",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.1,
+                        "conn_p_user_sec": 110.0,
+                        "bytes_read": 79695.0,
+                        "order": 19,
+                        "timestamp_start": "09:22:16.053760",
+                        "timestamp_stop": "09:23:21.687035",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 210.0,
+                        "time": 17.27,
+                        "conn_p_user_sec": 12.16,
+                        "bytes_read": 1515990.0,
+                        "order": 22,
+                        "timestamp_start": "09:25:43.139813",
+                        "timestamp_stop": "09:26:45.413423",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 622.0,
+                        "time": 15.81,
+                        "conn_p_user_sec": 39.34,
+                        "bytes_read": 4490218.0,
+                        "order": 25,
+                        "timestamp_start": "09:29:05.099621",
+                        "timestamp_stop": "09:30:07.502815",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 402.0,
+                        "time": 15.11,
+                        "conn_p_user_sec": 26.6,
+                        "bytes_read": 2906058.0,
+                        "order": 28,
+                        "timestamp_start": "09:32:27.110271",
+                        "timestamp_stop": "09:33:29.463860",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 986.0,
+                        "time": 15.4,
+                        "conn_p_user_sec": 64.03,
+                        "bytes_read": 7131738.0,
+                        "order": 31,
+                        "timestamp_start": "09:35:49.078057",
+                        "timestamp_stop": "09:36:53.535069",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "RSA-2048+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 2672.0,
+                        "time": 7.8,
+                        "conn_p_user_sec": 342.56,
+                        "bytes_read": 19294512.0,
+                        "order": 34,
+                        "timestamp_start": "09:39:13.051955",
+                        "timestamp_stop": "09:40:15.649969",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "ECDSA+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4444.0,
+                        "time": 14.36,
+                        "conn_p_user_sec": 309.47,
+                        "bytes_read": 32063460.0,
+                        "order": 37,
+                        "timestamp_start": "09:42:35.052593",
+                        "timestamp_stop": "09:43:37.634756",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            }
+        },
+        "unikraft": {
+            "Dilithium2+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4424.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 31954552.0,
+                        "order": 2,
+                        "timestamp_start": "09:03:07.693548",
+                        "timestamp_stop": "09:04:10.365733",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-512+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4228.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 30530388.0,
+                        "order": 5,
+                        "timestamp_start": "09:06:29.715306",
+                        "timestamp_stop": "09:07:32.073932",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4042.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 29195366.0,
+                        "order": 8,
+                        "timestamp_start": "09:09:51.716848",
+                        "timestamp_stop": "09:10:54.102921",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber768": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3813.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 27541299.0,
+                        "order": 11,
+                        "timestamp_start": "09:13:13.672928",
+                        "timestamp_stop": "09:14:16.060942",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium3+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3924.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 28350900.0,
+                        "order": 14,
+                        "timestamp_start": "09:16:37.689412",
+                        "timestamp_stop": "09:17:40.053705",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Falcon-1024+Kyber1024": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 3729.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 26942025.0,
+                        "order": 17,
+                        "timestamp_start": "09:19:59.669349",
+                        "timestamp_stop": "09:21:02.040388",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "SPHINCS+-SHA2-128s-simple+Kyber512": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 11.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 79695.0,
+                        "order": 20,
+                        "timestamp_start": "09:23:26.732718",
+                        "timestamp_stop": "09:24:31.096396",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+BIKE-L1": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 189.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 1364391.0,
+                        "order": 23,
+                        "timestamp_start": "09:26:50.460986",
+                        "timestamp_stop": "09:27:52.925177",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+HQC-128": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 578.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 4172582.0,
+                        "order": 26,
+                        "timestamp_start": "09:30:12.548058",
+                        "timestamp_stop": "09:31:14.907028",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-AES": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 427.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 3086783.0,
+                        "order": 29,
+                        "timestamp_start": "09:33:34.513874",
+                        "timestamp_stop": "09:34:36.899373",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "Dilithium2+FrodoKEM-640-SHAKE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 995.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 7196835.0,
+                        "order": 32,
+                        "timestamp_start": "09:36:58.580636",
+                        "timestamp_stop": "09:38:00.988411",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "RSA-2048+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 2606.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 18817926.0,
+                        "order": 35,
+                        "timestamp_start": "09:40:20.694362",
+                        "timestamp_stop": "09:41:23.112116",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            },
+            "ECDSA+ECDHE": {
+                "time": 30.0,
+                "initial": {
+                    "user": {
+                        "connections": 4251.0,
+                        "time": 0.0,
+                        "conn_p_user_sec": Infinity,
+                        "bytes_read": 30670965.0,
+                        "order": 38,
+                        "timestamp_start": "09:43:42.679730",
+                        "timestamp_stop": "09:44:45.055410",
+                        "mean_mw": 0.0,
+                        "mean_mj": 0.0
+                    }
+                }
+            }
+        }
+    },
+    "temp_end": "temp=49.6'C\n"
+}

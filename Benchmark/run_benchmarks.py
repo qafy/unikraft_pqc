@@ -3,11 +3,13 @@
 # import docker
 # import docker.errors
 # import socket
+from itertools import combinations
 import time
 import subprocess
 import argparse
 import json
 import os
+import re
 from datetime import datetime
 
 VIRT_METHODS = ["native", "docker", "unikraft"]
@@ -30,6 +32,21 @@ KEM_ALGORITHMS = [
     "Kyber768",
     "Kyber1024",
     "ECDHE",
+]
+TLS_COMBINATIONS = [
+    ("Dilithium2", "Kyber512"),
+    ("Falcon-512", "Kyber512"),
+    ("Dilithium3", "Kyber768"),
+    ("Falcon-1024", "Kyber768"),
+    ("Dilithium3", "Kyber1024"),
+    ("Falcon-1024", "Kyber1024"),
+    ("SPHINCS+-SHA2-128s-simple", "Kyber512"),
+    ("Dilithium2", "BIKE-L1"),
+    ("Dilithium2", "HQC-128"),
+    ("Dilithium2", "FrodoKEM-640-AES"),
+    ("Dilithium2", "FrodoKEM-640-SHAKE"),
+    ("RSA-2048", "ECDHE"),
+    ("ECDSA", "ECDHE"),
 ]
 STAGES = [
     "primitives",
@@ -105,8 +122,22 @@ def main():
         help="Specify the amount of time to openssl s_speed",
     )
 
+    parser.add_argument(
+        "--temperature",
+        action="store_true",
+        help="Run temperature checks before and after the benchmark",
+    )
+
     args = parser.parse_args()
     global_res = {}
+    if args.temperature:
+        cmd = ["/usr/bin/vcgencmd", "measure_temp"]
+        print(" ".join(cmd))
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode != 0:
+            raise Exception(f"ecparam failed with return code: {res.returncode}")
+        global_res["temp_start"] = res.stdout
+        print(global_res["temp_start"])
 
     try:
         if "primitives" in args.stages:
@@ -134,178 +165,305 @@ def main():
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
 
-            for sig in args.sig:
-                for kem in args.kem:
-                    for virt in args.virt:
-                        setup_certificates(get_sig(sig))
-                        print("")
+            print("Generating certificates")
+            for sig in SIG_ALGORITHMS:
+                setup_certificates(sig)
+                print("")
 
-                        prc0 = run_s_server("native", get_sig(sig), get_group(kem))
-                        time.sleep(0.1)  # Wait for s_server to start
-                        prc1 = run_s_time(virt, args.tls_time, get_sig(sig), kem)
+            for sig, kem in TLS_COMBINATIONS:
+                for virt in args.virt:
 
-                        ret = prc1.wait()
-                        prc0.kill()
+                    prc0 = run_s_server("native", sig, kem)
+                    time.sleep(0.1)  # Wait for s_server to start
+                    prc1 = run_s_time(virt, args.tls_time, sig)
 
-                        if ret != 0:
-                            raise Exception(f"s_speed failed with return code: {ret}")
+                    ret = prc1.wait()
+                    prc0.kill()
 
-                        res = eval_res_tls(prc1, virt, sig, kem)
-                        global_res = merge_dicts(res, global_res)
-                        subprocess.run(["pkill", "openssl"])
+                    if ret != 0:
+                        raise Exception(f"s_speed failed with return code: {ret}")
+
+                    res = eval_res_tls(prc1, virt, sig, kem)
+                    global_res = merge_dicts(res, global_res)
+                    subprocess.run(["pkill", "openssl"])
 
         if "primitives_memory" in args.stages:
             print("Evaluating memory consumption of primitive operations:")
 
             for sig in args.sig:
                 for virt in args.virt:
-                    prc = run_primitive(virt, "sig", sig, args.primitives_time)
-                    time.sleep(0.1)  # wait for benchmark to start
-                    prc2 = run_top(prc.pid)
-                    ret = prc.wait()
+                    prc = run_primitive(
+                        virt, "sig", sig, args.primitives_time, "keygen", top=True
+                    )
+                    out, _ = prc.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
 
-                    if ret != 0:
-                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    time.sleep(args.primitives_time)
                     prc2.kill()
 
-                    res = eval_res_primitives_top(prc2, virt, "sig", sig)
+                    res = eval_res_primitives_top(prc2, virt, "sig", sig, "keygen")
+                    global_res = merge_dicts(res, global_res)
+
+                    prc = run_primitive(
+                        virt, "sig", sig, args.primitives_time, "sign", top=True
+                    )
+                    out, _ = prc.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
+
+                    time.sleep(args.primitives_time)
+                    prc2.kill()
+
+                    res = eval_res_primitives_top(prc2, virt, "sig", sig, "encaps")
+                    global_res = merge_dicts(res, global_res)
+
+                    prc = run_primitive(
+                        virt, "sig", sig, args.primitives_time, "verify", top=True
+                    )
+                    out, _ = prc.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
+
+                    time.sleep(args.primitives_time)
+                    prc2.kill()
+
+                    res = eval_res_primitives_top(prc2, virt, "sig", sig, "decaps")
                     global_res = merge_dicts(res, global_res)
 
             for kem in args.kem:
                 for virt in args.virt:
-                    prc = run_primitive(virt, "kem", kem, args.primitives_time)
-                    time.sleep(0.1)  # wait for benchmark to start
-                    prc2 = run_top(prc.pid)
-                    ret = prc.wait()
 
-                    if ret != 0:
-                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    prc = run_primitive(
+                        virt, "kem", kem, args.primitives_time, "keygen", top=True
+                    )
+                    out, _ = prc.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
+
+                    time.sleep(args.primitives_time)
                     prc2.kill()
 
-                    res = eval_res_primitives_top(prc2, virt, "kem", kem)
+                    res = eval_res_primitives_top(prc2, virt, "kem", kem, "keygen")
                     global_res = merge_dicts(res, global_res)
+                    
+                    prc = run_primitive(
+                        virt, "kem", kem, args.primitives_time, "encaps", top=True
+                    )
+                    out, _ = prc.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
+
+                    time.sleep(args.primitives_time)
+                    prc2.kill()
+
+                    res = eval_res_primitives_top(prc2, virt, "kem", kem, "encaps")
+                    global_res = merge_dicts(res, global_res)
+
+                    if kem != "ECDHE":
+                        prc = run_primitive(
+                            virt, "kem", kem, args.primitives_time, "decaps", top=True
+                        )
+                        out, _ = prc.communicate()
+                        pid = int(out.decode().strip())
+                        print(f"PID: {pid}")
+                        prc2 = run_top(pid)
+
+                        time.sleep(args.primitives_time)
+                        prc2.kill()
+
+                        res = eval_res_primitives_top(prc2, virt, "kem", kem, "decaps")
+                        global_res = merge_dicts(res, global_res)
 
         if "tls_memory" in args.stages:
             print("Evaluating memory consumption of tls operations:")
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
 
-            for sig in args.sig:
-                for kem in args.kem:
-                    for virt in args.virt:
+            print("Generating certificates")
+            for sig in SIG_ALGORITHMS:
+                setup_certificates(sig)
+                print("")
 
-                        setup_certificates(get_sig(sig))
-                        print("")
+            for sig, kem in TLS_COMBINATIONS:
+                for virt in args.virt:
+                    time.sleep(5)
+                    prc0 = run_s_server("native", sig, kem)
+                    time.sleep(0.1)  # Wait for s_server to start
+                    prc1 = run_s_time(virt, args.tls_time, sig, top=True)
 
-                        prc0 = run_s_server("native", get_sig(sig), get_group(kem))
-                        time.sleep(0.1)  # Wait for s_server to start
-                        prc1 = run_s_time(virt, args.tls_time, get_sig(sig), kem)
-                        time.sleep(0.1)
-                        prc2 = run_top(prc1.pid)
+                    out, _ = prc1.communicate()
+                    pid = int(out.decode().strip())
+                    print(f"PID: {pid}")
+                    prc2 = run_top(pid)
 
-                        ret = prc1.wait()
-                        prc0.kill()
-                        prc2.kill()
-                        if ret != 0:
-                            raise Exception(f"s_speed failed with return code: {ret}")
+                    time.sleep(args.tls_time * 2)
+                    prc2.kill()
+                    prc0.kill()
 
-                        res = eval_res_tls_top(prc2, virt, sig, kem)
-                        global_res = merge_dicts(res, global_res)
-                        subprocess.run(["pkill", "openssl"])
+                    #res = eval_res_tls_top(prc2, virt, sig, kem)
+                    #global_res = merge_dicts(res, global_res)
+
+                    subprocess.run(["pkill", "openssl"])
 
         if "primitives_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
 
+            i = 0
             for sig in args.sig:
                 for virt in args.virt:
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {sig} keygen for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(
                         virt, "sig", sig, args.primitives_time, "keygen"
                     )
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "sig", sig, "keygen", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {sig} sign for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(virt, "sig", sig, args.primitives_time, "sign")
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "sig", sig, "encaps", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {sig} verify for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(
                         virt, "sig", sig, args.primitives_time, "verify"
                     )
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "sig", sig, "decaps", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
             for kem in args.kem:
                 for virt in args.virt:
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} keygen for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(
                         virt, "kem", kem, args.primitives_time, "keygen"
                     )
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "kem", kem, "keygen", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} encaps for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(
                         virt, "kem", kem, args.primitives_time, "encaps"
                     )
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "kem", kem, "encaps", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
                     print("Waiting to establish baseline")
                     time.sleep(5)
                     print(f"Running {kem} decaps for {args.primitives_time} seconds")
+                    time_start = datetime.now()
                     prc = run_primitive(
                         virt, "kem", kem, args.primitives_time, "decaps"
                     )
-                    prc.wait()
+                    ret = prc.wait()
+                    time_end = datetime.now()
+                    if ret != 0:
+                        raise Exception(f"primitive sig failed with return code: {ret}")
+                    res = eval_res_primitives_power(
+                        prc, virt, "kem", kem, "decaps", time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
                     print("Finished")
+                    i += 1
 
         if "tls_power" in args.stages:
             print("Executing tls for manual evaluation of power consumption:")
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
-            
+
             print("Generating certificates")
-            for sig in args.sig:
-                for kem in args.kem:
-                    for virt in args.virt:
-                        setup_certificates(get_sig(sig))  
-                        print("")
-            
-            for sig in args.sig:
-                for kem in args.kem:
-                    for virt in args.virt:
-                    
-                        print("Waiting to establish baseline")
-                        time.sleep(5)
+            for sig in SIG_ALGORITHMS:
+                setup_certificates(sig)
+                print("")
 
-                        print(
-                            f"Running TLS handshakes with {kem}+{sig} for {args.tls_time} seconds"
-                        )
-                        prc0 = run_s_server("native", get_sig(sig), get_group(kem))
-                        time.sleep(0.1)  # Wait for s_server to start
-                        prc1 = run_s_time(virt, args.tls_time, get_sig(sig), kem)
+            i = 0
+            for sig, kem in TLS_COMBINATIONS:
+                for virt in args.virt:
 
-                        ret = prc1.wait()
-                        prc0.kill()
+                    print("Waiting to establish baseline")
+                    time.sleep(5)
 
-                        if ret != 0:
-                            raise Exception(f"s_speed failed with return code: {ret}")
+                    print(
+                        f"Running TLS handshakes with {kem}+{sig} for {args.tls_time} seconds"
+                    )
+                    time_start = datetime.now()
+                    prc0 = run_s_server("native", sig, kem)
+                    time.sleep(0.1)  # Wait for s_server to start
+                    prc1 = run_s_time(virt, args.tls_time, sig)
 
-                        print("")
-                        subprocess.run(["pkill", "openssl"])
+                    ret = prc1.wait()
+                    time_end = datetime.now()
+                    prc0.kill()
+                    if ret != 0:
+                        raise Exception(f"s_speed failed with return code: {ret}")
+                    res = eval_res_tls_power(
+                        prc1, virt, sig, kem, time_start, time_end, i
+                    )
+                    global_res = merge_dicts(res, global_res)
+
+                    print("Finished")
+                    print("")
+                    i += 1
+                    subprocess.run(["pkill", "openssl"])
 
     except KeyboardInterrupt:
         pass
@@ -329,6 +487,13 @@ def main():
         subprocess.run(["pkill", "openssl"])
         subprocess.run(["pkill", "qemu"])
 
+        if args.temperature:
+            cmd = ["/usr/bin/vcgencmd", "measure_temp"]
+            print(" ".join(cmd))
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            global_res["temp_end"] = res.stdout
+            print(global_res["temp_end"])
+
         with open(
             os.path.join(
                 SCRIPT_DIR,
@@ -339,7 +504,7 @@ def main():
             json.dump(global_res, f)
 
 
-def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
+def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None, top=False):
     additional_args = []
     if limit_operation is not None:
         additional_args += {
@@ -354,13 +519,14 @@ def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
                 "verify": ["--no_keygen", "--no_sign"],
             },
         }[sig_kem][limit_operation]
-
-    test_version = get_virt_bin(virt, "benchmark")
+    getpid = []
+    if top:
+        getpid = ["pid"]
+    test_version = [get_virt_bin(virt, "benchmark")]
     cmd = (
-        [
-            test_version,
-            sig_kem,
-        ]
+        test_version
+        + getpid
+        + [sig_kem]
         + additional_args
         + [
             "-d",
@@ -368,6 +534,7 @@ def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
             cipher,
         ]
     )
+
     print(" ".join(cmd))
     prc = subprocess.Popen(
         cmd,
@@ -378,6 +545,8 @@ def run_primitive(virt, sig_kem, cipher, duration=1, limit_operation=None):
 
 
 def run_s_server(virt, sig, kem):
+    sig = get_sig(sig)
+    kem = get_group(kem)
     openssl_version = get_virt_bin(virt, "openssl")
     if virt == "unikraft":
         dir_key = f"Benchmark/pki/server_{sig}.key"
@@ -433,7 +602,8 @@ def run_s_client(virt, sig, kem):
     )
 
 
-def run_s_time(virt, time, sig, kem):
+def run_s_time(virt, time, sig, top=False):
+    sig = get_sig(sig)
     openssl_version = get_virt_bin(virt, "openssl")
     host = get_host("client", virt)
 
@@ -444,18 +614,24 @@ def run_s_time(virt, time, sig, kem):
     else:
         ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
 
-    cmd = [
-        openssl_version,
-        "s_time",
-        "-connect",
-        host + ":443",
-        "-www",
-        "/",
-        "-CAfile",
-        ca_crt,
-        "-time",
-        str(time),
-    ]
+    use_top = []
+    if top:
+        use_top = ["pid"]
+    cmd = (
+        [openssl_version]
+        + use_top
+        + [
+            "s_time",
+            "-connect",
+            host + ":443",
+            "-www",
+            "/",
+            "-CAfile",
+            ca_crt,
+            "-time",
+            str(time),
+        ]
+    )
     print(" ".join(cmd))
     return subprocess.Popen(
         cmd,
@@ -482,6 +658,7 @@ def run_top(pid):
 
 
 def setup_certificates(sig):
+    sig = get_sig(sig)
     print(f"Setting up certificates for signature algorithm {sig}")
     ca_key = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.key")
     ca_crt = os.path.join(SCRIPT_DIR, f"pki/CA_{sig}.crt")
@@ -508,6 +685,20 @@ def setup_certificates(sig):
         dir_key_src = ["-key", dir_key]
 
     elif sig == "ECDSA":
+        cmd = [
+            get_virt_bin("native", "openssl"),
+            "ecparam",
+            "-genkey",
+            "-name",
+            "secp256r1",
+            "-out",
+            ca_key,
+        ]
+        print(" ".join(cmd))
+        prc = subprocess.run(cmd, stdout=subprocess.PIPE)
+        if prc.returncode != 0:
+            raise Exception(f"ecparam failed with return code: {prc.returncode}")
+
         cmd = [
             get_virt_bin("native", "openssl"),
             "ecparam",
@@ -747,10 +938,86 @@ def eval_res_tls(prc, virt, sig, kem):
     return res
 
 
-def eval_res_primitives_top(prc, virt, sig_kem, cipher):
+def eval_res_primitives_power(
+    prc, virt, sig_kem, cipher, operation, time_start, time_stop, order
+):
+    out, _ = prc.communicate()
+    print(out.decode())
+
+    lines = out.decode().splitlines()
+    res = {
+        "primitive": {
+            virt: {
+                sig_kem: {
+                    cipher: {
+                        operation: {
+                            "iterations": float(lines[6].split("|")[1].strip()),
+                            "total_time": float(lines[6].split("|")[2].strip()),
+                            "order": order,
+                            "timestamp_start": time_start.time().strftime(
+                                "%H:%M:%S.%f"
+                            ),
+                            "timestamp_stop": time_stop.time().strftime("%H:%M:%S.%f"),
+                            "mean_mw": 0.0,
+                            "mean_mj": 0.0,
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return res
+
+
+def eval_res_tls_power(prc, virt, sig, kem, time_start, time_stop, order):
+    out, _ = prc.communicate()
+
+    out_str = out.decode().replace("\r\n", "\n")
+    lines = out_str.splitlines()
+    segments = out_str.split("\n\n")
+
+    print(lines[0])
+    print("\n".join(segments[1].splitlines()[:2]))
+    print(segments[2].splitlines()[1])
+    print("\n".join(lines[-2:]))
+
+    line1 = lines[0]
+    line2 = segments[1].splitlines()[0]
+    line3 = segments[1].splitlines()[1]
+    line4 = lines[-2]
+    line5 = lines[-1]
+
+    res = {
+        "tls": {
+            virt: {
+                f"{sig}+{kem}": {
+                    "time": float(line1.split(" ")[4]),
+                    "initial": {
+                        "user": {
+                            "connections": float(line2.split(" ")[0]),
+                            "time": float(line2.split(" ")[3][:-2]),
+                            "conn_p_user_sec": float(line2.split(" ")[4]),
+                            "bytes_read": float(line2.split(" ")[9]),
+                            "order": order,
+                            "timestamp_start": time_start.time().strftime(
+                                "%H:%M:%S.%f"
+                            ),
+                            "timestamp_stop": time_stop.time().strftime("%H:%M:%S.%f"),
+                            "mean_mw": 0.0,
+                            "mean_mj": 0.0,
+                        },
+                    },
+                }
+            }
+        }
+    }
+    return res
+
+
+def eval_res_primitives_top(prc, virt, sig_kem, cipher, mode):
     res_obj = eval_res_top(prc)
     print(res_obj)
-    return {"primitive": {virt: {sig_kem: {cipher: {"memory": res_obj}}}}}
+    return {"primitive": {virt: {sig_kem: {cipher: {mode: {"memory": res_obj}}}}}}
 
 
 def eval_res_tls_top(prc, virt, sig, kem):
@@ -760,37 +1027,28 @@ def eval_res_tls_top(prc, virt, sig, kem):
 
 
 def eval_res_top(prc):
-    def second(list):
-        res = []
+    def split(list):
+        res1, res2 = [], []
         i = 0
         for l in list:
             if i % 2 == 0:
-                res.append(l)
+                res1.append(l)
+            else:
+                res2.append(l)
             i += 1
-        return res
+        return res1, res2
 
     out, _ = prc.communicate()
     out_str = out.decode()
-    segments = second(out_str.split("\n\n"))
-    total_memory = (
-        segments[0]
-        .splitlines()[3]
-        .split(",")[0]
-        .split(":")[1]
-        .strip()
-        .split(" ")[0]
-        .strip()
-    )
+    segments1, segments2 = split(out_str.split("\n\n"))
 
     return {
-        "total_mib": total_memory,
-        "free_mib": [
-            x.splitlines()[3].split(",")[1].strip().split(" ")[0].strip()
-            for x in segments
+        "timestamp": [x.splitlines()[0].split(" ")[2].strip() for x in segments1],
+        "virt_used_kib": [
+            re.split(r" {1,}", x.splitlines()[1])[5].strip() for x in segments2
         ],
-        "used_mib": [
-            x.splitlines()[3].split(",")[2].strip().split(" ")[0].strip()
-            for x in segments
+        "res_used_kib": [
+            re.split(r" {1,}", x.splitlines()[1])[6].strip() for x in segments2
         ],
     }
 

@@ -1,0 +1,1272 @@
+{
+    "temp_start": "temp=34.0'C\n",
+    "primitive": {
+        "native": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 15.0,
+                        "total_time": 5.307,
+                        "mean_us": 353822.067,
+                        "stddev_us": 607.235,
+                        "mean_ns": 353821935.0,
+                        "stddev_ns": 607119.0
+                    },
+                    "encaps": {
+                        "iterations": 2.0,
+                        "total_time": 5.394,
+                        "mean_us": 2696759.5,
+                        "stddev_us": 765.5,
+                        "mean_ns": 2696759168.0,
+                        "stddev_ns": 765568.0
+                    },
+                    "decaps": {
+                        "iterations": 1853.0,
+                        "total_time": 5.002,
+                        "mean_us": 2699.501,
+                        "stddev_us": 34.985,
+                        "mean_ns": 2699404.0,
+                        "stddev_ns": 34978.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 901.0,
+                        "total_time": 5.004,
+                        "mean_us": 5553.626,
+                        "stddev_us": 29.461,
+                        "mean_ns": 5553538.0,
+                        "stddev_ns": 29456.0
+                    },
+                    "encaps": {
+                        "iterations": 39.0,
+                        "total_time": 5.085,
+                        "mean_us": 130375.564,
+                        "stddev_us": 47.409,
+                        "mean_ns": 130375470.0,
+                        "stddev_ns": 47457.0
+                    },
+                    "decaps": {
+                        "iterations": 648.0,
+                        "total_time": 5.001,
+                        "mean_us": 7717.992,
+                        "stddev_us": 167.576,
+                        "mean_ns": 7717887.0,
+                        "stddev_ns": 167577.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 266.0,
+                        "total_time": 5.013,
+                        "mean_us": 18845.132,
+                        "stddev_us": 6695.23,
+                        "mean_ns": 18845026.0,
+                        "stddev_ns": 6695224.0
+                    },
+                    "encaps": {
+                        "iterations": 7884.0,
+                        "total_time": 5.001,
+                        "mean_us": 634.262,
+                        "stddev_us": 8.765,
+                        "mean_ns": 634160.0,
+                        "stddev_ns": 8757.0
+                    },
+                    "decaps": {
+                        "iterations": 55007.0,
+                        "total_time": 5.0,
+                        "mean_us": 90.899,
+                        "stddev_us": 1.656,
+                        "mean_ns": 90801.0,
+                        "stddev_ns": 1600.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 31327.0,
+                        "total_time": 5.0,
+                        "mean_us": 159.608,
+                        "stddev_us": 5.396,
+                        "mean_ns": 159500.0,
+                        "stddev_ns": 5382.0
+                    },
+                    "encaps": {
+                        "iterations": 10519.0,
+                        "total_time": 5.0,
+                        "mean_us": 475.337,
+                        "stddev_us": 278.585,
+                        "mean_ns": 475229.0,
+                        "stddev_ns": 278589.0
+                    },
+                    "decaps": {
+                        "iterations": 32557.0,
+                        "total_time": 5.0,
+                        "mean_us": 153.58,
+                        "stddev_us": 1.817,
+                        "mean_ns": 153481.0,
+                        "stddev_ns": 1763.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 16744.0,
+                        "total_time": 5.0,
+                        "mean_us": 298.625,
+                        "stddev_us": 18.818,
+                        "mean_ns": 298523.0,
+                        "stddev_ns": 18808.0
+                    },
+                    "encaps": {
+                        "iterations": 6859.0,
+                        "total_time": 5.0,
+                        "mean_us": 728.988,
+                        "stddev_us": 429.006,
+                        "mean_ns": 728888.0,
+                        "stddev_ns": 429007.0
+                    },
+                    "decaps": {
+                        "iterations": 19473.0,
+                        "total_time": 5.0,
+                        "mean_us": 256.778,
+                        "stddev_us": 2.333,
+                        "mean_ns": 256675.0,
+                        "stddev_ns": 2284.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 104.0,
+                        "total_time": 5.029,
+                        "mean_us": 48353.981,
+                        "stddev_us": 12194.658,
+                        "mean_ns": 48353890.0,
+                        "stddev_ns": 12194671.0
+                    },
+                    "encaps": {
+                        "iterations": 3919.0,
+                        "total_time": 5.0,
+                        "mean_us": 1275.947,
+                        "stddev_us": 10.037,
+                        "mean_ns": 1275839.0,
+                        "stddev_ns": 10034.0
+                    },
+                    "decaps": {
+                        "iterations": 27859.0,
+                        "total_time": 5.0,
+                        "mean_us": 179.476,
+                        "stddev_us": 27.796,
+                        "mean_ns": 179375.0,
+                        "stddev_ns": 27794.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 116353.0,
+                        "total_time": 5.0,
+                        "mean_us": 42.973,
+                        "stddev_us": 2.415,
+                        "mean_ns": 42875.0,
+                        "stddev_ns": 2392.0
+                    },
+                    "encaps": {
+                        "iterations": 51433.0,
+                        "total_time": 5.0,
+                        "mean_us": 97.215,
+                        "stddev_us": 2.176,
+                        "mean_ns": 97100.0,
+                        "stddev_ns": 2157.0
+                    },
+                    "decaps": {
+                        "iterations": 17162.0,
+                        "total_time": 5.0,
+                        "mean_us": 291.351,
+                        "stddev_us": 5.172,
+                        "mean_ns": 291240.0,
+                        "stddev_ns": 5155.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 12.0,
+                        "total_time": 5.201,
+                        "mean_us": 433389.5,
+                        "stddev_us": 270729.856,
+                        "mean_ns": 433389312.0,
+                        "stddev_ns": 270729602.0
+                    },
+                    "encaps": {
+                        "iterations": 1005.0,
+                        "total_time": 5.005,
+                        "mean_us": 4979.806,
+                        "stddev_us": 321.078,
+                        "mean_ns": 4979722.0,
+                        "stddev_ns": 321052.0
+                    },
+                    "decaps": {
+                        "iterations": 37493.0,
+                        "total_time": 5.0,
+                        "mean_us": 133.361,
+                        "stddev_us": 2.288,
+                        "mean_ns": 133262.0,
+                        "stddev_ns": 2265.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 105465.0,
+                        "total_time": 5.0,
+                        "mean_us": 47.409,
+                        "stddev_us": 12.059,
+                        "mean_ns": 47296.0,
+                        "stddev_ns": 12051.0
+                    },
+                    "encaps": {
+                        "iterations": 94531.0,
+                        "total_time": 5.0,
+                        "mean_us": 52.893,
+                        "stddev_us": 2.736,
+                        "mean_ns": 52788.0,
+                        "stddev_ns": 2703.0
+                    },
+                    "decaps": {
+                        "iterations": 115032.0,
+                        "total_time": 5.0,
+                        "mean_us": 43.466,
+                        "stddev_us": 1.373,
+                        "mean_ns": 43347.0,
+                        "stddev_ns": 1291.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 115.0,
+                        "total_time": 5.031,
+                        "mean_us": 43746.278,
+                        "stddev_us": 382.611,
+                        "mean_ns": 43746188.0,
+                        "stddev_ns": 382589.0
+                    },
+                    "encaps": {
+                        "iterations": 2220.0,
+                        "total_time": 5.002,
+                        "mean_us": 2252.95,
+                        "stddev_us": 98.999,
+                        "mean_ns": 2252843.0,
+                        "stddev_ns": 98982.0
+                    },
+                    "decaps": {
+                        "iterations": 140.0,
+                        "total_time": 5.004,
+                        "mean_us": 35740.75,
+                        "stddev_us": 66.46,
+                        "mean_ns": 35740641.0,
+                        "stddev_ns": 66433.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 938.0,
+                        "total_time": 5.002,
+                        "mean_us": 5332.197,
+                        "stddev_us": 130.179,
+                        "mean_ns": 5332103.0,
+                        "stddev_ns": 130166.0
+                    },
+                    "encaps": {
+                        "iterations": 467.0,
+                        "total_time": 5.011,
+                        "mean_us": 10729.225,
+                        "stddev_us": 17.226,
+                        "mean_ns": 10729120.0,
+                        "stddev_ns": 17199.0
+                    },
+                    "decaps": {
+                        "iterations": 292.0,
+                        "total_time": 5.002,
+                        "mean_us": 17128.86,
+                        "stddev_us": 10.74,
+                        "mean_ns": 17128732.0,
+                        "stddev_ns": 10723.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 295.0,
+                        "total_time": 5.016,
+                        "mean_us": 17001.746,
+                        "stddev_us": 249.206,
+                        "mean_ns": 17001653.0,
+                        "stddev_ns": 249196.0
+                    },
+                    "encaps": {
+                        "iterations": 290.0,
+                        "total_time": 5.003,
+                        "mean_us": 17251.959,
+                        "stddev_us": 19.01,
+                        "mean_ns": 17251896.0,
+                        "stddev_ns": 18977.0
+                    },
+                    "decaps": {
+                        "iterations": 291.0,
+                        "total_time": 5.001,
+                        "mean_us": 17186.55,
+                        "stddev_us": 11.157,
+                        "mean_ns": 17186454.0,
+                        "stddev_ns": 11168.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 860.0,
+                        "total_time": 5.002,
+                        "mean_us": 5816.547,
+                        "stddev_us": 145.449,
+                        "mean_ns": 5816445.0,
+                        "stddev_ns": 145416.0
+                    },
+                    "encaps": {
+                        "iterations": 758.0,
+                        "total_time": 5.002,
+                        "mean_us": 6599.468,
+                        "stddev_us": 23.348,
+                        "mean_ns": 6599372.0,
+                        "stddev_ns": 23357.0
+                    },
+                    "decaps": {
+                        "iterations": 769.0,
+                        "total_time": 5.0,
+                        "mean_us": 6502.022,
+                        "stddev_us": 26.584,
+                        "mean_ns": 6501906.0,
+                        "stddev_ns": 26548.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 72401.0,
+                        "total_time": 5.0,
+                        "mean_us": 69.06,
+                        "stddev_us": 14.849,
+                        "mean_ns": 68955.0,
+                        "stddev_ns": 14841.0
+                    },
+                    "encaps": {
+                        "iterations": 62728.0,
+                        "total_time": 5.0,
+                        "mean_us": 79.71,
+                        "stddev_us": 18.742,
+                        "mean_ns": 79603.0,
+                        "stddev_ns": 18734.0
+                    },
+                    "decaps": {
+                        "iterations": 72933.0,
+                        "total_time": 5.0,
+                        "mean_us": 68.557,
+                        "stddev_us": 2.803,
+                        "mean_ns": 68455.0,
+                        "stddev_ns": 2761.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 49174.0,
+                        "total_time": 5.0,
+                        "mean_us": 101.68,
+                        "stddev_us": 17.772,
+                        "mean_ns": 101569.0,
+                        "stddev_ns": 17772.0
+                    },
+                    "encaps": {
+                        "iterations": 43172.0,
+                        "total_time": 5.0,
+                        "mean_us": 115.817,
+                        "stddev_us": 1.699,
+                        "mean_ns": 115717.0,
+                        "stddev_ns": 1630.0
+                    },
+                    "decaps": {
+                        "iterations": 47847.0,
+                        "total_time": 5.0,
+                        "mean_us": 104.501,
+                        "stddev_us": 1.49,
+                        "mean_ns": 104399.0,
+                        "stddev_ns": 1422.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 81823.0,
+                        "total_time": 5.0,
+                        "mean_us": 61.108,
+                        "stddev_us": 3.258,
+                        "mean_ns": 61006.0,
+                        "stddev_ns": 3241.0
+                    },
+                    "encaps": {
+                        "iterations": 20260.0,
+                        "total_time": 5.0,
+                        "mean_us": 246.793,
+                        "stddev_us": 8.186,
+                        "mean_ns": 246693.0,
+                        "stddev_ns": 8176.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        },
+        "docker": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 15.0,
+                        "total_time": 5.128,
+                        "mean_us": 341843.0,
+                        "stddev_us": 974.801,
+                        "mean_ns": 341842927.0,
+                        "stddev_ns": 974702.0
+                    },
+                    "encaps": {
+                        "iterations": 2.0,
+                        "total_time": 5.203,
+                        "mean_us": 2601693.0,
+                        "stddev_us": 1446.0,
+                        "mean_ns": 2601692800.0,
+                        "stddev_ns": 1446272.0
+                    },
+                    "decaps": {
+                        "iterations": 1935.0,
+                        "total_time": 5.001,
+                        "mean_us": 2584.376,
+                        "stddev_us": 6.683,
+                        "mean_ns": 2584279.0,
+                        "stddev_ns": 6668.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 932.0,
+                        "total_time": 5.003,
+                        "mean_us": 5368.083,
+                        "stddev_us": 21.874,
+                        "mean_ns": 5367977.0,
+                        "stddev_ns": 21863.0
+                    },
+                    "encaps": {
+                        "iterations": 40.0,
+                        "total_time": 5.044,
+                        "mean_us": 126112.45,
+                        "stddev_us": 173.491,
+                        "mean_ns": 126112371.0,
+                        "stddev_ns": 173446.0
+                    },
+                    "decaps": {
+                        "iterations": 626.0,
+                        "total_time": 5.002,
+                        "mean_us": 7991.054,
+                        "stddev_us": 45.714,
+                        "mean_ns": 7990956.0,
+                        "stddev_ns": 45710.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 274.0,
+                        "total_time": 5.011,
+                        "mean_us": 18287.887,
+                        "stddev_us": 6202.147,
+                        "mean_ns": 18287789.0,
+                        "stddev_ns": 6202138.0
+                    },
+                    "encaps": {
+                        "iterations": 7871.0,
+                        "total_time": 5.0,
+                        "mean_us": 635.296,
+                        "stddev_us": 7.424,
+                        "mean_ns": 635193.0,
+                        "stddev_ns": 7413.0
+                    },
+                    "decaps": {
+                        "iterations": 54831.0,
+                        "total_time": 5.0,
+                        "mean_us": 91.191,
+                        "stddev_us": 17.699,
+                        "mean_ns": 91096.0,
+                        "stddev_ns": 17694.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 31181.0,
+                        "total_time": 5.0,
+                        "mean_us": 160.354,
+                        "stddev_us": 5.028,
+                        "mean_ns": 160255.0,
+                        "stddev_ns": 5002.0
+                    },
+                    "encaps": {
+                        "iterations": 10413.0,
+                        "total_time": 5.0,
+                        "mean_us": 480.177,
+                        "stddev_us": 282.607,
+                        "mean_ns": 480079.0,
+                        "stddev_ns": 282609.0
+                    },
+                    "decaps": {
+                        "iterations": 32480.0,
+                        "total_time": 5.0,
+                        "mean_us": 153.942,
+                        "stddev_us": 1.926,
+                        "mean_ns": 153829.0,
+                        "stddev_ns": 1865.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 16671.0,
+                        "total_time": 5.0,
+                        "mean_us": 299.929,
+                        "stddev_us": 46.915,
+                        "mean_ns": 299824.0,
+                        "stddev_ns": 46904.0
+                    },
+                    "encaps": {
+                        "iterations": 6857.0,
+                        "total_time": 5.0,
+                        "mean_us": 729.21,
+                        "stddev_us": 421.513,
+                        "mean_ns": 729108.0,
+                        "stddev_ns": 421520.0
+                    },
+                    "decaps": {
+                        "iterations": 19508.0,
+                        "total_time": 5.0,
+                        "mean_us": 256.309,
+                        "stddev_us": 2.165,
+                        "mean_ns": 256207.0,
+                        "stddev_ns": 2138.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 97.0,
+                        "total_time": 5.048,
+                        "mean_us": 52046.165,
+                        "stddev_us": 13712.709,
+                        "mean_ns": 52045996.0,
+                        "stddev_ns": 13712732.0
+                    },
+                    "encaps": {
+                        "iterations": 3895.0,
+                        "total_time": 5.001,
+                        "mean_us": 1283.965,
+                        "stddev_us": 10.453,
+                        "mean_ns": 1283857.0,
+                        "stddev_ns": 10448.0
+                    },
+                    "decaps": {
+                        "iterations": 27956.0,
+                        "total_time": 5.0,
+                        "mean_us": 178.854,
+                        "stddev_us": 1.946,
+                        "mean_ns": 178752.0,
+                        "stddev_ns": 1894.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 115365.0,
+                        "total_time": 5.0,
+                        "mean_us": 43.341,
+                        "stddev_us": 3.307,
+                        "mean_ns": 43243.0,
+                        "stddev_ns": 3285.0
+                    },
+                    "encaps": {
+                        "iterations": 51589.0,
+                        "total_time": 5.0,
+                        "mean_us": 96.921,
+                        "stddev_us": 1.649,
+                        "mean_ns": 96811.0,
+                        "stddev_ns": 1595.0
+                    },
+                    "decaps": {
+                        "iterations": 17229.0,
+                        "total_time": 5.0,
+                        "mean_us": 290.222,
+                        "stddev_us": 36.078,
+                        "mean_ns": 290121.0,
+                        "stddev_ns": 36078.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 15.0,
+                        "total_time": 5.015,
+                        "mean_us": 334307.0,
+                        "stddev_us": 150270.83,
+                        "mean_ns": 334306884.0,
+                        "stddev_ns": 150270952.0
+                    },
+                    "encaps": {
+                        "iterations": 1007.0,
+                        "total_time": 5.003,
+                        "mean_us": 4968.061,
+                        "stddev_us": 258.23,
+                        "mean_ns": 4967960.0,
+                        "stddev_ns": 258242.0
+                    },
+                    "decaps": {
+                        "iterations": 37447.0,
+                        "total_time": 5.0,
+                        "mean_us": 133.523,
+                        "stddev_us": 1.56,
+                        "mean_ns": 133425.0,
+                        "stddev_ns": 1494.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 103904.0,
+                        "total_time": 5.0,
+                        "mean_us": 48.122,
+                        "stddev_us": 18.969,
+                        "mean_ns": 48009.0,
+                        "stddev_ns": 18965.0
+                    },
+                    "encaps": {
+                        "iterations": 94250.0,
+                        "total_time": 5.0,
+                        "mean_us": 53.051,
+                        "stddev_us": 1.108,
+                        "mean_ns": 52951.0,
+                        "stddev_ns": 1077.0
+                    },
+                    "decaps": {
+                        "iterations": 115735.0,
+                        "total_time": 5.0,
+                        "mean_us": 43.202,
+                        "stddev_us": 0.969,
+                        "mean_ns": 43094.0,
+                        "stddev_ns": 919.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 115.0,
+                        "total_time": 5.039,
+                        "mean_us": 43818.783,
+                        "stddev_us": 708.351,
+                        "mean_ns": 43818663.0,
+                        "stddev_ns": 708371.0
+                    },
+                    "encaps": {
+                        "iterations": 2217.0,
+                        "total_time": 5.001,
+                        "mean_us": 2255.621,
+                        "stddev_us": 22.341,
+                        "mean_ns": 2255508.0,
+                        "stddev_ns": 22329.0
+                    },
+                    "decaps": {
+                        "iterations": 140.0,
+                        "total_time": 5.0,
+                        "mean_us": 35716.486,
+                        "stddev_us": 175.04,
+                        "mean_ns": 35716325.0,
+                        "stddev_ns": 175030.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 938.0,
+                        "total_time": 5.003,
+                        "mean_us": 5333.373,
+                        "stddev_us": 170.917,
+                        "mean_ns": 5333289.0,
+                        "stddev_ns": 170932.0
+                    },
+                    "encaps": {
+                        "iterations": 466.0,
+                        "total_time": 5.008,
+                        "mean_us": 10747.809,
+                        "stddev_us": 297.752,
+                        "mean_ns": 10747695.0,
+                        "stddev_ns": 297727.0
+                    },
+                    "decaps": {
+                        "iterations": 292.0,
+                        "total_time": 5.005,
+                        "mean_us": 17139.188,
+                        "stddev_us": 34.259,
+                        "mean_ns": 17139041.0,
+                        "stddev_ns": 34259.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 292.0,
+                        "total_time": 5.002,
+                        "mean_us": 17129.651,
+                        "stddev_us": 1067.93,
+                        "mean_ns": 17129519.0,
+                        "stddev_ns": 1067943.0
+                    },
+                    "encaps": {
+                        "iterations": 290.0,
+                        "total_time": 5.005,
+                        "mean_us": 17259.786,
+                        "stddev_us": 21.09,
+                        "mean_ns": 17259683.0,
+                        "stddev_ns": 21111.0
+                    },
+                    "decaps": {
+                        "iterations": 290.0,
+                        "total_time": 5.004,
+                        "mean_us": 17256.128,
+                        "stddev_us": 23.847,
+                        "mean_ns": 17256024.0,
+                        "stddev_ns": 23821.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 850.0,
+                        "total_time": 5.003,
+                        "mean_us": 5885.435,
+                        "stddev_us": 233.998,
+                        "mean_ns": 5885326.0,
+                        "stddev_ns": 234024.0
+                    },
+                    "encaps": {
+                        "iterations": 763.0,
+                        "total_time": 5.006,
+                        "mean_us": 6560.873,
+                        "stddev_us": 17.206,
+                        "mean_ns": 6560754.0,
+                        "stddev_ns": 17175.0
+                    },
+                    "decaps": {
+                        "iterations": 772.0,
+                        "total_time": 5.003,
+                        "mean_us": 6480.622,
+                        "stddev_us": 19.123,
+                        "mean_ns": 6480529.0,
+                        "stddev_ns": 19126.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 71667.0,
+                        "total_time": 5.0,
+                        "mean_us": 69.767,
+                        "stddev_us": 24.559,
+                        "mean_ns": 69659.0,
+                        "stddev_ns": 24548.0
+                    },
+                    "encaps": {
+                        "iterations": 62482.0,
+                        "total_time": 5.0,
+                        "mean_us": 80.024,
+                        "stddev_us": 2.109,
+                        "mean_ns": 79926.0,
+                        "stddev_ns": 2075.0
+                    },
+                    "decaps": {
+                        "iterations": 72784.0,
+                        "total_time": 5.0,
+                        "mean_us": 68.697,
+                        "stddev_us": 1.596,
+                        "mean_ns": 68598.0,
+                        "stddev_ns": 1519.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 48796.0,
+                        "total_time": 5.0,
+                        "mean_us": 102.469,
+                        "stddev_us": 32.397,
+                        "mean_ns": 102358.0,
+                        "stddev_ns": 32392.0
+                    },
+                    "encaps": {
+                        "iterations": 42940.0,
+                        "total_time": 5.0,
+                        "mean_us": 116.442,
+                        "stddev_us": 20.121,
+                        "mean_ns": 116343.0,
+                        "stddev_ns": 20123.0
+                    },
+                    "decaps": {
+                        "iterations": 47715.0,
+                        "total_time": 5.0,
+                        "mean_us": 104.79,
+                        "stddev_us": 3.312,
+                        "mean_ns": 104688.0,
+                        "stddev_ns": 3278.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 81033.0,
+                        "total_time": 5.0,
+                        "mean_us": 61.704,
+                        "stddev_us": 10.315,
+                        "mean_ns": 61603.0,
+                        "stddev_ns": 10306.0
+                    },
+                    "encaps": {
+                        "iterations": 20208.0,
+                        "total_time": 5.0,
+                        "mean_us": 247.428,
+                        "stddev_us": 7.24,
+                        "mean_ns": 247326.0,
+                        "stddev_ns": 7229.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        },
+        "unikraft": {
+            "sig": {
+                "SPHINCS+-SHA2-128s-simple": {
+                    "keygen": {
+                        "iterations": 25.0,
+                        "total_time": 5.16,
+                        "mean_us": 206418.84,
+                        "stddev_us": 263.569,
+                        "mean_ns": 206418551.0,
+                        "stddev_ns": 263607.0
+                    },
+                    "encaps": {
+                        "iterations": 4.0,
+                        "total_time": 6.272,
+                        "mean_us": 1567968.5,
+                        "stddev_us": 570.574,
+                        "mean_ns": 1567967809.0,
+                        "stddev_ns": 570088.0
+                    },
+                    "decaps": {
+                        "iterations": 3257.0,
+                        "total_time": 5.001,
+                        "mean_us": 1535.477,
+                        "stddev_us": 6.005,
+                        "mean_ns": 1535361.0,
+                        "stddev_ns": 5971.0
+                    }
+                },
+                "SPHINCS+-SHA2-128f-simple": {
+                    "keygen": {
+                        "iterations": 1539.0,
+                        "total_time": 5.003,
+                        "mean_us": 3250.8,
+                        "stddev_us": 44.824,
+                        "mean_ns": 3250681.0,
+                        "stddev_ns": 44792.0
+                    },
+                    "encaps": {
+                        "iterations": 67.0,
+                        "total_time": 5.072,
+                        "mean_us": 75706.642,
+                        "stddev_us": 73.098,
+                        "mean_ns": 75706436.0,
+                        "stddev_ns": 72978.0
+                    },
+                    "decaps": {
+                        "iterations": 1126.0,
+                        "total_time": 5.004,
+                        "mean_us": 4444.134,
+                        "stddev_us": 12.025,
+                        "mean_ns": 4443993.0,
+                        "stddev_ns": 11979.0
+                    }
+                },
+                "Falcon-512": {
+                    "keygen": {
+                        "iterations": 117.0,
+                        "total_time": 5.021,
+                        "mean_us": 42917.641,
+                        "stddev_us": 15436.948,
+                        "mean_ns": 42917509.0,
+                        "stddev_ns": 15436874.0
+                    },
+                    "encaps": {
+                        "iterations": 446.0,
+                        "total_time": 5.008,
+                        "mean_us": 11228.343,
+                        "stddev_us": 27.766,
+                        "mean_ns": 11228193.0,
+                        "stddev_ns": 27748.0
+                    },
+                    "decaps": {
+                        "iterations": 38974.0,
+                        "total_time": 5.0,
+                        "mean_us": 128.292,
+                        "stddev_us": 2.608,
+                        "mean_ns": 128197.0,
+                        "stddev_ns": 2578.0
+                    }
+                },
+                "Dilithium2": {
+                    "keygen": {
+                        "iterations": 24032.0,
+                        "total_time": 5.0,
+                        "mean_us": 208.061,
+                        "stddev_us": 19.797,
+                        "mean_ns": 207957.0,
+                        "stddev_ns": 19785.0
+                    },
+                    "encaps": {
+                        "iterations": 5241.0,
+                        "total_time": 5.0,
+                        "mean_us": 954.08,
+                        "stddev_us": 617.788,
+                        "mean_ns": 953947.0,
+                        "stddev_ns": 617783.0
+                    },
+                    "decaps": {
+                        "iterations": 22141.0,
+                        "total_time": 5.0,
+                        "mean_us": 225.826,
+                        "stddev_us": 31.738,
+                        "mean_ns": 225714.0,
+                        "stddev_ns": 31732.0
+                    }
+                },
+                "Dilithium3": {
+                    "keygen": {
+                        "iterations": 13521.0,
+                        "total_time": 5.0,
+                        "mean_us": 369.799,
+                        "stddev_us": 5.866,
+                        "mean_ns": 369702.0,
+                        "stddev_ns": 5836.0
+                    },
+                    "encaps": {
+                        "iterations": 3324.0,
+                        "total_time": 5.003,
+                        "mean_us": 1505.227,
+                        "stddev_us": 1005.423,
+                        "mean_ns": 1505104.0,
+                        "stddev_ns": 1005410.0
+                    },
+                    "decaps": {
+                        "iterations": 13759.0,
+                        "total_time": 5.0,
+                        "mean_us": 363.411,
+                        "stddev_us": 4.32,
+                        "mean_ns": 363312.0,
+                        "stddev_ns": 4279.0
+                    }
+                },
+                "Falcon-1024": {
+                    "keygen": {
+                        "iterations": 43.0,
+                        "total_time": 5.042,
+                        "mean_us": 117263.605,
+                        "stddev_us": 48646.125,
+                        "mean_ns": 117263255.0,
+                        "stddev_ns": 48646048.0
+                    },
+                    "encaps": {
+                        "iterations": 204.0,
+                        "total_time": 5.001,
+                        "mean_us": 24516.961,
+                        "stddev_us": 57.007,
+                        "mean_ns": 24516775.0,
+                        "stddev_ns": 56985.0
+                    },
+                    "decaps": {
+                        "iterations": 19316.0,
+                        "total_time": 5.0,
+                        "mean_us": 258.864,
+                        "stddev_us": 3.442,
+                        "mean_ns": 258765.0,
+                        "stddev_ns": 3404.0
+                    }
+                },
+                "ECDSA": {
+                    "keygen": {
+                        "iterations": 122221.0,
+                        "total_time": 5.0,
+                        "mean_us": 40.91,
+                        "stddev_us": 1.964,
+                        "mean_ns": 40803.0,
+                        "stddev_ns": 1907.0
+                    },
+                    "encaps": {
+                        "iterations": 52321.0,
+                        "total_time": 5.0,
+                        "mean_us": 95.566,
+                        "stddev_us": 3.428,
+                        "mean_ns": 95412.0,
+                        "stddev_ns": 3405.0
+                    },
+                    "decaps": {
+                        "iterations": 17252.0,
+                        "total_time": 5.0,
+                        "mean_us": 289.822,
+                        "stddev_us": 4.35,
+                        "mean_ns": 289685.0,
+                        "stddev_ns": 4322.0
+                    }
+                },
+                "RSA-2048": {
+                    "keygen": {
+                        "iterations": 12.0,
+                        "total_time": 5.168,
+                        "mean_us": 430641.333,
+                        "stddev_us": 359924.103,
+                        "mean_ns": 430640884.0,
+                        "stddev_ns": 359924011.0
+                    },
+                    "encaps": {
+                        "iterations": 1004.0,
+                        "total_time": 5.003,
+                        "mean_us": 4983.463,
+                        "stddev_us": 296.26,
+                        "mean_ns": 4983298.0,
+                        "stddev_ns": 296264.0
+                    },
+                    "decaps": {
+                        "iterations": 37328.0,
+                        "total_time": 5.0,
+                        "mean_us": 133.949,
+                        "stddev_us": 3.054,
+                        "mean_ns": 133841.0,
+                        "stddev_ns": 3007.0
+                    }
+                }
+            },
+            "kem": {
+                "Kyber512": {
+                    "keygen": {
+                        "iterations": 57860.0,
+                        "total_time": 5.0,
+                        "mean_us": 86.416,
+                        "stddev_us": 2.748,
+                        "mean_ns": 86304.0,
+                        "stddev_ns": 2716.0
+                    },
+                    "encaps": {
+                        "iterations": 47790.0,
+                        "total_time": 5.0,
+                        "mean_us": 104.626,
+                        "stddev_us": 2.213,
+                        "mean_ns": 104502.0,
+                        "stddev_ns": 2178.0
+                    },
+                    "decaps": {
+                        "iterations": 42491.0,
+                        "total_time": 5.0,
+                        "mean_us": 117.673,
+                        "stddev_us": 2.316,
+                        "mean_ns": 117548.0,
+                        "stddev_ns": 2266.0
+                    }
+                },
+                "BIKE-L1": {
+                    "keygen": {
+                        "iterations": 90.0,
+                        "total_time": 5.006,
+                        "mean_us": 55627.633,
+                        "stddev_us": 203.128,
+                        "mean_ns": 55627417.0,
+                        "stddev_ns": 203071.0
+                    },
+                    "encaps": {
+                        "iterations": 1779.0,
+                        "total_time": 5.001,
+                        "mean_us": 2810.886,
+                        "stddev_us": 54.008,
+                        "mean_ns": 2810748.0,
+                        "stddev_ns": 54008.0
+                    },
+                    "decaps": {
+                        "iterations": 115.0,
+                        "total_time": 5.025,
+                        "mean_us": 43692.043,
+                        "stddev_us": 101.779,
+                        "mean_ns": 43691883.0,
+                        "stddev_ns": 101776.0
+                    }
+                },
+                "HQC-128": {
+                    "keygen": {
+                        "iterations": 745.0,
+                        "total_time": 5.005,
+                        "mean_us": 6717.791,
+                        "stddev_us": 65.299,
+                        "mean_ns": 6717651.0,
+                        "stddev_ns": 65246.0
+                    },
+                    "encaps": {
+                        "iterations": 373.0,
+                        "total_time": 5.0,
+                        "mean_us": 13405.421,
+                        "stddev_us": 32.26,
+                        "mean_ns": 13405265.0,
+                        "stddev_ns": 32244.0
+                    },
+                    "decaps": {
+                        "iterations": 247.0,
+                        "total_time": 5.011,
+                        "mean_us": 20286.413,
+                        "stddev_us": 19.223,
+                        "mean_ns": 20286236.0,
+                        "stddev_ns": 19228.0
+                    }
+                },
+                "FrodoKEM-640-AES": {
+                    "keygen": {
+                        "iterations": 322.0,
+                        "total_time": 5.002,
+                        "mean_us": 15533.037,
+                        "stddev_us": 87.455,
+                        "mean_ns": 15532879.0,
+                        "stddev_ns": 87424.0
+                    },
+                    "encaps": {
+                        "iterations": 317.0,
+                        "total_time": 5.003,
+                        "mean_us": 15781.644,
+                        "stddev_us": 266.729,
+                        "mean_ns": 15781437.0,
+                        "stddev_ns": 266714.0
+                    },
+                    "decaps": {
+                        "iterations": 318.0,
+                        "total_time": 5.009,
+                        "mean_us": 15752.226,
+                        "stddev_us": 60.279,
+                        "mean_ns": 15752046.0,
+                        "stddev_ns": 60270.0
+                    }
+                },
+                "FrodoKEM-640-SHAKE": {
+                    "keygen": {
+                        "iterations": 865.0,
+                        "total_time": 5.004,
+                        "mean_us": 5784.402,
+                        "stddev_us": 336.794,
+                        "mean_ns": 5784243.0,
+                        "stddev_ns": 336786.0
+                    },
+                    "encaps": {
+                        "iterations": 770.0,
+                        "total_time": 5.005,
+                        "mean_us": 6499.791,
+                        "stddev_us": 18.748,
+                        "mean_ns": 6499637.0,
+                        "stddev_ns": 18742.0
+                    },
+                    "decaps": {
+                        "iterations": 775.0,
+                        "total_time": 5.004,
+                        "mean_us": 6457.072,
+                        "stddev_us": 19.826,
+                        "mean_ns": 6456895.0,
+                        "stddev_ns": 19828.0
+                    }
+                },
+                "Kyber768": {
+                    "keygen": {
+                        "iterations": 36532.0,
+                        "total_time": 5.0,
+                        "mean_us": 136.869,
+                        "stddev_us": 5.882,
+                        "mean_ns": 136753.0,
+                        "stddev_ns": 5864.0
+                    },
+                    "encaps": {
+                        "iterations": 30325.0,
+                        "total_time": 5.0,
+                        "mean_us": 164.881,
+                        "stddev_us": 12.114,
+                        "mean_ns": 164762.0,
+                        "stddev_ns": 12094.0
+                    },
+                    "decaps": {
+                        "iterations": 27373.0,
+                        "total_time": 5.0,
+                        "mean_us": 182.663,
+                        "stddev_us": 2.976,
+                        "mean_ns": 182548.0,
+                        "stddev_ns": 2950.0
+                    }
+                },
+                "Kyber1024": {
+                    "keygen": {
+                        "iterations": 24260.0,
+                        "total_time": 5.0,
+                        "mean_us": 206.105,
+                        "stddev_us": 6.362,
+                        "mean_ns": 205995.0,
+                        "stddev_ns": 6335.0
+                    },
+                    "encaps": {
+                        "iterations": 20891.0,
+                        "total_time": 5.0,
+                        "mean_us": 239.343,
+                        "stddev_us": 4.794,
+                        "mean_ns": 239231.0,
+                        "stddev_ns": 4766.0
+                    },
+                    "decaps": {
+                        "iterations": 18896.0,
+                        "total_time": 5.0,
+                        "mean_us": 264.612,
+                        "stddev_us": 3.305,
+                        "mean_ns": 264482.0,
+                        "stddev_ns": 3278.0
+                    }
+                },
+                "ECDHE": {
+                    "keygen": {
+                        "iterations": 79885.0,
+                        "total_time": 5.0,
+                        "mean_us": 62.591,
+                        "stddev_us": 7.939,
+                        "mean_ns": 62431.0,
+                        "stddev_ns": 7914.0
+                    },
+                    "encaps": {
+                        "iterations": 19358.0,
+                        "total_time": 5.0,
+                        "mean_us": 258.293,
+                        "stddev_us": 20.252,
+                        "mean_ns": 258120.0,
+                        "stddev_ns": 20245.0
+                    },
+                    "decaps": {
+                        "iterations": 0.0,
+                        "total_time": 0.0,
+                        "mean_us": 0.0,
+                        "stddev_us": 0.0,
+                        "mean_ns": 0.0,
+                        "stddev_ns": 0.0
+                    }
+                }
+            }
+        }
+    },
+    "temp_end": "temp=40.9'C\n"
+}
