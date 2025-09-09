@@ -6,6 +6,7 @@ SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 if [ "$1" == "clean" ]; then
     docker network rm alpine-bench-net 2>/dev/null
     docker image rm alpine-bench-epqciuoe 2>/dev/null
+    rm $SCRIPT_DIR/oqs_speed/benchmark
     rm $SCRIPT_DIR/alpine_bench.tar
     rm $SCRIPT_DIR/openssl
     rm $SCRIPT_DIR/sh
@@ -14,13 +15,17 @@ if [ "$1" == "clean" ]; then
 fi  
 
 if [ "$1" == "install" ]; then 
-    docker
     docker load -i $SCRIPT_DIR/alpine_bench.tar
     exit
 fi
 
 docker network create -d bridge alpine-bench-net
 docker build --platform linux/arm64 -t alpine-bench-epqciuoe -f $SCRIPT_DIR/alpine-bench-aarch64 $SCRIPT_DIR
+
+docker create --name temp-container alpine-bench-epqciuoe 
+docker cp temp-container:/local/oqs_speed/benchmark $SCRIPT_DIR/oqs_speed/benchmark
+docker rm temp-container
+
 docker save -o $SCRIPT_DIR/alpine_bench.tar alpine-bench-epqciuoe
 
 cat << EOF > $SCRIPT_DIR/openssl

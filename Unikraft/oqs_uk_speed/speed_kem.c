@@ -22,7 +22,7 @@
 #include <openssl/rsa.h>
 #include <openssl/err.h>
 
-OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign);
+OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign, bool noVerify);
 
 static void fullcycletest(OQS_KEM *kem, uint8_t *public_key, uint8_t *secret_key, uint8_t *ciphertext, uint8_t *shared_secret_e, uint8_t *shared_secret_d)
 {
@@ -77,8 +77,10 @@ static OQS_STATUS kem_speed_wrapper(const char *method_name, uint64_t duration, 
 	{
 		if (!noKeyGen)
 			TIME_OPERATION_SECONDS(OQS_KEM_keypair(kem, public_key, secret_key), "keygen", duration)
+		OQS_KEM_keypair(kem, public_key, secret_key);
 		if (!noEncaps)
 			TIME_OPERATION_SECONDS(OQS_KEM_encaps(kem, ciphertext, shared_secret_e, public_key), "encaps", duration)
+		OQS_KEM_encaps(kem, ciphertext, shared_secret_e, public_key);
 		if (!noDecaps)
 			TIME_OPERATION_SECONDS(OQS_KEM_decaps(kem, shared_secret_d, ciphertext, secret_key), "decaps", duration)
 	}
@@ -259,7 +261,7 @@ int main_speed_kem(int argc, char **argv)
 		
 		if (ecdhe)
 		{
-			rc = kem_vanilla(duration, noKeyGen, noEncaps);
+			rc = kem_vanilla(duration, noKeyGen, noEncaps, noDecaps);
 		}
 		else
 		{
@@ -282,7 +284,7 @@ int main_speed_kem(int argc, char **argv)
 				ret = EXIT_FAILURE;
 			}
 		}
-		rc = kem_vanilla(duration, noKeyGen, noEncaps);
+		rc = kem_vanilla(duration, noKeyGen, noEncaps, noDecaps);
 		if (rc != OQS_SUCCESS)
 		{
 			ret = EXIT_FAILURE;

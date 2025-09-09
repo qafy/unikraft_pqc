@@ -148,7 +148,7 @@ void deriveBenchmark(EVP_PKEY_CTX *derivationCtx, EVP_PKEY *keyPairPub, derivedK
 		handleDerivationErrors(2);
 }
 
-OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign)
+OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign, bool noVerify)
 {
 
 	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", "ecdhe", "", "", "", "", "", "");
@@ -237,7 +237,8 @@ OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign)
 	// if(BN_cmp(secretAliceBN, secretBobBN) == 0){
 	//     printf("\n\nSecrets computed were equal! Magic of ECDH\n\n");
 	// }
-	printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", "-", "0.0", "0.0", "0.0", "0.0", "0.0", "0.0");
+	if (!noVerify)
+		printf("%-36s | %10s | %14s | %15s | %10s | %25s | %10s\n", "-", "0.0", "0.0", "0.0", "0.0", "0.0", "0.0");
 	return OQS_SUCCESS;
 }
 

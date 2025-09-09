@@ -17,6 +17,8 @@ docker build --platform linux/arm64 -t uk-build-epqciuoe -f ./Unikraft/uk-build-
 
 echo "Starting setup container: $CONTAINER_NAME"
 
+$SCRIPT_DIR/Container/setup.sh
+
 docker run \
     --hostname uk-build \
     --name $CONTAINER_NAME \
@@ -26,8 +28,6 @@ docker run \
     -e OUTER_MOUNT_PATH=$(pwd) \
     --entrypoint /workspace/Native/setup.sh \
     uk-build-epqciuoe 
-
-$SCRIPT_DIR/Container/setup.sh
 
 docker run \
     --hostname uk-build \

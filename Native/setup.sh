@@ -82,8 +82,17 @@ function make_local_install()
 
 function make_oqs_speed()
 {
+    # copy oqs_speed from the alpine docker container
+    # compiled with musl has better icache efficienty
+    # leads to better performance on small executables 
+    # such as oqs_speed
     cd oqs_speed
-    make
+    rm benchmark
+    cp $SCRIPT_DIR/../Container/oqs_speed/benchmark .
+
+    # to compile with glibc use this
+    # cd oqs_speed
+    # make
 }
 
 function clean_local_install()
@@ -103,13 +112,13 @@ function main()
 {   
     cd $SCRIPT_DIR
     if [ "$1" == "clean" ]; then
-        echo "Removing local files"
+        echo "Removing native libraries local files"
         clean_local_install
         exit
     fi
 
     if [ "$1" == "install" ]; then
-        echo "Installing on device"
+        echo "Installing native libraries on device"
         mkdir -p $DEVICE_INSTALL_DIR
         cp -r $SCRIPT_DIR/build/local/* $DEVICE_INSTALL_DIR
         exit

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -I/local/include
+CFLAGS = -Wall -Wextra -O2 -static -I/local/include
 LDLIB = -L/local/lib -loqs -lcrypto 
 
 all: benchmark
