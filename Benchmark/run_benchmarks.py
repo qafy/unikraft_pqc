@@ -250,7 +250,7 @@ def main():
 
                     res = eval_res_primitives_top(prc2, virt, "kem", kem, "keygen")
                     global_res = merge_dicts(res, global_res)
-                    
+
                     prc = run_primitive(
                         virt, "kem", kem, args.primitives_time, "encaps", top=True
                     )
@@ -285,14 +285,14 @@ def main():
             pki_path = os.path.join(SCRIPT_DIR, "pki")
             os.makedirs(pki_path, exist_ok=True)
 
-            print("Generating certificates")
-            for sig in SIG_ALGORITHMS:
-                setup_certificates(sig)
-                print("")
+            # print("Generating certificates")
+            # for sig in SIG_ALGORITHMS:
+            #     setup_certificates(sig)
+            #     print("")
 
             for sig, kem in TLS_COMBINATIONS:
                 for virt in args.virt:
-                    time.sleep(5)
+
                     prc0 = run_s_server("native", sig, kem)
                     time.sleep(0.1)  # Wait for s_server to start
                     prc1 = run_s_time(virt, args.tls_time, sig, top=True)
@@ -302,14 +302,17 @@ def main():
                     print(f"PID: {pid}")
                     prc2 = run_top(pid)
 
-                    time.sleep(args.tls_time * 2)
+                    time.sleep(args.tls_time)
                     prc2.kill()
-                    prc0.kill()
 
-                    #res = eval_res_tls_top(prc2, virt, sig, kem)
-                    #global_res = merge_dicts(res, global_res)
-
+                    res = eval_res_tls_top(prc2, virt, sig, kem)
+                    global_res = merge_dicts(res, global_res)
+                    time.sleep(args.tls_time + 5)
+                    
+                    subprocess.run(["kill", str(pid)])
                     subprocess.run(["pkill", "openssl"])
+                    
+                
 
         if "primitives_power" in args.stages:
             print("Executing primitives for manual evaluation of power consumption:")
@@ -640,7 +643,10 @@ def run_s_time(virt, time, sig, top=False):
     )
 
 
-def run_top(pid):
+def run_top(pid, max_tries=None):
+    tries = []
+    if max_tries is not None:
+        tries = ["-n", max_tries]
     cmd = [
         "top",
         "-b",
@@ -648,7 +654,8 @@ def run_top(pid):
         str(pid),
         "-d",
         "0.5",
-    ]
+    ] + tries
+    
     print(" ".join(cmd))
     return subprocess.Popen(
         cmd,
@@ -942,7 +949,7 @@ def eval_res_primitives_power(
     prc, virt, sig_kem, cipher, operation, time_start, time_stop, order
 ):
     out, _ = prc.communicate()
-    print(out.decode())
+    #print(out.decode())
 
     lines = out.decode().splitlines()
     res = {
@@ -1040,8 +1047,8 @@ def eval_res_top(prc):
 
     out, _ = prc.communicate()
     out_str = out.decode()
-    segments1, segments2 = split(out_str.split("\n\n"))
-
+    segments1, segments2 = split(out_str.split("\n\n")[:-1])
+    #print(out_str)
     return {
         "timestamp": [x.splitlines()[0].split(" ")[2].strip() for x in segments1],
         "virt_used_kib": [
