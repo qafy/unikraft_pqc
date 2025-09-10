@@ -15,9 +15,11 @@ CONTAINER_NAME="uk-setup-epqciuoe-$(whoami)"
 echo "Bulding setup container: $CONTAINER_NAME"
 docker build --platform linux/arm64 -t uk-build-epqciuoe -f ./Unikraft/uk-build-aarch64 . 
 
-echo "Starting setup container: $CONTAINER_NAME"
+echo "Building benchmark container: "
 
 $SCRIPT_DIR/Container/setup.sh
+
+echo "Building native setup: "
 
 docker run \
     --hostname uk-build \
@@ -28,6 +30,8 @@ docker run \
     -e OUTER_MOUNT_PATH=$(pwd) \
     --entrypoint /workspace/Native/setup.sh \
     uk-build-epqciuoe 
+
+echo "Building Unikraft setup: "
 
 docker run \
     --hostname uk-build \

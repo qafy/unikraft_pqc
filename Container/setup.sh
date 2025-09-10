@@ -33,6 +33,17 @@ cat << EOF > $SCRIPT_DIR/openssl
 if [ -z "\${OUTER_MOUNT_PATH}" ]; then
     OUTER_MOUNT_PATH=\$(pwd)
 fi
+if [ "\$1" == "pid" ]; then
+    docker run \
+    --network=alpine-bench-net \
+    -v \$OUTER_MOUNT_PATH:/workspace --rm \
+    -p 442:442 \
+    --add-host host.docker.internal=host-gateway \
+    alpine-bench-epqciuoe \
+    openssl "\${@:2}" 1>/dev/null&
+    echo \$!
+    exit
+fi
 docker run \\
     --name alpine_bench_\$(whoami) \\
     --network=alpine-bench-net \\
@@ -62,6 +73,15 @@ EOF
 
 cat << EOF > $SCRIPT_DIR/benchmark
 #!/usr/bin/env bash
+if [ "\$1" == "pid" ]; then
+    docker run \
+    --network=alpine-bench-net \
+    --rm \
+    alpine-bench-epqciuoe \
+    /local/oqs_speed/benchmark "\${@:2}" 1>/dev/null&
+    echo \$!
+    exit
+fi
 docker run \\
     --name alpine_bench_\$(whoami) \\
     --network=alpine-bench-net \\

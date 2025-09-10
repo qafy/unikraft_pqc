@@ -36,6 +36,20 @@ if [ -e "/dev/kvm" ]; then
     KVM_SUPPORT="-enable-kvm"
 fi
 SEED=\$(hexdump -vn32 -e'8/4 "0x%08X "' /dev/urandom)
+if [ "\$1" == "pid" ]; then
+    qemu-system-aarch64 \
+	-kernel \$SCRIPT_DIR/ssl_uk_bin/build/ssl_uk_qemu-arm64 \
+	-machine virt -cpu max -m 128M \
+	-nographic \
+	-netdev bridge,id=en0,br=virbr0 \
+    -device virtio-net-pci,netdev=en0 \
+	-append "ssl_uk random.seed=[\${SEED}] netdev.ip=172.44.0.2/24:172.44.0.1::: vfs.fstab=[ \"fs0:/:9pfs:::\" ] -- \${*:2}" \
+    -fsdev local,id=myid,path=\$(pwd),security_model=none \
+    -device virtio-9p-pci,fsdev=myid,mount_tag=fs0 \
+    \$KVM_SUPPORT 1>/dev/null &
+    echo \$!
+    exit
+fi
 qemu-system-aarch64 \\
 	-kernel \$SCRIPT_DIR/ssl_uk_bin/build/ssl_uk_qemu-arm64 \\
 	-machine virt -cpu max -m 128M \\
@@ -67,6 +81,16 @@ if [ -e "/dev/kvm" ]; then
     KVM_SUPPORT="-enable-kvm"
 fi
 SEED=\$(hexdump -vn32 -e'8/4 "0x%08X "' /dev/urandom)
+if [ "\$1" == "pid" ]; then
+    qemu-system-aarch64 \
+    -append "ssl_uk random.seed=[\${SEED}] -- \${*:2}" \
+    -kernel \$SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \
+    -machine virt -cpu max -m 1G \
+    -nographic \
+    \$KVM_SUPPORT 1>/dev/null &
+    echo \$!
+    exit
+fi
 qemu-system-aarch64 \\
     -append "ssl_uk random.seed=[\${SEED}] -- \$*" \\
     -kernel \$SCRIPT_DIR/oqs_uk_speed/build/ssl_uk_qemu-arm64 \\

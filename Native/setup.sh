@@ -152,7 +152,11 @@ cat << EOF > $SCRIPT_DIR/openssl
 #!/usr/bin/env bash
 SCRIPT_PATH=\$(realpath "\$0")
 SCRIPT_DIR=\$(dirname "\$SCRIPT_PATH")
-
+if [ "\$1" == "pid" ]; then
+    \$SCRIPT_DIR/local/bin/openssl "\${@:2}" 1>/dev/null &
+    echo $!
+    exit
+fi
 \$SCRIPT_DIR/local/bin/openssl \$*
 EOF
 
@@ -160,7 +164,11 @@ cat << EOF > $SCRIPT_DIR/benchmark
 #!/usr/bin/env bash
 SCRIPT_PATH=\$(realpath "\$0")
 SCRIPT_DIR=\$(dirname "\$SCRIPT_PATH")
-
+if [ "\$1" == "pid" ]; then
+    \$SCRIPT_DIR/oqs_speed/benchmark "\${@:2}" 1>/dev/null &
+    echo \$!
+    exit
+fi
 \$SCRIPT_DIR/oqs_speed/benchmark \$*
 EOF
 
