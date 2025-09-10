@@ -1,4 +1,8 @@
-**/build
+Native/build
+Unikraft/ssl_uk_bin/build
+Unikraft/oqs_uk_speed/build
+Unikraft/ssl_uk_test/build
+
 **/.DS_Store
 **.old
 
