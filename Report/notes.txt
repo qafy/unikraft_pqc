@@ -444,3 +444,21 @@ note: 9pfs does link the mounted folder as root / directory that means no absolu
 # automatic power measurement 
 
 https://github.com/baryluk/fnirsi-usb-power-data-logger
+
+
+diagram erstellen mit draw io vom setup
+speedup in ein diagram 
+
+IMPORTANT, UNIKRAFT has a patch in this repo that prevents it from loading an entropy source from the cmd line
+this was done because the argparse library in this state is buggy with later versions of unikraft this may be fixed
+SOLVED
+
+/usr/bin/vcgencmd measure_temp
+
+temp=37.4'C
+
+temp in the end is >45.0'C
+
+last measurement stopped at Falcon512, Continue with Dilithium2
+memory + power also needs to be measured again
+

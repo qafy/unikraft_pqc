@@ -69,13 +69,34 @@ We build a test setup in this repository which contains a configuration for a Un
 
 \chapter{Background}
 
-In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to cound as a post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
+In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to count as post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
+
+\subsection{Unikernels}
+
+Unikernels provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following sections, we list known unikernels and their features that are crucial for our work. \cite{madhavapeddy_unikernels_2013}
+
+Unikraft is a unikernel known for its superior performance.
+Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft is POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. \footnote{\url{https://asplos22.unikraft.org/syscall_shim-bincompat/}}
+To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions.\footnote{\url{https://unikraft.org/docs/internals/syscall-shim}} No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and can a rebooted quickly.
+\cite{Kuenzer_2021}
+
+As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
+Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}. Finally, Unikraft also has experimental support for several hardware extensions\footnote{\url{https://github.com/unikraft/unikraft/pull/474}}
+\footnote{\url{https://github.com/unikraft/unikraft/pull/1094}}
+\footnote{\url{https://github.com/unikraft/unikraft/pull/964}}
+that support confidential computing (see section \ref{section:confidential_computing}), which is the main reason we chose Unikraft for our project.
+
 
 \section{Post-Quantum Cryptography}
 
 Quantum-Cryptography aims to solve this problem by providing alternative algorithms which are resistent against Qunatum Algorithms. By default Symmetric Cryptography is already quantum resistant, only assymmetric/public key cryptography is weak to quantum algorithms, which means a cryptography standard has to change assymmetric aspects of its protocol to support quantum-resistant algorithms. For a TLS connection we need to support different certificate signing algorithms and key encapsulation mechanisms (KEM) for key exchanges. 
 
 \chapter{Demonstrator}
+
+\section{Concept}
+
+\section{Measurements}
+
 \chapter{Implementation}
 
 \section{Overview}
@@ -107,6 +128,9 @@ To enable quantum resistant-cryptography we use the liboqs library and its oqspr
 
 In this section we document the development process, the faced challenges, and solutions. 
 
+
+\subsection{Integrating the libraries in Unikraft}
+
 Unikraft already has an older version OpenSSL version included in its core packages. Unfortunately the version is too old to support the provider architecture for newer OpenSSL version. So our approach was to integrate a newer OpenSSL version into Unikraft. 
 
 Unikraft has its own build system and the consesus in the Unikraft community is to create a new build script for each library that works on the original source files. This works well for smaller projects however with OpenSSL we have several build steps we have to make before we get our resulting library, and all that is done with a large amount of source files. 
@@ -115,25 +139,24 @@ To build OpenSSL we first have to configure it via a perl Configure script. This
 
 Another approach would have been to use the Unikraft elfloader project which loads statically compiled binaries during runtime. We did not opt for this solution because regular Unikraft supports OpenSSL by compiling it directly into the unikernel. We wanted to make our solution as similar to the already existing infrastructure in case the solution finds further usage in other projects.
 
-Unikraft uses musl as a standard library so we had to adjust our build process for the static libraries we wanted to include. We used musl-gcc to compile the library statically and then included them in the build script of our Unikernel. We also needed to compile the linux-headers with musl-gcc because if they are compiled with regular gcc (with glibc) we have a different interface that is not compatible with Unikraft's interface. Aside from a few changes to fix mostly missing symbols and missing methods from Unikraft's musl implementation we did not have to change much on Unikraft's side to succefully compile a unikernel. Since liboqs and oqs-provider are fairly small and require very little interfacing with the operating system they ran with no change inside the Unikernel. OpenSSL on the other hand did not run without any changes. 
+Unikraft uses musl as a standard library so we had to adjust our build process for the static libraries we wanted to include. We used musl-gcc to compile the library statically and then included them in the build script of our Unikernel. We also needed to compile the linux-headers with musl-gcc because if they are compiled with regular gcc (with glibc) we have a different interface that is not compatible with Unikraft's interface. Aside from a few changes to fix mostly missing symbols and missing methods from Unikraft's musl implementation we did not have to change much on Unikraft's side to succefully compile a unikernel. Since liboqs and oqs-provider are fairly small and require very little interfacing with the operating system they loaded successfully with no change inside the Unikernel. OpenSSL on the other hand did not run without any changes. 
 
-OpenSSL has several constructors that are executed once the libraries is loaded (in our case once the program is launched since we have a static library). In one of those constructors OpenSSL purposefully causes a false instruction to raise a SIGILL exception to detect cpu features. For a regular operation system this does not pose a problem since cpu exception are caught by the kernel. In unikernel the exception is not caught and the unikernel simply crashes. There already exists a patch that forces OpenSSL to detect cpu features by using the auxiliary vector. 
+OpenSSL has several constructors that are executed once the libraries is loaded (in our case once the program is launched since we have a static library). In one of those constructors OpenSSL purposefully causes a false instruction to raise a SIGILL exception to detect cpu features. For a regular operation system this does not pose a problem since cpu exceptions are caught by the kernel. In unikernels though the exception is not caught and the unikernel simply crashes. There already exists a patch that forces OpenSSL to detect cpu features by using the auxiliary vector. 
 % https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/openssl/auxv.patch
 
-The current setup in the repository builds the libarries in the uk-build-aarch64 Dockerfile. Precompiled versions are already contained in the lib-openssl and lib-oqs libraries (only for arm64). 
+The current setup in the repository builds the libraries in the uk-build-aarch64 Dockerfile. Precompiled versions are already contained in the lib-openssl and lib-oqs libraries (only for arm64). 
 
-% # reproducing the libraries
+\subsection{Using liboqs as a provider}
 
-% libraries so far are used in the static library form .a and built manually
-% create repoducible way to build libraries inside the uk_build_aarch64 docker file
-% patched musl version is setup to compile the libraries
-% libraries are compiled inside the docker container 
-% everything is installed in the folder /opt/oqssa
-
-running cryptographic primitives
+As mentioned before the current version of OpenSSL has the ability to connect to a provider to use different cryptographic primitives. The liboqs project also has an oqs-provider component that connects to OpenSSL to let it use its primitives. Providers are typically contained in a separate file and are dynamically loaded by OpenSSL. This is currently not possible in our case because Unikraft has not support for dynamic loading. Fortunately the 
 
 % - liboqs may need static
 % https://github.com/open-quantum-safe/oqs-provider/blob/main/examples/static_oqsprovider.c
+
+To make sure the included libraries are working properly we extended the Unikraft test framework to include the OpenSSL and liboqs test suites. 
+
+
+
 
 testing cryptographic primitives
 
@@ -261,7 +284,7 @@ configuring networking
 
 % - TODO '-Wl,-rpath,$(LIBRPATH)' is not configured for the docker file, is not needed since we do not use the openssl bin, but if we want to we need to adjust this
 
-networking with openssl s_server/s_client
+networking with openssl s\_server/s\_client
 
 using different signature/kem algorithms
 
@@ -273,6 +296,9 @@ using different signature/kem algorithms
 
 % find a way to use send-to-pi efficiently again maybe rsync
 
+performance optimizations
+compiling with link time optimizitation
+bridge networking
 acceleration with kvm
 
 % # kvm on pi
@@ -465,6 +491,16 @@ benchmarks
 
 
 \chapter{Results}
+
+primitves table
+
+tls table
+
+speedup table 
+
+tls diagram
+
+
 \chapter{Conclusion}
 
 

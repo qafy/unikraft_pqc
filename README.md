@@ -1,10 +1,10 @@
 # Evaluating Post-Quantum Cryptography in Unikernels on Embedded Devices
 
-This Interdisciplinary Project revolves around integrating the Post-Quantum Cryptography Library liboqs into the Unikraft Project and comparing several performance metrics to a native solution and a containerized solution. 
+This Interdisciplinary Project integrates the Post-Quantum Cryptography Library liboqs into the Unikraft Project and compares several performance metrics to a native solution and a containerized solution. 
 
 Our first task was to evaluate the hardware at hand and choose a to industry standards comparable platform. We chose a Raspberry Pi 4 model, as it has wide development support and is ARM based making it more comparable to low-powered industrial hardware.
 
-Our second task was to define use-cases which will be used as a basis for the evaluation. Since Post Quantum Cryptography's most important use case is TLS we opt for benchmarking the performance of network connections via TLS/HTTPS. 
+Our second task was to define use-cases which will be used as a basis for the evaluation. Since Post Quantum Cryptography's most important use case is TLS we opt for benchmarking the performance of network connections via TLS. 
 
 Our third task was to define measurands to evaluate the performance. We measure the networking performance with TLS by the number of TLS connections per second and we measure the runtime of Post-Quantum Cryptography Primitives inside our virtual environment. During which we also take a look at overall power consumption, memory allocation.
 Finally we evaluate the usabilty of the system by means of built time, toolchain complexity, etc.
@@ -66,17 +66,31 @@ Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept
 Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
 
 ```
-The script will also create a benchmark script that measures the speed of primitive operations (e.g. keygen, sign, verify) of the oqs library. To execute primitive benchmarks and tests (only for Unikraft) run:
+ To execute tests (only for Unikraft) run: `Unikraft/test`
 
-```bash
-Unikraft/benchmark sig ECDSA
-Native/benchmark kem ECDHE
-Container/benchmark kem Kyber512
-
-Unikraft/test
-```
 
 # Evaluation
 
-TODO 
+The different virtualization mechanisms are evaluated in terms of performance of the cryptographic primitive operations and TLS performance. To measure the primitive operation's speed the setup script provides benchmark scripts that measure keygen/sign/verify and keygen/encapsulate/decapsulate operations of the oqs library:
+
+```
+Unikraft/benchmark sig --no_keygen --no_sign ECDSA
+Native/benchmark kem -d 5 --no_keygen ECDHE
+Container/benchmark kem --no_keygen --no_encaps Kyber512
+```
+
+To measure TLS performance openssl s_speed is used as seen in the commands above. Memory use is measured with top and power consumption is measured with an external measuring device. The exact parameters for the benchmark are documented in the `Benchmark/run_benchmarks.py` script. The results are saved in `Benchmark/results/`. Results are shown belown and in more detail in the report. 
+
+
+### Speed
+
+The figure shows the amount of connections that the openssl s_time application is able to make in a span of 30 seconds. Unikraft's performance is mostly on par with regular containerization and only sometimes performs slightly worse. 
+
+![Figure1](Report/resources/tls_speed.png)
+
+
+### Power Consumption
+
+The figure shows the amount of energy (J) that the openssl s_time application used in a span of 30 seconds disregarding the amount of connections made. If the connections are factored in the results look similar to the first figure. Energy consumption for both virtualization mechanisms is higher than a native application although there is no clear winner as the two perform different depending on the primitives. 
+![Figure2](Report/resources/tls_energy.png)
 
