@@ -20,11 +20,9 @@ ssh -t $USER@$IP "cd /home/$USER/Desktop/$FOLDER_NAME; bash --login"
 
 # Debugging
 #
-# qemu-system-aarch64 -kernel Desktop/ssl_uk_qemu-arm64 -machine virt -cpu max -m 128M -nographic
-#
 # qemu-system-aarch64 \
-#                 -enable-kvm \
-#                 -kernel Desktop/ssl_uk_qemu-arm64 \
+#                 -s -S \
+#                 -kernel build/ssl_uk_qemu-arm64 \
 #                 -machine virt -cpu max -m 128M \
 #                 -nographic -no-acpi -display none \
 #                 -append verbose 

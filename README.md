@@ -37,7 +37,7 @@ The repository contains the 3 folders Container, Native, Unikraft which all cont
 ```bash
 ./setup.sh 
 ```
- If you are on x86_64/amd64 run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes` as the setup script requires the entire setup to be build on arm64/aarch64. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+ If you are on x86_64 run `docker run --privileged --rm tonistiigi/binfmt --install all` as the setup script requires the entire setup to be build on arm64/aarch64. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
 
 ```bash
 Native/openssl req -x509 -new \
