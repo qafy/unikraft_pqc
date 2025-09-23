@@ -9,7 +9,11 @@
 \documentclass[strictlyconfidential,noindent]{aisecreport}
 
 \usepackage[ngerman, english]{babel}
+
+
+
 \usepackage[backref=true]{biblatex}
+\addbibresource{document.bib}
 \usepackage{graphicx}
 \usepackage{subcaption}
 
@@ -76,7 +80,7 @@ We build a test setup in this repository which contains a configuration for a Un
 
 In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to count as post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
 
-\subsection{Unikernels}
+\section{Unikernels}
 
 \begin{figure}[h]
     \centering
@@ -94,6 +98,63 @@ To achieve this Unikraft implements a shim layer for syscalls, which replaces ac
 
 As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
 Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}.
+
+
+\section{TLS Protocol}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.5\textwidth]{resources/tls_pqc_protocol.png}
+    \caption{A post-quantum secure TLS handshake}
+\end{figure}
+
+Transport Layer security (TLS) is a network protocol that works on top of the TCP protcol. It's goal main goal is to ensure confidentiality, authenticiy, and integrity.  We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. 
+
+We will do so by observing a typical connection establishment of the TLS1.3 protocol which is defined in \cite{rescorla2018transport}. As TLS is a extensive protocol with many extensions we examine a connection where only the server authenticates itself and there server and client do not have any pre-shared keys. The TLS handshake starts once a TCP handshake is done and a stateful connection is established. It starts by sending a \textit{ClientHello} message which contains several attribute field. The first two fields are the \textit{supported\_groups} and \textit{signature\_algorithm} fields. These contain all key exchange algorithms and digital signature alogrithms supported by the client. The third field is the \textit{key\_share} field that contains the key material used with the \textbf{key exchange algorithm} which is used to share a secret key that both client and server can use for encryption. Upon receive the message the server then calculates the shared secret and responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material for the key exchange algorithm
+- aftewards both endpoints have a shared secret so they can now communicate over a encrypted channel
+- the server signals that he start encrypting the messages by sending the EncryptedExtensions record, 
+- ther server then sends a Certificate record containing a certificate of the server and the certificate chain and CertificateVerify record that contains a \textbf{digital signature} of the handshake.
+- TODO the server also sends a hash/mac
+- finally the server sends a finished record to signal that it has nothing further to add to the tls handshake
+- the client then verifies the digital signature with the sent certificates and its own certificate chain proofing the authenticity of the server
+- finally the client sends also sends a finished record and the tls handshake is completed
+- during the connection client and server use their shared secret exchange higher level messages
+- TODO what happens during + teardown
+- TODO make all fields cursive
+- TODO make all primitives fat
+
+
+SOME OF THIS IS WRONG LOOK AT RFC + PAPER AGAIN
+- missing symmetric cipher, hash, hmac \textit{cipher\_suites}
+
+
+TLS's main goal is to ensure confidentiality, authenticiy, and integrity. It does so by using several cryptographic primitives: symmetric ciphers, key exchange algorithms, digital signatures, hash functions, and message authentication codes. The security of these primitives is evaluated in \cite{chen2016report}: Symmetric ciphers are generally secure against Quntum-capable attackers (QCA) though a larger key size is required. For key exchange algorithms and digital signatures PKC is needed because e.g. we need a key pair for signing and verifying a signature. PKC though is not secure against QCA. Hash functions are also considered secure given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions which means they are also considered secure.
+We now examine a typical sequence of the TLS1.3 protocol \cite{rescorla2018transport} keeping in mind the vulnerable primitives.
+- TODO
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Operation} & \textbf{Example Algorithm} & \textbf{Quantum-Resistance} \\
+        \hline
+        Symmetric Cipher & AES128 & Requires larger keys \\
+        \hline
+        Hash Function & SHA256 & Requires larger output  \\
+        %\hline
+        MAC & HMAC & Requires larger output \\
+        \hline
+        Public Key Cipher & RSA-2048 & Insecure \\
+        \hline
+        Digital Signature & RSA-2048 & Insecure \\
+        %\hline
+        Key Exchange & ECDHE & Insecure \\
+        \hline
+    \end{tabular}
+    \caption{Resistance of Classical Cryptography to Quantum-Based Attacks \cite{chen2016report}}
+    \label{tab:possibility}
+\end{table}
+
 
 \section{Post-Quantum Cryptography}
 
@@ -187,60 +248,6 @@ these are also hash based so comparable to sphincs, but they are stateful meanin
 hybrid / mixed certifacate chains
 
 
-\subsection{TLS Protocol}
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=0.5\textwidth]{resources/tls_pqc_protocol.png}
-    \caption{A post-quantum secure TLS handshake}
-\end{figure}
-
-Transport Layer security (TLS) is a network protocol that works on top of the TCP protcol. It's goal main goal is to ensure confidentiality, authenticiy, and integrity.  We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. 
-
-We will do so by observing a typical connection establishment of the TLS1.3 protocol which is defined in \cite{rescorla2018transport}. As TLS is a extensive protocol with many extensions we examine a connection where only the server authenticates itself and there server and client do not have any pre-shared keys. The TLS handshake starts once a TCP handshake is done and a stateful connection is established. It starts by sending a \textit{ClientHello} message which contains several attribute field. The first two fields are the \textit{supported\_groups} and \textit{signature\_algorithm} fields. These contain all key exchange algorithms and digital signature alogrithms supported by the client. The third field is the \textit{key\_share} field that contains the key material used with the \textbf{key exchange algorithm} which is used to share a secret key that both client and server can use for encryption. Upon receive the message the server then calculates the shared secret and responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material for the key exchange algorithm
-- aftewards both endpoints have a shared secret so they can now communicate over a encrypted channel
-- the server signals that he start encrypting the messages by sending the EncryptedExtensions record, 
-- ther server then sends a Certificate record containing a certificate of the server and the certificate chain and CertificateVerify record that contains a \textbf{digital signature} of the handshake.
-- TODO the server also sends a hash/mac
-- finally the server sends a finished record to signal that it has nothing further to add to the tls handshake
-- the client then verifies the digital signature with the sent certificates and its own certificate chain proofing the authenticity of the server
-- finally the client sends also sends a finished record and the tls handshake is completed
-- during the connection client and server use their shared secret exchange higher level messages
-- TODO what happens during + teardown
-- TODO make all fields cursive
-- TODO make all primitives fat
-
-
-SOME OF THIS IS WRONG LOOK AT RFC + PAPER AGAIN
-- missing symmetric cipher, hash, hmac \textit{cipher\_suites}
-
-
-TLS's main goal is to ensure confidentiality, authenticiy, and integrity. It does so by using several cryptographic primitives: symmetric ciphers, key exchange algorithms, digital signatures, hash functions, and message authentication codes. The security of these primitives is evaluated in \cite{chen2016report}: Symmetric ciphers are generally secure against Quntum-capable attackers (QCA) though a larger key size is required. For key exchange algorithms and digital signatures PKC is needed because e.g. we need a key pair for signing and verifying a signature. PKC though is not secure against QCA. Hash functions are also considered secure given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions which means they are also considered secure.
-We now examine a typical sequence of the TLS1.3 protocol \cite{rescorla2018transport} keeping in mind the vulnerable primitives.
-- TODO
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
-        \textbf{Operation} & \textbf{Example Algorithm} & \textbf{Quantum-Resistance} \\
-        \hline
-        Symmetric Cipher & AES128 & Requires larger keys \\
-        \hline
-        Hash Function & SHA256 & Requires larger output  \\
-        %\hline
-        MAC & HMAC & Requires larger output \\
-        \hline
-        Public Key Cipher & RSA-2048 & Insecure \\
-        \hline
-        Digital Signature & RSA-2048 & Insecure \\
-        %\hline
-        Key Exchange & ECDHE & Insecure \\
-        \hline
-    \end{tabular}
-    \caption{Resistance of Classical Cryptography to Quantum-Based Attacks \cite{chen2016report}}
-    \label{tab:possibility}
-\end{table}
 
 %%
 \chapter{Demonstrator}
@@ -564,23 +571,51 @@ benchmarks
 \chapter{Evaluation}
 
 In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. 
-We will first give an overview of what is
+We will first give an overview of what benchmarks are done and how they are setup, and afterwards examine the results.
+
 \section{Overview}
 
+Primitives are split into three operations (with the exception of ECDHE which only has two operations Key Generation and Key Deduction), Key Generation, Key Encapsulation, and Key Decapsulation for the KEM primitives and Key Generation, Key Signing, and Key Verifying. 
 
-\section{Primitives}
+\section{Speed}
+
+To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. Kyber has the eb
+
+SPHINCs performas marginally better on the unikernel than on other platforms. We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a cipher needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
+% to check this there is this tool 
+
 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=1\textwidth]{resources/table_primitives_speed.pdf}
     \caption{Time (us) of Traditional and Post-quantum Primitives.}
+    \label{fig:table_primitives_speed}
 \end{figure}
+
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
+    \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_tls.pdf}
+    \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
+\end{figure}
+
+\section{Memory}
 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=1\textwidth]{resources/table_primitives_memory.pdf}
     \caption{Memory (KiB) of Traditional and Post-quantum Primitives.}
 \end{figure}
+
+
+
+\section{Energy}
 
 \begin{figure}[h]
     \centering
@@ -592,16 +627,6 @@ We will first give an overview of what is
     \centering
 	\includegraphics[width=1\textwidth]{resources/table_primitives_energy.pdf}
     \caption{Energy Consumption (J) of Traditional and Post-quantum Primitives.}
-\end{figure}
-
-
-\section{TLS}
-
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
-    \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
 \end{figure}
 
 \begin{figure}[h]
@@ -617,11 +642,7 @@ We will first give an overview of what is
 \end{figure}
 
 
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/table_tls.pdf}
-    \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
-\end{figure}
+
 
 
 \chapter{Conclusion}
@@ -646,6 +667,8 @@ error handling
 
 % - Printf fails need: 
 % drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
+
+\printbibliography
 
 \chapter{Appendix}
 

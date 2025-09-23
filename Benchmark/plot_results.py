@@ -11,11 +11,11 @@ SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
 
 def main():
-    #plot_table_primitives()
+    plot_table_primitives()
     plot_table_tls()
-    #plot_bar_tls_speed()
-    #plot_bar_tls_power()
-    #plot_bar_tls_energy()
+    plot_bar_tls_speed()
+    plot_bar_tls_power()
+    plot_bar_tls_energy()
 
 
 
@@ -194,9 +194,10 @@ def plot_table_primitives():
     ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
     format_axes(fig)
-    fig.text(0.5, 0.01, 'Table 1: Time (us) of Traditional and Post-quantum Primitives.', ha='center')
+    #fig.text(0.5, 0.01, 'Table 1: Time (us) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.savefig("table_primitives_speed.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
-    
+
     # Memory
     with open(os.path.join(SCRIPT_DIR, "results/primitives_memory.json"), "r") as f:
         data_mem = json.load(f)["primitive"]
@@ -365,7 +366,8 @@ def plot_table_primitives():
     ax3_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
     
     format_axes(fig)
-    fig.text(0.5, 0.01, 'Table 2: Memory (KiB) of Traditional and Post-quantum Primitives.', ha='center')
+    #fig.text(0.5, 0.01, 'Table 2: Memory (KiB) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.savefig("table_primitives_memory.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
     
     
@@ -521,7 +523,8 @@ def plot_table_primitives():
     ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
     format_axes(fig)
-    fig.text(0.5, 0.01, 'Table 3: Power Consumption (mW) of Traditional and Post-quantum Primitives.', ha='center')
+    #fig.text(0.5, 0.01, 'Table 3: Power Consumption (mW) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.savefig("table_primitives_power.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
     
     # Energy
@@ -672,7 +675,8 @@ def plot_table_primitives():
     ax3_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
     format_axes(fig)
-    fig.text(0.5, 0.01, 'Table 3: Energy Consumption (J) of Traditional and Post-quantum Primitives.', ha='center')
+    #fig.text(0.5, 0.01, 'Table 3: Energy Consumption (J) of Traditional and Post-quantum Primitives.', ha='center')
+    plt.savefig("table_primitives_energy.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show() 
 
 
@@ -728,11 +732,11 @@ def plot_table_tls():
     ax_time = fig.add_subplot(gs[0, 3:6])
     ax_time.text(0.5, 0.5, "Conn. (1/30s)", va="center", ha="center")
     ax_power = fig.add_subplot(gs[0, 6:9])
-    ax_power.text(0.5, 0.5, "Power (mW)", va="center", ha="center")
+    ax_power.text(0.5, 0.5, "Power (W)", va="center", ha="center")
     ax_energy = fig.add_subplot(gs[0, 9:12])
-    ax_energy.text(0.5, 0.5, "Energy (mJ)", va="center", ha="center")
+    ax_energy.text(0.5, 0.5, "Energy (J)", va="center", ha="center")
     ax_mem = fig.add_subplot(gs[0, 12:15])
-    ax_mem.text(0.5, 0.5, "Memory (KiB)", va="center", ha="center")
+    ax_mem.text(0.5, 0.5, "Memory (MiB)", va="center", ha="center")
     
     categories_table = [[x] for x in categories_shortened]
     ax_ciphers = fig.add_subplot(gs[2:, 0:3])
@@ -747,20 +751,20 @@ def plot_table_tls():
     ax_nt4 = fig.add_subplot(gs[1, 12])
     ax_nt4.text(0.5, 0.5, "Ntv.", va="center", ha="center")
     
-    nt_times = [[data["native"][x]["initial"]["real"]["connections"]] for x in categories]
+    nt_times = [[f'{float(data["native"][x]["initial"]["real"]["connections"]):.0f}'] for x in categories]
     ax1_nt_table = fig.add_subplot(gs[2:, 3])
     ax1_nt_table.table(cellText=nt_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    nt_power = [[data_power["native"][x]["initial"]["user"]["mean_mw"]] for x in categories]
+    nt_power = [[f'{float(data_power["native"][x]["initial"]["user"]["mean_mw"]) / 1000:.2f}'] for x in categories]
     ax2_nt_table = fig.add_subplot(gs[2:, 6])
     ax2_nt_table.table(cellText=nt_power, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    nt_energy = [[data_power["native"][x]["initial"]["user"]["mean_mj"]] for x in categories]
+    nt_energy = [[f'{float(data_power["native"][x]["initial"]["user"]["mean_mj"]) / 1000:.2f}'] for x in categories]
     ax3_nt_table = fig.add_subplot(gs[2:, 9])
     ax3_nt_table.table(cellText=nt_energy, cellLoc="center", bbox=[0, 0, 1, 1])
     
     array_list = [[float(x)for x in data_mem["native"][x]["memory"]["res_used_kib"]] for x in categories]
-    nt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    nt_mem = [[f"{(sum(x) / len(x) / 1000):.2f}"] for x in array_list]
     ax4_nt_table = fig.add_subplot(gs[2:, 12])
     ax4_nt_table.table(cellText=nt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
     
@@ -773,20 +777,20 @@ def plot_table_tls():
     ax_uk4 = fig.add_subplot(gs[1, 13])
     ax_uk4.text(0.5, 0.5, "Uk.", va="center", ha="center")
     
-    uk_times = [[data["unikraft"][x]["initial"]["real"]["connections"]] for x in categories]
+    uk_times = [[f'{float(data["unikraft"][x]["initial"]["real"]["connections"]):.0f}'] for x in categories]
     ax1_uk_table = fig.add_subplot(gs[2:, 4])
     ax1_uk_table.table(cellText=uk_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    uk_power = [[data_power["unikraft"][x]["initial"]["user"]["mean_mw"]] for x in categories]
+    uk_power = [[f'{float(data_power["unikraft"][x]["initial"]["user"]["mean_mw"]) / 1000:.2f}'] for x in categories]
     ax2_uk_table = fig.add_subplot(gs[2:, 7])
     ax2_uk_table.table(cellText=uk_power, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    uk_energy = [[data_power["unikraft"][x]["initial"]["user"]["mean_mj"]] for x in categories]
+    uk_energy = [[f'{float(data_power["unikraft"][x]["initial"]["user"]["mean_mj"]) / 1000:.2f}'] for x in categories]
     ax3_uk_table = fig.add_subplot(gs[2:, 10])
     ax3_uk_table.table(cellText=uk_energy, cellLoc="center", bbox=[0, 0, 1, 1])
     
     array_list = [[float(x)for x in data_mem["unikraft"][x]["memory"]["res_used_kib"]] for x in categories]
-    uk_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
+    uk_mem = [[f"{(sum(x) / len(x) / 1000):.2f}"] for x in array_list]
     ax4_uk_table = fig.add_subplot(gs[2:, 13])
     ax4_uk_table.table(cellText=uk_mem, cellLoc="center", bbox=[0, 0, 1, 1])
     
@@ -799,26 +803,26 @@ def plot_table_tls():
     ax_cnt4 = fig.add_subplot(gs[1, 14])
     ax_cnt4.text(0.5, 0.5, "Cntr.", va="center", ha="center")
     
-    cnt_times = [[data["docker"][x]["initial"]["real"]["connections"]] for x in categories]
+    cnt_times = [[f'{float(data["docker"][x]["initial"]["real"]["connections"]):.0f}'] for x in categories]
     ax1_cnt_table = fig.add_subplot(gs[2:, 5])
     ax1_cnt_table.table(cellText=cnt_times, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    cnt_power = [[data_power["docker"][x]["initial"]["user"]["mean_mw"]] for x in categories]
+    cnt_power = [[f'{float(data_power["docker"][x]["initial"]["user"]["mean_mw"]) / 1000:.2f}'] for x in categories]
     ax2_cnt_table = fig.add_subplot(gs[2:, 8])
     ax2_cnt_table.table(cellText=cnt_power, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    cnt_energy = [[data_power["docker"][x]["initial"]["user"]["mean_mj"]] for x in categories]
+    cnt_energy = [[f'{float(data_power["docker"][x]["initial"]["user"]["mean_mj"]) / 1000:.2f}'] for x in categories]
     ax3_cnt_table = fig.add_subplot(gs[2:, 11])
     ax3_cnt_table.table(cellText=cnt_energy, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    array_list = [[float(x)for x in data_mem["docker"][x]["memory"]["res_used_kib"]] for x in categories]
+    array_list = [[float(x) / 1000 for x in data_mem["docker"][x]["memory"]["res_used_kib"]] for x in categories]
     cnt_mem = [[f"{(sum(x) / len(x)):.2f}"] for x in array_list]
     ax4_cnt_table = fig.add_subplot(gs[2:, 14])
     ax4_cnt_table.table(cellText=cnt_mem, cellLoc="center", bbox=[0, 0, 1, 1])
     
-    fig.text(0.5, 0.01, 'Table 3: Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.', ha='center')
+    #fig.text(0.5, 0.01, 'Table 3: Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.', ha='center')
     format_axes(fig)
-
+    plt.savefig("table_tls.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
 
 
@@ -860,18 +864,20 @@ def plot_bar_tls_speed():
     plt.figure(figsize=(9, 5))
 
    
-    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black")
-    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
-    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="#D81B60", edgecolor="black")
+    plt.barh(x , native_values, height=bar_width, label="Native", color="#1E88E5", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="#FFC107", edgecolor="black")
 
     plt.xlabel("Connections (1/30s)")
-    plt.title("Figure 1: TLS Connections of Traditional and PQ TLS 1.3 handshakes")
+    #plt.title("Figure 1: TLS Connections of Traditional and PQ TLS 1.3 handshakes")
     plt.yticks(range(len(categories)), categories)
    
     plt.xscale("log")
     plt.xlim(100, 20000)
     plt.legend()
     plt.tight_layout()
+    
+    plt.savefig("bar_tls_speed.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
 
 
@@ -892,7 +898,7 @@ def plot_bar_tls_power():
     "RSA-2048+ECDHE",
     "ECDSA+ECDHE"
     ]
-
+    categories.reverse()
     with open(os.path.join(SCRIPT_DIR, "results/tls_power.json"), "r") as f:
         data = json.load(f)
         
@@ -913,16 +919,18 @@ def plot_bar_tls_power():
     plt.figure(figsize=(9, 5))
 
    
-    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black", )
-    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
-    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="#D81B60", edgecolor="black", )
+    plt.barh(x , native_values, height=bar_width, label="Native", color="#1E88E5", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="#FFC107", edgecolor="black")
 
     plt.xlabel("Average Power Consumption (mW)")
-    plt.title("Figure 2: Power Consumption of Traditional and PQ TLS 1.3 handshakes")
+    #plt.title("Figure 2: Power Consumption of Traditional and PQ TLS 1.3 handshakes")
     plt.yticks(range(len(categories)), categories)
     plt.xlim(3000, 3600)  
     plt.legend()
     plt.tight_layout()
+    
+    plt.savefig("bar_tls_power.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
     
 def plot_bar_tls_energy():
@@ -942,7 +950,8 @@ def plot_bar_tls_energy():
     "RSA-2048+ECDHE",
     "ECDSA+ECDHE"
     ]
-
+    categories.reverse()
+    
     with open(os.path.join(SCRIPT_DIR, "results/tls_power.json"), "r") as f:
         data = json.load(f)
         
@@ -963,17 +972,19 @@ def plot_bar_tls_energy():
     plt.figure(figsize=(9, 5))
 
    
-    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="red", edgecolor="black", )
-    plt.barh(x , native_values, height=bar_width, label="Native", color="blue", edgecolor="black")
-    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="green", edgecolor="black")
+    plt.barh(x+ bar_width + bar_dist, unikraft_values, height=bar_width, label="Unikraft", color="#D81B60", edgecolor="black", )
+    plt.barh(x , native_values, height=bar_width, label="Native", color="#1E88E5", edgecolor="black")
+    plt.barh(x - bar_width - bar_dist, docker_values, height=bar_width, label="Docker", color="#FFC107", edgecolor="black")
 
     plt.xlabel("Average Energy Consumption (J)")
-    plt.title("Figure 2: Energy Consumption of Traditional and PQ TLS 1.3 handshakes")
+    #plt.title("Figure 2: Energy Consumption of Traditional and PQ TLS 1.3 handshakes")
     plt.yticks(range(len(categories)), categories)
     plt.xlim(180, 240)  
 
     plt.legend()
     plt.tight_layout()
+    
+    plt.savefig("bar_tls_energy.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
     plt.show()
  
     

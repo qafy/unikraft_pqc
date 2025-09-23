@@ -36,4 +36,7 @@ Report/*.out
 Report/*.toc
 Report/*.run.xml
 Report/*.fls
+Report/*.bbl
+Report/*.blg
+
 

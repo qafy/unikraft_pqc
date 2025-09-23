@@ -11,8 +11,8 @@ SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
 
 def main():
-    # plot_power_primitives()
-    plot_power_tls()
+    plot_power_primitives()
+    #plot_power_tls()
 
 
 def plot_power_tls():
