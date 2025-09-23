@@ -6,11 +6,13 @@
 % - Use `strictlyconfidential` to mark the document as strictly confidential
 % For more details, see https://intern.aisec.fraunhofer.de/display/ISMS/Informationsklassifizierung
 % and https://ocs.zv.fraunhofer.de/OTCS/livelink.exe/open/408035
-\documentclass[restricted,noindent]{aisecreport}
+\documentclass[strictlyconfidential,noindent]{aisecreport}
 
 \usepackage[ngerman, english]{babel}
 \usepackage[backref=true]{biblatex}
 \usepackage{graphicx}
+\usepackage{subcaption}
+
 
 % Draft mode
 \usepackage{draftwatermark}
@@ -54,6 +56,7 @@
 \maketitle
 \tableofcontents
 
+%%
 \chapter{Motivation}
 
 This Interdisciplinary Project revolves around integrating the Post-Quantum Cryptography Library liboqs into the Unikraft Project and comparing several performance metrics to a native solution and a containerized solution. 
@@ -67,11 +70,20 @@ Finally we evaluate the usabilty of the system by means of built time, toolchain
 
 We build a test setup in this repository which contains a configuration for a Unikraft Unikernel capable of post-quantum cryptographic primitives and a new OpenSSL version which can make use of those primitives. The repository also contains configurations for a Docker Container and a native setup which have the same solution running. For testing we use the openssl user application and its s\_server and s\_time components to test TLS connections. For primitives we use tests included in liboqs. 
 
+
+%%
 \chapter{Background}
 
 In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to count as post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
 
 \subsection{Unikernels}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.75\textwidth]{resources/unikernel_overview.pdf}
+    \caption{Different Virtualization Techniques}
+\end{figure}
+
 
 Unikernels provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following sections, we list known unikernels and their features that are crucial for our work. \cite{madhavapeddy_unikernels_2013}
 
@@ -81,22 +93,168 @@ To achieve this Unikraft implements a shim layer for syscalls, which replaces ac
 \cite{Kuenzer_2021}
 
 As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
-Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}. Finally, Unikraft also has experimental support for several hardware extensions\footnote{\url{https://github.com/unikraft/unikraft/pull/474}}
-\footnote{\url{https://github.com/unikraft/unikraft/pull/1094}}
-\footnote{\url{https://github.com/unikraft/unikraft/pull/964}}
-that support confidential computing (see section \ref{section:confidential_computing}), which is the main reason we chose Unikraft for our project.
-
+Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}.
 
 \section{Post-Quantum Cryptography}
 
 Quantum-Cryptography aims to solve this problem by providing alternative algorithms which are resistent against Qunatum Algorithms. By default Symmetric Cryptography is already quantum resistant, only assymmetric/public key cryptography is weak to quantum algorithms, which means a cryptography standard has to change assymmetric aspects of its protocol to support quantum-resistant algorithms. For a TLS connection we need to support different certificate signing algorithms and key encapsulation mechanisms (KEM) for key exchanges. 
 
+\subsection{Exchanging Keys with Post Quantum Cryptography}
+
+We want to have a look at PQC primitives that replace key exchange primitives done with classical PKC. In this section we will examine different key exchange ciphers in terms of security and efficienty. We focus mainly on ciphers that have been standardized as they are the most evaluated and the most likely to be considered for implementation in libraries such as OpenSSL. 
+
+Currently the National Insitute of Standardization (NIST) is the most well known entity that tries to agree on common ciphers that later will be implemented in network protocols such as TLS. Starting in 2016 NIST held a competition to find suitable PQC ciphers. In several rounds ciphers were submitted and analyzzed for weaknesses. Forty ciphers have been included and over the course of 6 years a select few were standardized. They were published as a Federal Information Information Processing Standard (FIPS) which contain an exact definition of the used algorithm.  Currently three have been published \cite{unknown-author-2024, unknown-author-2024-2, unknown-author-2024-3} and several more have already been announced \cite{boutin-2025-2, Boutin_2025}. 
+
+NIST also specifies five security levels for the proposed ciphers \cite{national2016submission}. The levels resemble the difficulty it takes to break the cipher in ascending order and the difficulty is specified by comparing the cipher to symmetric cryptography i.e. AES, SHA. Starting with the first level an adversary should require the same computational resources that are needed to break AES128 (SHA256, AES192, SHA384, AES256 with higher levels).
+
+Apart from NIST there are other institutions who are also trying to standardize PQC, mainly BSI \cite{unknown-author-2024-4} and ISO \cite{ISO86890}, which also include other ciphers that have not been chosen by NIST. 
+
+At the moment all institutions propose PQC suitable methods for exchanging keys. Instead of a Diffie-Hellmann-based key exchange all institutions agree on the use of the Key Encapsulation Mechanism (KEM): During a key exchange of a Server and a Client the client first sends its public key. The Server then uses the public to encapulate (encrypt) a randomly-chosen secret and sends it back to the client. The client then decapsulates (decrypts) the key with its private key and gets ahold of the shared secret. As KEM works very similar to Diffie-Hellmann no changes in the TLS protocol flow need to be made in order to use it. We now examine ciphers that are being recommended by the institutions mentioned above. We compare their efficiency to ECDHE in a TLS1.3 handshake. We chose ECDHE as it is currently a supported algorithm in the TLS1.3 standard and it is widely used for comparison in other work. 
+
+% TODO BFI is not that important remove it or explain what it is and only once mentioned that it supports the decision of ISO
+% TODO We do not have perfect forward secrecy when we use KEM instead of DH, find out what the impact of this
+% and change it in the paragraph above
+% advisor say it is not perfect forward secrecy but this says outherwise: 
+% https://www.ietf.org/archive/id/draft-sfluhrer-cfrg-ml-kem-security-considerations-01.html
+% https://rlc.vlinder.ca/ecdh-kem/index.pdf
+% TODO show the diagram that shows how the key is exchanged
+% TODO make a table with speed, hardness problem 
+
+\textbf{Kyber} (also called ML-KEM) was specified in \cite{unknown-author-2024-3} by NIST and is currently the first choice for KEM ciphers. It is based on the Module-Learning-With-Error, which is a specialization of a lattice problem and currently has IND-CCA2 hardness which is the expected hardness assumption of all contestants \cite{avanzi2019crystals}.  Performancewise it is the best among lattice-based ciphers and it is comparable to a classical key exchange with ECDHE for NIST level 1 when used in TLS1.3 and for higher levels 3 and 5 Kyber can even outperform ECDHE \cite{doring2022post}. Kyber also has similar power consumption in TLS1.3v when compared to ECDHE \cite{tasopoulos2023energy}.
+
+\textbf{HQC} was chosen to be standardized as an alternative to Kyber by NIST because of the different underlying mathematical problem \cite{Boutin_2025}. A standardization draft is expected to be released in 2026. It is based on the Quasi-Cyclic Syndrome Decoding problem, which is a specialization of a code-based problem and also has IND-CCA2 hardness \cite{gaborit2025hamming}. Performancewise it is the best among code-based ciphers but on NIST level 1 it has a slight overhead of 1.45 - 1.8 when compared against ECDHE \cite{sikeridis2020assessing, alnahawi2024comprehensive}. HQC's power consumption is double to that of Kyber (which again is similar to ECDHE)\cite{tasopoulos2023energy}.
+
+Additionally NIST also lists other ciphers which still have not been disqualified but have not been chosen for standardization so far, including: Saber, NTRU and NTRU Prime,Classic McEliece, BIKE, and FrodoKEM \cite{alagic2022status, alagic2025status}. Most of them are not preferred either because of worse performance or because of the stronger hardness assumptions of the underlying mathematical problems. So far they have been listed as alternative algorithms by NIST and are still being improved so they still remain an option in case that a cipher chosen for standardization is broken. A subset of alternative ciphers is also included in other standards: 
+
+\textbf{FrodoKEM} was specified in \cite{ISO86890} by ISO and is also recommended by BFI \cite{unknown-author-2024-4}. It is considered a conservative choice over Kyber as it uses the unmodified and well-studied Learning-With-Errors problem instead of the modified version used by Kyber \cite{unknown-author-2024-4, FrodoKEM2024}. It has IND-CCA2 hardness and its performance overhead on NIST level 1 is 2.5 when compared with ECDHE \cite{alnahawi2024comprehensive}. FrodoKEM's Power consumption is roughly 14 times to that of ECDHE \cite{tasopoulos2023energy}.
+
+\textbf{Classic McEliece} was also specified in \cite{ISO86890} by ISO and is recommended by BFI \cite{unknown-author-2024-4}. It is also considered a conservative choice as it is based on the Goppa-Code which has the same maturity as RSA \cite{unknown-author-2024-4}. It has IND-CCA2 hardness \cite{McEliece2022}. The key size of Classic McEliece is significantly larger than other ciphers, in fact it is too large to fit into the maximum size of $2^{16} - 1$ bytes of the TLS protocol's key share field which means that it is not possible to use Classic McEliece in an unmodified TLS version \cite{alnahawi2024comprehensive}. There is work \cite{wagner-2025} that shows integrating Classic McEliece into the TLS protocol is possible and a key share extension for the TLS protocol \cite{roth2020classic} has already been proposed. While there is currently no proper performance evaluation for the use in TLS it was shown that the key generation of Classic MCEliece is much slower than any other cipher mentioned here and encapsulation and decapsulation are faster than HQC \cite{kuznetsov2023trade}.
+
+% TODO add multiple nist level
+
+% TODO add key size difference
+% mc classic 261KB at L1 to over 1MB at L5.
+% https://ceur-ws.org/Vol-3504/paper1.pdf
+% key sizes of pqc cipher at the bottom in the tables
+% https://nvlpubs.nist.gov/nistpubs/ir/2022/NIST.IR.8413-upd1.pdf
+% size of of ecdhe cannot find exact definition of it
+% https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm#cite_note-1
+% https://link.springer.com/article/10.1007/s13389-014-0090-x
+% https://security.stackexchange.com/questions/216856/ecdhe-rsa-with-aes-128-gcm-sha256-how-to-determine-ecdhe-key-length
+
+% TODO add TLS latency 
+% https://www.net.in.tum.de/fileadmin/bibtex/publications/papers/sosnowski2023PQTLS13.pdf
+
+
+Now we have several choices we can make as to what key exchange cipher we want to use. If we go with NIST's choices we have two ciphers that perform similar to old key exchange ciphers but their underlying mathematical problems are still relatively new and not as field-tested. On the other hand ISO's choices rely on older well-studied mathematical problems which are less likely to be broken but at the same time they have a higher overhead. Fortunately this overhead is manageable even on weaker hardware, e.g. it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. 
+
+% - WHAT is the impact
+% - breaking is less likely at least until we reach quantum age bc more well established
+% - even bigger performance impact always on weaker hardware
+% - same security but still no spoofing protection for this we need:
+
+% TODO additional attack listed here
+% https://www.net.in.tum.de/fileadmin/bibtex/publications/papers/sosnowski2023PQTLS13.pdf
+
+If the key exchange algorithm in the TLS protocol uses one of these ciphers the shared secret that is used to encrypt the session will never be revealed thus preventing a Harvest-Now-Decrypt-Later attack (assuming the cipher never is never broken). However adversaries can still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of PQC signature algorithms.
+% TODO maybe use this https://csrc.nist.gov/csrc/media/Presentations/2025/ml-kem-is-great/images-media/ml-kem-is-great.pdf
+
+% TODO provide solutions that currently implement this 
+\subsection{Providing Certificates with Post Quantum Cryptography}
+
+- TODO
+- another cryptographic functionality is signatures
+- only post quantum 
+- hybrid with mixed certificate chains
+
+
+% TODO there is a graph that lists all considered ciphers, put this in the appendix
+
+% TODO at the end of the paragraph summarize the main challenges again when switching to 
+% main problem is larger key size, which is bad for embedded systems
+% also it is not proven to be secure (just with any other cipher, but native ones are used for far longer) 
+
+\textbf{Dilithium} ML-DSA
+
+\textbf{FALCON} FN-DSA
+
+\textbf{SPHINCS} SLH-DSA 
+
+
+ISO recommends XMSS/XMMS-MT and LMS/HSS schemes
+these are also hash based so comparable to sphincs, but they are stateful meaning that they can only sign a limited number of objects and require extra steps for the setup
+
+hybrid / mixed certifacate chains
+
+
+\subsection{TLS Protocol}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.5\textwidth]{resources/tls_pqc_protocol.png}
+    \caption{A post-quantum secure TLS handshake}
+\end{figure}
+
+Transport Layer security (TLS) is a network protocol that works on top of the TCP protcol. It's goal main goal is to ensure confidentiality, authenticiy, and integrity.  We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. 
+
+We will do so by observing a typical connection establishment of the TLS1.3 protocol which is defined in \cite{rescorla2018transport}. As TLS is a extensive protocol with many extensions we examine a connection where only the server authenticates itself and there server and client do not have any pre-shared keys. The TLS handshake starts once a TCP handshake is done and a stateful connection is established. It starts by sending a \textit{ClientHello} message which contains several attribute field. The first two fields are the \textit{supported\_groups} and \textit{signature\_algorithm} fields. These contain all key exchange algorithms and digital signature alogrithms supported by the client. The third field is the \textit{key\_share} field that contains the key material used with the \textbf{key exchange algorithm} which is used to share a secret key that both client and server can use for encryption. Upon receive the message the server then calculates the shared secret and responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material for the key exchange algorithm
+- aftewards both endpoints have a shared secret so they can now communicate over a encrypted channel
+- the server signals that he start encrypting the messages by sending the EncryptedExtensions record, 
+- ther server then sends a Certificate record containing a certificate of the server and the certificate chain and CertificateVerify record that contains a \textbf{digital signature} of the handshake.
+- TODO the server also sends a hash/mac
+- finally the server sends a finished record to signal that it has nothing further to add to the tls handshake
+- the client then verifies the digital signature with the sent certificates and its own certificate chain proofing the authenticity of the server
+- finally the client sends also sends a finished record and the tls handshake is completed
+- during the connection client and server use their shared secret exchange higher level messages
+- TODO what happens during + teardown
+- TODO make all fields cursive
+- TODO make all primitives fat
+
+
+SOME OF THIS IS WRONG LOOK AT RFC + PAPER AGAIN
+- missing symmetric cipher, hash, hmac \textit{cipher\_suites}
+
+
+TLS's main goal is to ensure confidentiality, authenticiy, and integrity. It does so by using several cryptographic primitives: symmetric ciphers, key exchange algorithms, digital signatures, hash functions, and message authentication codes. The security of these primitives is evaluated in \cite{chen2016report}: Symmetric ciphers are generally secure against Quntum-capable attackers (QCA) though a larger key size is required. For key exchange algorithms and digital signatures PKC is needed because e.g. we need a key pair for signing and verifying a signature. PKC though is not secure against QCA. Hash functions are also considered secure given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions which means they are also considered secure.
+We now examine a typical sequence of the TLS1.3 protocol \cite{rescorla2018transport} keeping in mind the vulnerable primitives.
+- TODO
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Operation} & \textbf{Example Algorithm} & \textbf{Quantum-Resistance} \\
+        \hline
+        Symmetric Cipher & AES128 & Requires larger keys \\
+        \hline
+        Hash Function & SHA256 & Requires larger output  \\
+        %\hline
+        MAC & HMAC & Requires larger output \\
+        \hline
+        Public Key Cipher & RSA-2048 & Insecure \\
+        \hline
+        Digital Signature & RSA-2048 & Insecure \\
+        %\hline
+        Key Exchange & ECDHE & Insecure \\
+        \hline
+    \end{tabular}
+    \caption{Resistance of Classical Cryptography to Quantum-Based Attacks \cite{chen2016report}}
+    \label{tab:possibility}
+\end{table}
+
+%%
 \chapter{Demonstrator}
 
 \section{Concept}
 
+\section{Setup}
+
+The whole setup was developed on a Rasppberry Pi 4b, but should be compatible with other arm64 machines, as long as they have a similar software setup. To build the project the only requirements are a Unix environment and Docker. The global setup script in the top level folder of the repository will build the project for Unikraft, Docker, and a native variant and create links in the respective folders (Unikraft, Docker, Native) to an openssl application and a benchmark application. The exact commands are listed in the appendix. To run the applications the system needs to be on the proper target system. The target system is expected to have a Linux-based operating system with an arm64 system architecure. For software dependencies it is expected have QEMU and Docker installed. If the project was not built on the target system the send-to-pi.sh script can be used to sync all the changes to the target system, install the docker, and install the native OpenSSL library. Keep in mind that the script uses fixed paths which may need to be changed. The target system can then make use of the applications and again usage example are listed in the appendix.
+
 \section{Measurements}
 
+
+%% 
 \chapter{Implementation}
 
 \section{Overview}
@@ -108,7 +266,7 @@ The first technology we use is OpenSSL which is a cryptography library that spec
 The next technology is the Unikraft unikernel which is a library operating system, that acts as a virtualization technique with minimal overhead and performance comparable to containers.
 
 To enable quantum resistant-cryptography we use the liboqs library and its oqsprovider library that acts as connects to the provider architecture of OpenSSL. 
-
+∏
 
 % TODO where is everything and what does it do
 % libs are in Unikraft/libs, precompiled
@@ -123,13 +281,9 @@ To enable quantum resistant-cryptography we use the liboqs library and its oqspr
 % start docker run --rm multiarch/qemu-user-static
 % this will allow cross platform build of the project
 
-
-\section{Development}
-
 In this section we document the development process, the faced challenges, and solutions. 
 
-
-\subsection{Integrating the libraries in Unikraft}
+\section{Integrating the Libraries in Unikraft}
 
 Unikraft already has an older version OpenSSL version included in its core packages. Unfortunately the version is too old to support the provider architecture for newer OpenSSL version. So our approach was to integrate a newer OpenSSL version into Unikraft. 
 
@@ -146,58 +300,22 @@ OpenSSL has several constructors that are executed once the libraries is loaded 
 
 The current setup in the repository builds the libraries in the uk-build-aarch64 Dockerfile. Precompiled versions are already contained in the lib-openssl and lib-oqs libraries (only for arm64). 
 
-\subsection{Using liboqs as a provider}
+\section{Using liboqs as a Provider and Testing Primitives}
 
-As mentioned before the current version of OpenSSL has the ability to connect to a provider to use different cryptographic primitives. The liboqs project also has an oqs-provider component that connects to OpenSSL to let it use its primitives. Providers are typically contained in a separate file and are dynamically loaded by OpenSSL. This is currently not possible in our case because Unikraft has not support for dynamic loading. Fortunately the 
+As mentioned before the current version of OpenSSL has the ability to connect to a provider to use different cryptographic primitives. The liboqs project also has an oqs-provider component that connects to OpenSSL to let it use its primitives. Providers are typically contained in a separate file and are dynamically loaded by OpenSSL. This is currently not possible in our case because Unikraft has no support for dynamic loading. Fortunately liboqs allows linking the oqs-provider statically and adds the oqs-provider to OpenSSL as a builtin provider. This way we can make use of liboqs components by recompiling our target application with a few added lines of code. 
 
-% - liboqs may need static
 % https://github.com/open-quantum-safe/oqs-provider/blob/main/examples/static_oqsprovider.c
 
-To make sure the included libraries are working properly we extended the Unikraft test framework to include the OpenSSL and liboqs test suites. 
+To make sure the included libraries are working properly we extended the Unikraft test framework to include the OpenSSL and liboqs test suites. We used the tests that were already provided by the oqs project both for the oqs library and the oqs-provider limiting ourselves to the primitive operations that we later use for evaluation. Initially the tests did not success and kept running infinitely. After stepping through the code of the compiled unikernel we discovered that liboqs kept getting stuck on a recursive function. This function is used for liboqs's bignum implementation and it was very likely that it caused a stackoverflow. Fortunately Unikraft's stack size is configurable and after increasing the stack size to 8 pages all tests ran successfully. 
 
+% TODO source for what tests were used + maybe also add the benchmark primitive setup here
 
+\section{Setting up the OpenSSL Application}
+merge this with open ssl implementation make one big section out of it 
+To test a TLS connection we need networking capabilities for the unikernel. Since we boot the unikernel with QEMU as hypervisor we have to configure QEMU to create a network. 
 
+% https://wiki.qemu.org/Documentation/Networking
 
-testing cryptographic primitives
-
-% # tests
-
-% use liboqs tests and oqsprovider tests
-
-% never finishes in a loop
-% gdb still steps through
-% stdout is not working anymore
-% on next print call everything gets stuck
-
-% Single stepping until exit from function OQS_KEM_bike_l1_decode,
-% which has no line number information.
-% memcpy (dest=0x403ab840, src=0x403aa600, n=1541) at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
-% 23              for (; (uintptr_t)s % 4 && n; n--) *d++ = *s++;
-% (gdb) finish
-% Run till exit from #0  memcpy (dest=0x403ab840, src=0x403aa600, n=1541)
-%     at /workspace/Unikraft/ssl_uk/build/libmusl/origin/musl-1.2.3//src/string/memcpy.c:23
-% 0x0000000040224764 in OQS_KEM_bike_l1_decode ()
-% Value returned is $22 = (void *) 0x403ab840
-% (gdb) call printf("Hi\n")
-
-% 320 440 
-% br OQS_KEM_bike_l1_decode
-% br OQS_KEM_bike_l1_gf2x_mod_mul
-% br OQS_KEM_bike_l1_gf2x_mod_mul_with_ctx
-
-% gf2x_mod_mul_with_ctx
-% between 1000 1500#
-
-% uses karatsuba algorithms with recursion
-% solution increase stack size to make it run (8 Pages so far)
-
-% not all tests pass bc not all algorithms are enabled
-% TODO do we need to support all of them?
-
-% done in ssl_uk_test also prints the version available ciphers and
-% TODO does a self connection to check if everything works
-
-configuring networking
 
 % # Networking 
 
@@ -222,53 +340,6 @@ configuring networking
 % - uknetdev
 % - param LIBUKNETDEV_EINFO_LIBPARAM
 % - bridge see above
-
-
-% # TLS networking
-
-% ## setup 
-
-% Native/openssl req -x509 -new \
-% 			-newkey dilithium3 \
-% 			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
-% 			-nodes -subj "/CN=Test CA" -days 365
-
-% Native/openssl req -new \
-% 			-newkey dilithium3 \
-% 			-keyout pki/server_dil.key -out pki/server_dil.csr \
-% 			-nodes -subj "/CN=testserver"
-
-% Native/openssl x509 -req \
-% 			 -in pki/server_dil.csr -out pki/server_dil.crt \
-% 			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
-
-% # s_client
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Native/openssl s_client -connect localhost:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
-
-% Unikraft/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Native/openssl s_client -connect 172.44.0.2:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Unikraft/openssl s_client -connect 172.44.0.1:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
-
-% Container/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 442 -www
-% Native/openssl s_client -connect localhost:442 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Container/openssl s_client -connect host.docker.internal:443 -verifyCAfile pki/CA_dil.crt -ign_eof -nocommands
-
-% # s_time
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA_dil.crt
 
 
 % - tls connection is possible, however there is no certificate checking yet
@@ -490,15 +561,67 @@ benchmarks
 
 
 
-\chapter{Results}
+\chapter{Evaluation}
 
-primitves table
+In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. 
+We will first give an overview of what is
+\section{Overview}
 
-tls table
 
-speedup table 
+\section{Primitives}
 
-tls diagram
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_speed.pdf}
+    \caption{Time (us) of Traditional and Post-quantum Primitives.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_memory.pdf}
+    \caption{Memory (KiB) of Traditional and Post-quantum Primitives.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_power.pdf}
+    \caption{Power Consumption (mW) of Traditional and Post-quantum Primitives.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_energy.pdf}
+    \caption{Energy Consumption (J) of Traditional and Post-quantum Primitives.}
+\end{figure}
+
+
+\section{TLS}
+
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
+    \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_power.pdf}
+    \caption{Power Consumption of Traditional and PQ TLS 1.3 handshakes}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_energy.pdf}
+    \caption{Energy Consumption of Traditional and PQ TLS 1.3 handshakes}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_tls.pdf}
+    \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
+\end{figure}
 
 
 \chapter{Conclusion}
@@ -524,4 +647,84 @@ error handling
 % - Printf fails need: 
 % drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
 
+\chapter{Appendix}
+
+
+\section{Setup Commands}
+
+
+% ```bash
+% sudo ip link add dev virbr0 type bridge
+% sudo ip address add 172.44.0.1/24 dev virbr0
+% sudo ip link set dev virbr0 up
+
+% sudo mkdir /etc/qemu
+% sudo echo "allow virbr0" > /etc/qemu/bridge.conf
+
+% ./setup.sh
+
+% ```
+
+% ```bash
+% ./setup.sh 
+% ```
+%  If you are on x86_64/amd64 run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes` as the setup script requires the entire setup to be build on arm64/aarch64. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+
+% ```bash
+% Native/openssl req -x509 -new \
+% 			-newkey dilithium3 \
+% 			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
+% 			-nodes -subj "/CN=Test CA" -days 365
+
+% Native/openssl req -new \
+% 			-newkey dilithium3 \
+% 			-keyout pki/server_dil.key -out pki/server_dil.csr \
+% 			-nodes -subj "/CN=testserver"
+
+% Native/openssl x509 -req \
+% 			 -in pki/server_dil.csr -out pki/server_dil.crt \
+% 			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
+% ```
+
+% ```bash
+% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+% Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
+
+% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+% Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA_dil.crt
+
+% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
+% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+
+\section{Usage Examples}
+
+\section{Setup Images}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/setup_img_01.png}
+        \caption{First Image}
+        \label{fig:subimage1}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/setup_img_02.png}
+        \caption{Second Image}
+        \label{fig:subimage2}
+    \end{subfigure}
+    \caption{Two Images Side by Side}
+    \label{fig:twoimages}
+\end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.5\textwidth]{}
+% 	\includegraphics[width=0.5\textwidth]{}
+% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_03.png}
+% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_04.png}
+% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_05w.png}
+%     \caption{Setup}
+% \end{figure}
 \end{document}

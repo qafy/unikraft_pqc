@@ -1,0 +1,6 @@
+QEMU emulator version 7.2.17 (Debian 1:7.2+dfsg-7+deb12u13)
+Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
+
+Docker version 28.3.1, build 38b7060
+
+Python 3.11.2
