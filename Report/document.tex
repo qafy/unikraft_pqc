@@ -102,35 +102,23 @@ Unikraft supports networking via the LWIP library\footnote{\url{https://www.nong
 
 \section{TLS Protocol}
 
-\begin{figure}[h]
+
+\begin{figure}
     \centering
-	\includegraphics[width=0.5\textwidth]{resources/tls_pqc_protocol.png}
-    \caption{A post-quantum secure TLS handshake}
+    \includegraphics[width=0.5\textwidth]{resources/tls_overview.pdf}
+    \caption{TLS 1.3 Handshake Overview.}
+    \label{fig:tls_handshake}
 \end{figure}
 
-Transport Layer security (TLS) is a network protocol that works on top of the TCP protcol. It's goal main goal is to ensure confidentiality, authenticiy, and integrity.  We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. 
-
-We will do so by observing a typical connection establishment of the TLS1.3 protocol which is defined in \cite{rescorla2018transport}. As TLS is a extensive protocol with many extensions we examine a connection where only the server authenticates itself and there server and client do not have any pre-shared keys. The TLS handshake starts once a TCP handshake is done and a stateful connection is established. It starts by sending a \textit{ClientHello} message which contains several attribute field. The first two fields are the \textit{supported\_groups} and \textit{signature\_algorithm} fields. These contain all key exchange algorithms and digital signature alogrithms supported by the client. The third field is the \textit{key\_share} field that contains the key material used with the \textbf{key exchange algorithm} which is used to share a secret key that both client and server can use for encryption. Upon receive the message the server then calculates the shared secret and responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material for the key exchange algorithm
-- aftewards both endpoints have a shared secret so they can now communicate over a encrypted channel
-- the server signals that he start encrypting the messages by sending the EncryptedExtensions record, 
-- ther server then sends a Certificate record containing a certificate of the server and the certificate chain and CertificateVerify record that contains a \textbf{digital signature} of the handshake.
-- TODO the server also sends a hash/mac
-- finally the server sends a finished record to signal that it has nothing further to add to the tls handshake
-- the client then verifies the digital signature with the sent certificates and its own certificate chain proofing the authenticity of the server
-- finally the client sends also sends a finished record and the tls handshake is completed
-- during the connection client and server use their shared secret exchange higher level messages
-- TODO what happens during + teardown
-- TODO make all fields cursive
-- TODO make all primitives fat
+Transport Layer Security (TLS) is a network protocol that works on top of the TCP protocol. Its main goal is to ensure confidentiality, authenticity, and integrity. We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. We will do so by observing a typical connection establishment of the TLS 1.3 protocol, which is defined in \cite{rescorla2018transport}. As TLS is an extensive protocol with many extensions, we examine a connection where only the server authenticates itself, and the server and client do not have any pre-shared keys. A graphical overview is presented in Figure \ref{fig:tls_handshake}.
 
 
-SOME OF THIS IS WRONG LOOK AT RFC + PAPER AGAIN
-- missing symmetric cipher, hash, hmac \textit{cipher\_suites}
 
+The TLS handshake starts once a TCP handshake is done and establishes a stateful connection. It begins by sending a \textit{ClientHello} message, which contains several attribute fields. We omit most fields and only focus on the ones important for encryption. The first encryption-related field is the \textit{cipher\_suites} field, which contains a list of \textbf{symmetric ciphers} that the client supports. The next two fields are the \textit{signature\_algorithms} and \textit{signature\_algorithms\_cert} fields that contain digital signature algorithms supported by the client. The final two fields are the \textit{supported\_groups} and \textit{key\_share} fields. These include all supported \textbf{key exchange algorithms} and the corresponding key material, which is used to share a secret key that both client and server can use for symmetric encryption. Upon receiving the message, the server selects a key exchange algorithm from the list of supported groups and calculates the shared secret.
 
-TLS's main goal is to ensure confidentiality, authenticiy, and integrity. It does so by using several cryptographic primitives: symmetric ciphers, key exchange algorithms, digital signatures, hash functions, and message authentication codes. The security of these primitives is evaluated in \cite{chen2016report}: Symmetric ciphers are generally secure against Quntum-capable attackers (QCA) though a larger key size is required. For key exchange algorithms and digital signatures PKC is needed because e.g. we need a key pair for signing and verifying a signature. PKC though is not secure against QCA. Hash functions are also considered secure given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions which means they are also considered secure.
-We now examine a typical sequence of the TLS1.3 protocol \cite{rescorla2018transport} keeping in mind the vulnerable primitives.
-- TODO
+The server responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material so that the client can deduce the shared secret as well. The message also contains the selected algorithm for symmetric encryption in the \textit{cipher\_suite} field. Afterwards, the server sends the \textit{EncryptedExtensions} message that contains additional extensions (e.g., the server name or the TCP segment size). Next, the server authenticates itself by sending the \textit{Certificate} and \textit{CertificateVerify} messages that contain the server's certificate chain and verify that the chain belongs to the sender of the previous messages. They do so by calculating a \textbf{hash} over the handshake context and the certificate chain and then calculating a \textbf{digital signature} over the hash with the private key corresponding to the server's certificate. The client then verifies the digital signature by climbing up the certificate chain and verifying the top with its root certificate. The last two messages are the \textit{Finished} messages, which both the client and the server send. They signal that neither server nor client has anything further to add to the handshake, and they contain a \textbf{MAC} of the entire handshake to ensure nothing was omitted. Once they are exchanged, the TLS connection is established, and it is now possible to exchange user data. From now on, the shared secret is used for encryption, for both user data and status messages of the TLS protocol. 
+
+We can see that TLS makes use of several cryptographic operations: symmetric encryption, key exchange algorithms, digital signatures, hash functions, and MACs. As examined by \cite{chen2016report}, we can see that multiple of them are not secure against quantum-capable attackers:  Classical key exchange algorithms are based on the Diffie-Hellman algorithm, which uses the discrete logarithm problem for security \cite{maurer2000diffie}. However, it was discovered that quantum computers can efficiently solve this problem, making it insecure \cite{shor1999polynomial}. The same goes for digital signatures that typically use ECDSA and RSA algorithms, which are again based on the discrete logarithm problem or the integer factorization problem, that are weak against quantum computers \cite{mahto2017rsa, shor1999polynomial}. For symmetric encryption, the impact is not as drastic, as no efficient solution to the underlying problems has been found yet. Though \cite{bennett1997strengths} discovered that it is possible to speed up general search algorithms quadratically with quantum computers, which means that we can also search faster for a symmetric key. However, if we double the key size, we can maintain the same security as before. The same applies to hash functions \cite{alnahawi2024comprehensive}. They are also considered secure, given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions, which means they are also considered secure \cite{bhaumik2024committing}. An overview of the different cryptographic operations and their security is shown in TABLE \ref{tab:ops_security}. Fortunately, we can see that weak operations are primarily used in the handshake, as later everything is encrypted with the shared secret, and they are limited to key exchange and digital signatures, which means we have to find alternatives for those two operations. 
 
 \begin{table}[h]
     \centering
@@ -152,100 +140,49 @@ We now examine a typical sequence of the TLS1.3 protocol \cite{rescorla2018trans
         \hline
     \end{tabular}
     \caption{Resistance of Classical Cryptography to Quantum-Based Attacks \cite{chen2016report}}
-    \label{tab:possibility}
+    \label{tab:ops_security}
 \end{table}
 
 
 \section{Post-Quantum Cryptography}
 
-Quantum-Cryptography aims to solve this problem by providing alternative algorithms which are resistent against Qunatum Algorithms. By default Symmetric Cryptography is already quantum resistant, only assymmetric/public key cryptography is weak to quantum algorithms, which means a cryptography standard has to change assymmetric aspects of its protocol to support quantum-resistant algorithms. For a TLS connection we need to support different certificate signing algorithms and key encapsulation mechanisms (KEM) for key exchanges. 
+Now that we have seen how the TLS protocol works and what cryptographic operations it uses, we want to look at PQC cryptographic operations that replace key exchange and signature algorithms done with classical PKC. In this section, we will examine different key exchange algorithms regarding security and efficiency. We focus mainly on algorithms that have been standardized, as they are the most evaluated and the most likely to be considered for implementation in libraries such as OpenSSL. 
 
-\subsection{Exchanging Keys with Post Quantum Cryptography}
+The National Institute of Standards and Technology (NIST) is the most well-known entity that tries to agree on common ciphers that will be later implemented in network protocols such as TLS. Starting in 2016, NIST held a competition to find suitable PQC ciphers. In several rounds, ciphers were submitted and analyzed for weaknesses. Forty ciphers have been included, and a select few were standardized over the course of 6 years. NIST publishes them as a Federal Information Processing Standard (FIPS), which contains an exact definition of the used algorithm. Currently, three have been published \cite{unknown-author-2024, unknown-author-2024-2, unknown-author-2024-3} and several more have already been announced \cite{boutin-2025-2, Boutin_2025}. NIST also specifies five security levels for the proposed ciphers \cite{national2016submission}. The levels resemble the difficulty it takes to break the cipher in ascending order, and the difficulty is specified by comparing the cipher to symmetric cryptography, i.e., AES, and SHA. Starting with the first level, an adversary should require the same computational resources needed to break AES128 (SHA256, AES192, SHA384, AES256 with higher levels). Apart from NIST, other institutions are also trying to standardize PQC, mainly ISO \cite{ISO86890}, including other algorithms that NIST has not chosen.
 
-We want to have a look at PQC primitives that replace key exchange primitives done with classical PKC. In this section we will examine different key exchange ciphers in terms of security and efficienty. We focus mainly on ciphers that have been standardized as they are the most evaluated and the most likely to be considered for implementation in libraries such as OpenSSL. 
-
-Currently the National Insitute of Standardization (NIST) is the most well known entity that tries to agree on common ciphers that later will be implemented in network protocols such as TLS. Starting in 2016 NIST held a competition to find suitable PQC ciphers. In several rounds ciphers were submitted and analyzzed for weaknesses. Forty ciphers have been included and over the course of 6 years a select few were standardized. They were published as a Federal Information Information Processing Standard (FIPS) which contain an exact definition of the used algorithm.  Currently three have been published \cite{unknown-author-2024, unknown-author-2024-2, unknown-author-2024-3} and several more have already been announced \cite{boutin-2025-2, Boutin_2025}. 
-
-NIST also specifies five security levels for the proposed ciphers \cite{national2016submission}. The levels resemble the difficulty it takes to break the cipher in ascending order and the difficulty is specified by comparing the cipher to symmetric cryptography i.e. AES, SHA. Starting with the first level an adversary should require the same computational resources that are needed to break AES128 (SHA256, AES192, SHA384, AES256 with higher levels).
-
-Apart from NIST there are other institutions who are also trying to standardize PQC, mainly BSI \cite{unknown-author-2024-4} and ISO \cite{ISO86890}, which also include other ciphers that have not been chosen by NIST. 
-
-At the moment all institutions propose PQC suitable methods for exchanging keys. Instead of a Diffie-Hellmann-based key exchange all institutions agree on the use of the Key Encapsulation Mechanism (KEM): During a key exchange of a Server and a Client the client first sends its public key. The Server then uses the public to encapulate (encrypt) a randomly-chosen secret and sends it back to the client. The client then decapsulates (decrypts) the key with its private key and gets ahold of the shared secret. As KEM works very similar to Diffie-Hellmann no changes in the TLS protocol flow need to be made in order to use it. We now examine ciphers that are being recommended by the institutions mentioned above. We compare their efficiency to ECDHE in a TLS1.3 handshake. We chose ECDHE as it is currently a supported algorithm in the TLS1.3 standard and it is widely used for comparison in other work. 
-
-% TODO BFI is not that important remove it or explain what it is and only once mentioned that it supports the decision of ISO
-% TODO We do not have perfect forward secrecy when we use KEM instead of DH, find out what the impact of this
-% and change it in the paragraph above
-% advisor say it is not perfect forward secrecy but this says outherwise: 
-% https://www.ietf.org/archive/id/draft-sfluhrer-cfrg-ml-kem-security-considerations-01.html
-% https://rlc.vlinder.ca/ecdh-kem/index.pdf
-% TODO show the diagram that shows how the key is exchanged
-% TODO make a table with speed, hardness problem 
-
-\textbf{Kyber} (also called ML-KEM) was specified in \cite{unknown-author-2024-3} by NIST and is currently the first choice for KEM ciphers. It is based on the Module-Learning-With-Error, which is a specialization of a lattice problem and currently has IND-CCA2 hardness which is the expected hardness assumption of all contestants \cite{avanzi2019crystals}.  Performancewise it is the best among lattice-based ciphers and it is comparable to a classical key exchange with ECDHE for NIST level 1 when used in TLS1.3 and for higher levels 3 and 5 Kyber can even outperform ECDHE \cite{doring2022post}. Kyber also has similar power consumption in TLS1.3v when compared to ECDHE \cite{tasopoulos2023energy}.
-
-\textbf{HQC} was chosen to be standardized as an alternative to Kyber by NIST because of the different underlying mathematical problem \cite{Boutin_2025}. A standardization draft is expected to be released in 2026. It is based on the Quasi-Cyclic Syndrome Decoding problem, which is a specialization of a code-based problem and also has IND-CCA2 hardness \cite{gaborit2025hamming}. Performancewise it is the best among code-based ciphers but on NIST level 1 it has a slight overhead of 1.45 - 1.8 when compared against ECDHE \cite{sikeridis2020assessing, alnahawi2024comprehensive}. HQC's power consumption is double to that of Kyber (which again is similar to ECDHE)\cite{tasopoulos2023energy}.
-
-Additionally NIST also lists other ciphers which still have not been disqualified but have not been chosen for standardization so far, including: Saber, NTRU and NTRU Prime,Classic McEliece, BIKE, and FrodoKEM \cite{alagic2022status, alagic2025status}. Most of them are not preferred either because of worse performance or because of the stronger hardness assumptions of the underlying mathematical problems. So far they have been listed as alternative algorithms by NIST and are still being improved so they still remain an option in case that a cipher chosen for standardization is broken. A subset of alternative ciphers is also included in other standards: 
-
-\textbf{FrodoKEM} was specified in \cite{ISO86890} by ISO and is also recommended by BFI \cite{unknown-author-2024-4}. It is considered a conservative choice over Kyber as it uses the unmodified and well-studied Learning-With-Errors problem instead of the modified version used by Kyber \cite{unknown-author-2024-4, FrodoKEM2024}. It has IND-CCA2 hardness and its performance overhead on NIST level 1 is 2.5 when compared with ECDHE \cite{alnahawi2024comprehensive}. FrodoKEM's Power consumption is roughly 14 times to that of ECDHE \cite{tasopoulos2023energy}.
-
-\textbf{Classic McEliece} was also specified in \cite{ISO86890} by ISO and is recommended by BFI \cite{unknown-author-2024-4}. It is also considered a conservative choice as it is based on the Goppa-Code which has the same maturity as RSA \cite{unknown-author-2024-4}. It has IND-CCA2 hardness \cite{McEliece2022}. The key size of Classic McEliece is significantly larger than other ciphers, in fact it is too large to fit into the maximum size of $2^{16} - 1$ bytes of the TLS protocol's key share field which means that it is not possible to use Classic McEliece in an unmodified TLS version \cite{alnahawi2024comprehensive}. There is work \cite{wagner-2025} that shows integrating Classic McEliece into the TLS protocol is possible and a key share extension for the TLS protocol \cite{roth2020classic} has already been proposed. While there is currently no proper performance evaluation for the use in TLS it was shown that the key generation of Classic MCEliece is much slower than any other cipher mentioned here and encapsulation and decapsulation are faster than HQC \cite{kuznetsov2023trade}.
-
-% TODO add multiple nist level
-
-% TODO add key size difference
-% mc classic 261KB at L1 to over 1MB at L5.
-% https://ceur-ws.org/Vol-3504/paper1.pdf
-% key sizes of pqc cipher at the bottom in the tables
-% https://nvlpubs.nist.gov/nistpubs/ir/2022/NIST.IR.8413-upd1.pdf
-% size of of ecdhe cannot find exact definition of it
-% https://en.bitcoin.it/wiki/Elliptic_Curve_Digital_Signature_Algorithm#cite_note-1
-% https://link.springer.com/article/10.1007/s13389-014-0090-x
-% https://security.stackexchange.com/questions/216856/ecdhe-rsa-with-aes-128-gcm-sha256-how-to-determine-ecdhe-key-length
-
-% TODO add TLS latency 
-% https://www.net.in.tum.de/fileadmin/bibtex/publications/papers/sosnowski2023PQTLS13.pdf
+\section{Exchanging Keys with Post Quantum Cryptography}
 
 
-Now we have several choices we can make as to what key exchange cipher we want to use. If we go with NIST's choices we have two ciphers that perform similar to old key exchange ciphers but their underlying mathematical problems are still relatively new and not as field-tested. On the other hand ISO's choices rely on older well-studied mathematical problems which are less likely to be broken but at the same time they have a higher overhead. Fortunately this overhead is manageable even on weaker hardware, e.g. it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. 
+At the moment, all institutions propose PQC suitable methods for exchanging keys. Instead of a Diffie-Hellman-based key exchange, all institutions agree on the use of the Key Encapsulation Mechanism (KEM): During a key exchange between a server and a client, the client first sends its public key. The Server then uses the public key to encapsulate (encrypt) a randomly-chosen secret and sends it back to the client. The client then decapsulates (decrypts) the key with its private key and gets hold of the shared secret. As KEM works very similarly to Diffie-Hellman, no changes in the TLS protocol flow need to be made in order to use it; however, KEM is not forward secure by default because it reuses the key pair. To achieve forward secrecy, the key pair needs to be regenerated for each connection \cite{sfluhrer-cfrg-ml-kem-security-considerations-03}. We now examine ciphers that are being recommended by the institutions mentioned above. We compare their efficiency to ECDHE in a TLS 1.3 handshake. We chose ECDHE as it is currently a supported algorithm in the TLS 1.3 standard and is widely used for comparison in other work. 
 
-% - WHAT is the impact
-% - breaking is less likely at least until we reach quantum age bc more well established
-% - even bigger performance impact always on weaker hardware
-% - same security but still no spoofing protection for this we need:
+\textbf{Kyber} (also called ML-KEM) was specified in \cite{unknown-author-2024-3} by NIST and is currently the first choice for KEM ciphers. It is based on the Module-Learning-With-Error, a specialization of a lattice problem, and currently has IND-CCA2 hardness, the expected hardness assumption of all contestants \cite{avanzi2019crystals}. Performance-wise, it is the best among lattice-based ciphers, and it is comparable to a classical key exchange with ECDHE for NIST level 1 when used in TLS 1.3, and for higher levels, 3 and 5, Kyber can even outperform ECDHE \cite{doring2022post}. Kyber also has similar power consumption in TLS 1.3 when compared to ECDHE \cite{tasopoulos2023energy}.
 
-% TODO additional attack listed here
-% https://www.net.in.tum.de/fileadmin/bibtex/publications/papers/sosnowski2023PQTLS13.pdf
+\textbf{HQC} was chosen to be standardized as an alternative to Kyber by NIST because of the different underlying mathematical problem \cite{Boutin_2025}. A standardization draft is expected to be released in 2026. It is based on the Quasi-Cyclic Syndrome Decoding problem, which is a specialization of a code-based problem and also has IND-CCA2 hardness \cite{gaborit2025hamming}. Performance-wise, it is the best among code-based ciphers. On NIST level 1, HQC has a slight overhead of 1.45 - 1.8 when compared against ECDHE \cite{sikeridis2020assessing, alnahawi2024comprehensive}. HQC's power consumption is double that of Kyber (which again is similar to ECDHE)\cite{tasopoulos2023energy}.
 
-If the key exchange algorithm in the TLS protocol uses one of these ciphers the shared secret that is used to encrypt the session will never be revealed thus preventing a Harvest-Now-Decrypt-Later attack (assuming the cipher never is never broken). However adversaries can still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of PQC signature algorithms.
-% TODO maybe use this https://csrc.nist.gov/csrc/media/Presentations/2025/ml-kem-is-great/images-media/ml-kem-is-great.pdf
+Additionally, NIST also lists other ciphers which still have not been disqualified but have not been chosen for standardization so far, including: Saber, NTRU and NTRU Prime, Classic McEliece, BIKE, and FrodoKEM \cite{alagic2022status, alagic2025status}. Most are not preferred either because of worse performance or the stronger hardness assumptions of the underlying mathematical problems. So far, they have been listed as alternative algorithms by NIST and are still being improved, so they remain an option if a cipher chosen for standardization is broken. A subset of alternative ciphers is also included in other standards: 
 
-% TODO provide solutions that currently implement this 
-\subsection{Providing Certificates with Post Quantum Cryptography}
+\textbf{FrodoKEM} was specified in \cite{ISO86890} by ISO and is also recommended by BFI \cite{unknown-author-2024-4}. ISO considers it a conservative choice over Kyber as it uses the unmodified and well-studied Learning-With-Errors problem instead of the modified version used by Kyber \cite{unknown-author-2024-4, FrodoKEM2024}. It has IND-CCA2 hardness and its performance overhead on NIST level 1 is 2.5 when compared with ECDHE \cite{alnahawi2024comprehensive}. FrodoKEM's Power consumption is roughly 14 times that of ECDHE \cite{tasopoulos2023energy}.
 
-- TODO
-- another cryptographic functionality is signatures
-- only post quantum 
-- hybrid with mixed certificate chains
+% TODO BIKE 
+% TODO differentiate between FRODOKEM-AES and FRODOKEM-SHAKE
+
+Now we have several choices as to what key exchange cipher we want to use. If we go with NIST's choices, we have two ciphers that perform similarly to old key exchange ciphers. However, their underlying mathematical problems are still relatively new and not as field-tested. On the other hand, ISO's choices rely on older, well-studied mathematical problems, which are less likely to be broken, but at the same time, they have a higher overhead. Fortunately, this overhead is manageable even on weaker hardware, e.g., it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. There is, however, a third option which offers a tradeoff between performance and security: Hybrid PQC. 
+
+We now have several methods to implement a key exchange, which will securely generate a shared secret that we can use for symmetric encryption. However, adversaries still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of post-quantum digital signatures.
 
 
-% TODO there is a graph that lists all considered ciphers, put this in the appendix
+\section{Providing Certificates with Post Quantum Cryptography}
 
-% TODO at the end of the paragraph summarize the main challenges again when switching to 
-% main problem is larger key size, which is bad for embedded systems
-% also it is not proven to be secure (just with any other cipher, but native ones are used for far longer) 
+Just like we did with key exchange algorithms, we will examine different digital signature algorithms in terms of security and efficiency, and we will focus on ciphers that have been standardized. Functionally, post-quantum digital signatures behave exactly as classical signatures, which means they can act as a drop-in replacement in the TLS protocol. Again, we compare their efficiency to ECDSA in a TLS 1.3 handshake. ECDSA is currently a supported algorithm in the TLS 1.3 standard and is widely used for comparison in other work. 
 
-\textbf{Dilithium} ML-DSA
+\textbf{Dilithium} (also called ML-DSA) was specified in \cite{unknown-author-2024} by NIST and is currently the first choice for post-quantum digital signatures. 
+It makes use of the Module-LWE and Module-SIS problems, which are based on the lattice problem \cite{CRYSTALSDIL}. Its hardness is SUF-CMA and meets the requirements of NIST, which requires EUF-CMA \cite{CRYSTALSDIL, national2016submission}. The performance of Dilithium is comparable to classical ECDSA, and its power consumption is also comparable \cite{doring2022post, tasopoulos2023energy}.
 
-\textbf{FALCON} FN-DSA
+\textbf{FALCON} (also called FN-DSA) was chosen to be standardized by NIST \cite{boutin-2025-2} as an alternative algorithm to Dilithium with similar performance. A standardization draft is expected to be released in 2026. It makes use of the NTRU problem, which is based on the lattice problem \cite{fouque2020falcon, alnahawi2024comprehensive}. Falcons' hardness is proof of unforgeability in the QROM, which is deemed to be comparable to Dilithium \cite{boneh2011random, alagic2022status}. Performance-wise, it is also similar to ECDSA \cite{doring2022post, alnahawi2024comprehensive}, though the power consumption is roughly 2.7 times higher than with ECDSA \cite{tasopoulos2023energy}.
 
-\textbf{SPHINCS} SLH-DSA 
+\textbf{SPHINCS+} (alo called SLH-DSA) was specified in \cite{unknown-author-2024-2} by NIST also as an alternative algorithm. It makes use of a hash-based problem, and its hardness is solely based on the security of hash functions, which pose adequate security \cite{alagic2022status}. The performance of SPHINCS+ is an order of magnitude slower than ECDSA; however, when comparing different works, there is no clear agreement on the slowdown. Many different results have been published, likely because of different setups and the complexity of SPHINCS+, which has 12 parameters \cite{alnahawi2024comprehensive}. The same goes for energy consumption, which is much higher than other algorithms \cite{tasopoulos2023energy}. Because of this high overhead, SPHINCS+ is deemed a fallback in case a weakness is discovered in the other mainly lattice-based algorithms \cite{alagic2022status}.
 
-
-ISO recommends XMSS/XMMS-MT and LMS/HSS schemes
-these are also hash based so comparable to sphincs, but they are stateful meaning that they can only sign a limited number of objects and require extra steps for the setup
-
-hybrid / mixed certifacate chains
+% TODO differentiate between different version small and fast
 
 
 
@@ -579,10 +516,14 @@ Primitives are split into three operations (with the exception of ECDHE which on
 
 \section{Speed}
 
-To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. Kyber has the eb
+To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. Kyber has the best performance of all post-quantum ciphers even with larger keys. Kyber inside a container produces very similar and only produces a slight overhead. Inside a unikernel Kyber perfroams marignally worse, taking almost double the amount of time when compare to a native execution. BIKE is taking vastly more time than Kyber for all operation, about 400 times for encapsulation. Again containerization performs very similar. The unikernel has about 1.25 overhead. For HQC we get a better performance for generation though worse for encapsulation and decapsulation. Containerization is comparable to a native execution. On the unikernel we get a slightly slower result with an overhead of 1.3. FrodoKEM-SHAKE perform very similar to HQC but has better performance for de- and encapsulation. All execution styles take about the same amount of time. For FrodoKEM-AES the performance is much worse, about 3 times slower. On the Unikernel the perfromance is slightly better to both Container and native execution (which about the same) with a speedup of 10 percent. Our litmus test ECDHE performs similar to Kyber and we see that all execution styles are the same.
 
-SPHINCs performas marginally better on the unikernel than on other platforms. We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a cipher needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
-% to check this there is this tool 
+No going to the signature algorithms we can see that the first algorithms SPHINCS+ (the small variant) performs siginiticantly worse for all operations when compared to ECDSA. On a Container we get similar results to native execution and on a unikernel it performs marginally better with a speedup of 1.75. For the fast variant we get much faster speeds on keygen and sign operations however on the verify operations our results are slower. The overhead between different execution styles is similar to that of the small SPHINCS+ variant. The next signature algorithm Falcon performs better than SPHINCS+ but still significantly worse than ECDSA. Inside a unikernel we get an overhead of about 
+
+
+
+Inside the unikernel results differ quite a lot when compare to the container execution which always tends to match the performance of native execution.        We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a algorithms needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
+
 
 
 \begin{figure}[h]
