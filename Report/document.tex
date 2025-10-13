@@ -10,8 +10,17 @@
 
 \usepackage[ngerman, english]{babel}
 
-
-
+\usepackage{listings}
+\lstdefinestyle{shell}{
+    language=bash,
+    basicstyle=\footnotesize\ttfamily, 
+    keywordstyle=\color{blue}, 
+    commentstyle=\color{green!50!black}, 
+    stringstyle=\color{red}, 
+    showstringspaces=false, 
+    tabsize=2,
+    frame=single, 
+}
 \usepackage[backref=true]{biblatex}
 \addbibresource{document.bib}
 \usepackage{graphicx}
@@ -80,25 +89,6 @@ We build a test setup in this repository which contains a configuration for a Un
 
 In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to count as post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
 
-\section{Unikernels}
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=0.75\textwidth]{resources/unikernel_overview.pdf}
-    \caption{Different Virtualization Techniques}
-\end{figure}
-
-
-Unikernels provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following sections, we list known unikernels and their features that are crucial for our work. \cite{madhavapeddy_unikernels_2013}
-
-Unikraft is a unikernel known for its superior performance.
-Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft is POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. \footnote{\url{https://asplos22.unikraft.org/syscall_shim-bincompat/}}
-To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions.\footnote{\url{https://unikraft.org/docs/internals/syscall-shim}} No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and can a rebooted quickly.
-\cite{Kuenzer_2021}
-
-As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
-Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}.
-
 
 \section{TLS Protocol}
 
@@ -143,6 +133,10 @@ We can see that TLS makes use of several cryptographic operations: symmetric enc
     \label{tab:ops_security}
 \end{table}
 
+Key exchange algorithms need to be migrated immediately because of the possibility of a Harvest-Now-Decrypt-Later attack, wherein an adversary that is on-path can eavesdrop and store messages, and once quantum computers are powerful enough to break key exchange algorithms, the adversary can use them to recover the shared secret and decrypt all messages of the entire session. This attack requires an adversary to store a session from the beginning and acquire the key material from the TLS handshake, as this is the point where the TLS protocol is most vulnerable. 
+
+The same applies to authentication via certificates: Adversaries can impersonate a peer by breaking its public keypair and issuing false certificates before the lifetime of the keypair ends. This attack also depends on the TLS handshake at the beginning of a TLS session. However, an adversary needs to actively participate in the connection, impersonate a peer, and only perform the attack while the session is ongoing, making it less of a problem for current TLS connections. Nevertheless, early adoption is still important as authentication with certificates is based on chaining with global root certificates on top of the chain having a life span of 20 years \cite{ietf-uta-pqc-app-00}. This means that if quantum-based attacks become feasible in this time span, root certificates that are trusted by and stored on the majority of devices need to be removed.
+
 
 \section{Post-Quantum Cryptography}
 
@@ -151,7 +145,6 @@ Now that we have seen how the TLS protocol works and what cryptographic operatio
 The National Institute of Standards and Technology (NIST) is the most well-known entity that tries to agree on common ciphers that will be later implemented in network protocols such as TLS. Starting in 2016, NIST held a competition to find suitable PQC ciphers. In several rounds, ciphers were submitted and analyzed for weaknesses. Forty ciphers have been included, and a select few were standardized over the course of 6 years. NIST publishes them as a Federal Information Processing Standard (FIPS), which contains an exact definition of the used algorithm. Currently, three have been published \cite{unknown-author-2024, unknown-author-2024-2, unknown-author-2024-3} and several more have already been announced \cite{boutin-2025-2, Boutin_2025}. NIST also specifies five security levels for the proposed ciphers \cite{national2016submission}. The levels resemble the difficulty it takes to break the cipher in ascending order, and the difficulty is specified by comparing the cipher to symmetric cryptography, i.e., AES, and SHA. Starting with the first level, an adversary should require the same computational resources needed to break AES128 (SHA256, AES192, SHA384, AES256 with higher levels). Apart from NIST, other institutions are also trying to standardize PQC, mainly ISO \cite{ISO86890}, including other algorithms that NIST has not chosen.
 
 \section{Exchanging Keys with Post Quantum Cryptography}
-
 
 At the moment, all institutions propose PQC suitable methods for exchanging keys. Instead of a Diffie-Hellman-based key exchange, all institutions agree on the use of the Key Encapsulation Mechanism (KEM): During a key exchange between a server and a client, the client first sends its public key. The Server then uses the public key to encapsulate (encrypt) a randomly-chosen secret and sends it back to the client. The client then decapsulates (decrypts) the key with its private key and gets hold of the shared secret. As KEM works very similarly to Diffie-Hellman, no changes in the TLS protocol flow need to be made in order to use it; however, KEM is not forward secure by default because it reuses the key pair. To achieve forward secrecy, the key pair needs to be regenerated for each connection \cite{sfluhrer-cfrg-ml-kem-security-considerations-03}. We now examine ciphers that are being recommended by the institutions mentioned above. We compare their efficiency to ECDHE in a TLS 1.3 handshake. We chose ECDHE as it is currently a supported algorithm in the TLS 1.3 standard and is widely used for comparison in other work. 
 
@@ -184,48 +177,65 @@ It makes use of the Module-LWE and Module-SIS problems, which are based on the l
 
 % TODO differentiate between different version small and fast
 
+\section{Unikernels}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.75\textwidth]{resources/unikernel_overview.pdf}
+    \caption{Different Virtualization Techniques}
+\end{figure}
+
+
+Unikernels provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following sections, we list known unikernels and their features that are crucial for our work. \cite{madhavapeddy_unikernels_2013}
+
+Unikraft is a unikernel known for its superior performance.
+Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft is POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. \footnote{\url{https://asplos22.unikraft.org/syscall_shim-bincompat/}}
+To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions.\footnote{\url{https://unikraft.org/docs/internals/syscall-shim}} No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and can a rebooted quickly.
+\cite{Kuenzer_2021}
+
+As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
+Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}.
 
 
 %%
 \chapter{Demonstrator}
 
-\section{Concept}
+Now we have seen the necessity for PQC and we have seen the advantages that unikernels promise. With that we now want to see how PQC performs inside a unikernel on an embedded device. To do this we developed a framework that can benchmark the primitive operations (keygen/encapsulation/decapsulation) of PQC algorithms and their performance inside a TLS benchmark. We also included containerization and native execution in the benchmark to compare the performance of post-quantum algorithms with different virtualization mechansims.
 
 \section{Setup}
 
-The whole setup was developed on a Rasppberry Pi 4b, but should be compatible with other arm64 machines, as long as they have a similar software setup. To build the project the only requirements are a Unix environment and Docker. The global setup script in the top level folder of the repository will build the project for Unikraft, Docker, and a native variant and create links in the respective folders (Unikraft, Docker, Native) to an openssl application and a benchmark application. The exact commands are listed in the appendix. To run the applications the system needs to be on the proper target system. The target system is expected to have a Linux-based operating system with an arm64 system architecure. For software dependencies it is expected have QEMU and Docker installed. If the project was not built on the target system the send-to-pi.sh script can be used to sync all the changes to the target system, install the docker, and install the native OpenSSL library. Keep in mind that the script uses fixed paths which may need to be changed. The target system can then make use of the applications and again usage example are listed in the appendix.
+To build the project the only requirements are a Unix environment and Docker. The global setup script in the top level folder of the repository will build the project for Unikraft, Docker, and a native variant and create links in the respective folders (Unikraft, Docker, Native) to an OpenSSl application and a benchmark application. If you are on x86\_64 you need to enable multi-platform ocntainers becuase the setup script requires the entire setup to be build on arm64. The exact commands are listed in the appendix. 
+
+To install the project the system needs to be on the proper target system. The whole setup was developed on a Rasppberry Pi 4b, but should be compatible with other arm64 machines, as long as they have a similar software setup. For software dependencies it is expected to have QEMU and Docker installed. If the project was not built on the target system the send-to-pi.sh script in the repository can be used to sync all the changes to the target system, install the docker container, and install the native OpenSSL library. Keep in mind that the script uses fixed paths which may need to be changed. 
+
+To run the project the script generates a link to an openssl application for each virtualization mechanism e.g. Unikraft/openssl runs openssl inside a Unikernel. This openssl application closely resembles the regular cli application for OpenSLL which can control most of the OpenSSL library e.g. generating certificates or acting as an HTTPS server. However the unikernel's version is custom and is limited to the s\_server, s\_client, and s\_speed tools. We can use these tools to check if we can establish a connection and to test the speed of connection establishment. The script also generates a link to a benchmark application that tests the speed of primitive operations of post-quantum algorithms and it creates a test application (only for Unikraft) that runs post-quantum algorithms and checks the correctness of the output. Again, usage Examples are listed in the appendix.
 
 \section{Measurements}
+
+To benchmark the project contains several scripts inside the Benchmark directory. The run\_benchmarks.py script executes all benchmarks when run without arguments. To limit the benchmarks to specific paramters (speed, memory, power) or only tests specific algorithms arguments can be specified that are also documented in the script. For a speed comparison the script uses both the openssl and benchmark application of the respective virtualization mechanism. To check the speed of primitive operations it runs the benchmark application for a fixed amount of time (by default 5 seconds), registers the amount of operations that were done in that time, and calculates the mean of one execution. Similarly to this it checks the speed of TLS connection establishment by creating connections for a fixed time (default 30 seconds) and also calculating the mean. For Memory consumption both applications are executed for a fixed time and a memory profiler (top) creates regular samples of the memory usage. The results are saved in `Benchmark/results/` in JSON format. 
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=0.5\textwidth]{resources/idp_setup.pdf}
+    \caption{Setup of the Power Measurement Benchmark.}
+    \label{idp_setup}
+\end{figure}
+
+Finally power measurement is not done completely by the script but rather requires a manual setup. The script itself only runs the primitives or TLS connections and waits inbetween different algorithms. Power needs to measured with external hardware, we used the FNIRSI® FNB58 USB Fast Charge Tester. It needs to be connected to the target device and external computer that records the measured values, as displayed in Figure \ref{idp_setup}. The recording software is contained in the Benchmark/fnirsi\_usb\_power\_data\_logger directory. It outputs a list of measured values (Voltage, Power, Energy) and the associated timestamps. The analyze\_power.py script uses this output and calculates the power consumption for each specific algorithm and also outputs it as a JSON file. Results are discussed in a further chapter. 
 
 
 %% 
 \chapter{Implementation}
 
+We have now seen a high level overview on how to use the project and how to execute benchmarks. Now we provide a more indepth overview of the entire project. We will examine the structure of the repository and explain how the project is build. We show suitable technologies and why we chose them. We explain how they interact, and what changes we made.
+
 \section{Overview}
 
-In this section we provide an overview of the used technologies, how they interact and what we change in order to allow quantum-resistant cryptography.
+We started out with a native solution for our project that does not use any virtualization. The native solution is contained in the Native directory and it uses OpenSSL as it is the most common library for TLS support. OpenSSL already provides a CLI interface, the openssl application, to create a basic HTTPS server and client for testing. For PQC algorithms we use the liboqs library. We chose liboqs because it currently has support for the most post-quantum algorithms and it also supports algorithms that are not standardized, in contrast to OpenSSL which currently only supports ML-KEM, ML-DSA, and SLH-DSA. With OpenSSL's provider architecture we can connect liboqs to OpenSSL, and can then access other algorithms such as FrodoKEM and HQC. Alternatives are regular OpenSSL and WolfSSL, which currently support ML-KEM, ML-DSA, and SLH-DSA and more if we use custom versions. To test the performance of PQC primitive operations we adapt the benchmarks from liboqs contained in the Native/oqs\_speed directory for our benchmark application. When executing the setup script of the Native directory it will build all libraries from source and provide links to the openssl application and the benchmark application inside the directory.
 
-The first technology we use is OpenSSL which is a cryptography library that specifies cryptographic algorithms and known protocols such as TLS which are commonly used for network connections. 
+We then continued with the containerized solution. It has the same structure as the native solution with the difference that it is built and run inside a Docker container with an Alpine Linux image. We picked Docker over other container solutions because of the widespread usage and support and we picked Alpine Linux because our lab already provided configuration scripts that work similar to our native solution. The configuration is contained in the Container directory and the setup script will create the container, again build the libraries from source, and create links to the benchmark and openssl applications. It is important to consider that unless we have Alpine Linux installed on our target system we very likely do not use the same standard libraries (glibc) as we would in Alpine Linux (musl). For this reason when the global setup script is used the native solution is also statically build inside the container and then exported. This way we get more comparable results later during the benchmark. 
 
-The next technology is the Unikraft unikernel which is a library operating system, that acts as a virtualization technique with minimal overhead and performance comparable to containers.
-
-To enable quantum resistant-cryptography we use the liboqs library and its oqsprovider library that acts as connects to the provider architecture of OpenSSL. 
-∏
-
-% TODO where is everything and what does it do
-% libs are in Unikraft/libs, precompiled
-% uk-build-aarch64 is the dockerfile that builds the libs
-% ssl_uk_test executes the tests for cryptographic primitives
-
-% # unified setup
-
-% call ./setup.sh in the folders Container/Native
-% will generate openssl link that starts openssl binary in container
-
-% start docker run --rm multiarch/qemu-user-static
-% this will allow cross platform build of the project
-
-In this section we document the development process, the faced challenges, and solutions. 
+Finally we realized the unikernel solution. As unikernel we decided to use Unikraft because of its superior performance, previous experience, and its very active community. Alternatives are the Hermit operating system and OSv. The unikernel solution is contained in the Unikraft directory and the setup script builds the libraries and the unikernel. The actual unikernel sources are contained in Unikraft/unikraft. Since we compile our solution directly into the unikernel we cannot reuse the same architecture of the native solution. Instead we statically compile all needed libraries (OpenSSL, liboqs) and provide them to Unikraft as custom libraries inside the Unikraft/libs folder. For the applications we create several unikernels with different configurations. The first unikernel is contained in Unikraft/oqs\_uk\_speed and runs the benchmark application on boot. The second unikernel is contained in Unikraft/ssl\_uk\_bin and runs and adapted version of the openssl application. The final unikernel is contained in Unikraft/ssl\_uk\_test and it runs liboqs's test suite. Again the setup script creates links to the respective application, though instead of symbolic links it creates scripts that launch a unikernel with a specific QEMU configuration. The following sections document the development process of the unikernel solution. It highlights the challenges we faced and our proposed solutions. 
 
 \section{Integrating the Libraries in Unikraft}
 
@@ -239,103 +249,61 @@ Another approach would have been to use the Unikraft elfloader project which loa
 
 Unikraft uses musl as a standard library so we had to adjust our build process for the static libraries we wanted to include. We used musl-gcc to compile the library statically and then included them in the build script of our Unikernel. We also needed to compile the linux-headers with musl-gcc because if they are compiled with regular gcc (with glibc) we have a different interface that is not compatible with Unikraft's interface. Aside from a few changes to fix mostly missing symbols and missing methods from Unikraft's musl implementation we did not have to change much on Unikraft's side to succefully compile a unikernel. Since liboqs and oqs-provider are fairly small and require very little interfacing with the operating system they loaded successfully with no change inside the Unikernel. OpenSSL on the other hand did not run without any changes. 
 
-OpenSSL has several constructors that are executed once the libraries is loaded (in our case once the program is launched since we have a static library). In one of those constructors OpenSSL purposefully causes a false instruction to raise a SIGILL exception to detect cpu features. For a regular operation system this does not pose a problem since cpu exceptions are caught by the kernel. In unikernels though the exception is not caught and the unikernel simply crashes. There already exists a patch that forces OpenSSL to detect cpu features by using the auxiliary vector. 
-% https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/openssl/auxv.patch
+OpenSSL has several constructors that are executed once the libraries is loaded (in our case once the program is launched since we have a static library). In one of those constructors OpenSSL purposefully causes a false instruction to raise a SIGILL exception to detect cpu features. For a regular operation system this does not pose a problem since cpu exceptions are caught by the kernel. In unikernels though the exception is not caught and the unikernel simply crashes. There already exists a patch that forces OpenSSL to detect cpu features by using the auxiliary vector.\footnote{\url{https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/openssl/auxv.patch}}
 
 The current setup in the repository builds the libraries in the uk-build-aarch64 Dockerfile. Precompiled versions are already contained in the lib-openssl and lib-oqs libraries (only for arm64). 
 
-\section{Using liboqs as a Provider and Testing Primitives}
+\section{Using liboqs and Testing Primitives}
 
-As mentioned before the current version of OpenSSL has the ability to connect to a provider to use different cryptographic primitives. The liboqs project also has an oqs-provider component that connects to OpenSSL to let it use its primitives. Providers are typically contained in a separate file and are dynamically loaded by OpenSSL. This is currently not possible in our case because Unikraft has no support for dynamic loading. Fortunately liboqs allows linking the oqs-provider statically and adds the oqs-provider to OpenSSL as a builtin provider. This way we can make use of liboqs components by recompiling our target application with a few added lines of code. 
+As mentioned before the current version of OpenSSL has the ability to connect to a provider to use different cryptographic primitives. The liboqs project also has an oqs-provider component that connects to OpenSSL to let it use its primitives. Providers are typically contained in a separate file and are dynamically loaded by OpenSSL. This is currently not possible in our case because Unikraft has no support for dynamic loading. Fortunately liboqs allows linking the oqs-provider statically and adds the oqs-provider to OpenSSL as a builtin provider. This way we can make use of liboqs components by recompiling our target application with a few added lines of code.\footnote{\url{https://github.com/open-quantum-safe/oqs-provider/blob/main/examples/static_oqsprovider.c}}
 
-% https://github.com/open-quantum-safe/oqs-provider/blob/main/examples/static_oqsprovider.c
+To make sure the included libraries are working properly we extended the Unikraft test framework to include the OpenSSL and liboqs test suites. We used the tests that were already provided by the oqs project both for the oqs library and the oqs-provider limiting ourselves to the primitive operations that we later use for evaluation. Initially the tests did not succeed and kept running infinitely. After stepping through the code of the compiled unikernel we discovered that liboqs kept getting stuck on a recursive function. This function is used for liboqs's bignum implementation and it was very likely that it caused a stackoverflow. Fortunately Unikraft's stack size is configurable and after increasing the stack size to 8 pages all tests ran successfully. 
 
-To make sure the included libraries are working properly we extended the Unikraft test framework to include the OpenSSL and liboqs test suites. We used the tests that were already provided by the oqs project both for the oqs library and the oqs-provider limiting ourselves to the primitive operations that we later use for evaluation. Initially the tests did not success and kept running infinitely. After stepping through the code of the compiled unikernel we discovered that liboqs kept getting stuck on a recursive function. This function is used for liboqs's bignum implementation and it was very likely that it caused a stackoverflow. Fortunately Unikraft's stack size is configurable and after increasing the stack size to 8 pages all tests ran successfully. 
-
-% TODO source for what tests were used + maybe also add the benchmark primitive setup here
+To test the speed of primitive operations we compiled the liboqs's test suite into a unikernel. This also required little change since apart from the build system Unikraft is aiming to be compatible with a Linux environment. 
 
 \section{Setting up the OpenSSL Application}
-merge this with open ssl implementation make one big section out of it 
-To test a TLS connection we need networking capabilities for the unikernel. Since we boot the unikernel with QEMU as hypervisor we have to configure QEMU to create a network. 
 
-% https://wiki.qemu.org/Documentation/Networking
+Now that we have the benchmark application running inside a unikernel we also wanted the run the openssl application. 
+To do this we first had to compile the openssl application source in the unikernel. The openssl application is build modular and allows partial compilation to only include a subset of the available commands. We opted for only including the the s\_server, s\_client, and s\_speed sources because these were sufficient testing a connection and benchmarking. We included the sources made created configured the build system for the unikernel. The initial build was running though it was not possible to make a connection yet. The reason for this is that Unikraft requires manual configuration of the network. 
 
+To enable networking in Unikraft we need to include the Unikraft port of the lwIP library, which includes a TCP and IP stack. We also need to enable the uknetdev driver (and LIBUKNETDEV\_EINFO\_LIBPARAM) to have a networking device that we can send data on. Now we can perform network operations inside the unikernel though they do not reach our host network yet. Since we boot the unikernel with QEMU as hypervisor we have to configure QEMU to connect to our host network. There are several ways to configure networking\footnote{\url{https://wiki.qemu.org/Documentation/Networking}} though the Unikraft community recommends the use of bridge network because of their superior performance. We create a network bridge on our host system and assign it an IP address. Then we configure QEMU to use said bridge and we pass the IP address to the unikernel. Now when the unikernel sends a message QEMU automatically passes the network packages to the bridge and we can communicate with the unikernel via the bridge. The bridge setup is already included in the setup commands in the Appendix. 
 
-% # Networking 
+We can now make a TLS connection, however we cannot check certificates yet. The openssl application can only check certificates from the filesystem. Compiling certificates into the unikernel and accessing them directly is certainly possible however this would need major changes in the openssl application code. Instead we opted to enable full filesystem support inside the unikernel. Since we only load files in the beginning and not during a benchmark the impact is negligable. Similar to Docker's bind mount, where folders of the host system can be mounted inside a container, Unikraft can achieve a similar results with the 9p filesystem protocol. 9p is a networking protocol that can remotely connect to a filesystem. It is already build into Unikraft and only needs to be enabled in the configuration. We can set a path in the QEMU launch parameters and pass the filesystem to the unikernel (Note: 9pfs does link the mounted folder as root directory which means we cannot use absolute paths for certificate files). Now certificate checking works and we can also verify certificates that were signed with post-quantum digital signatures. 
 
-% sudo ip link add dev virbr0 type bridge
-% sudo ip address add 172.44.0.1/24 dev virbr0
-% sudo ip link set dev virbr0 up
-
-% sudo mkdir /etc/qemu
-% sudo echo "allow virbr0" > /etc/qemu/bridge.conf
-
-% qemu-system-aarch64 \
-% 	-kernel build/ssl_uk_qemu-arm64 \
-% 	-machine virt -cpu max -m 64M \
-% 	-nographic \
-% 	-netdev bridge,id=en0,br=virbr0 \
-%     -device virtio-net-pci,netdev=en0 \
-% 	-append "ssl_uk netdev.ip=172.44.0.2/24:172.44.0.1::: -- "
+To use post-quantum kem algorithms we still need to make some changes. The TLS procol lets a client choose a list of key exchange groups that its supports before making the server choose between those solutions. By only issuing one allowed group as server we can force the client to use this specific group. To make sure the client accepts we also need to configure the supported groups. We can do so by changing the OpenSSL config file. Fortunately we now have filesystem support which means we can load a custom config file. To add the post-quantum groups we need to add them to the DEFAULT\_GROUPS field in the config file (Note: the group names are inconsistent, look here\footnote{\url{https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md}} for proper names). Now we can also choose custom key exchange algorithms include post-quantum KEM.
 
 
-% - Networking fails need:
-% - lwip
-% - uknetdev
-% - param LIBUKNETDEV_EINFO_LIBPARAM
-% - bridge see above
+\section{Performance Optimizations}
+
+During development we examined how to reduce the unikernel's overhead. The first configuration we tried was compiling the unikernel with link-time optimization though this did not seem to show any obvious improvements for smaller tests we executed manually. Because of this and because link-time opzimization is still experimental we decided not to enable it in the benchmarks. The second configuration that we considered was hardware acceleration with kvm. We deem kvm an important optimization as otherwise our hypervisor QEMU would fall back to code emulation via tiny code generator which has a vast overhead. kvm utilizes hardware extensions to run a virtual machine directly on the hardware and only switch to the hypervisor when specific instructions are executed or specific data sections are accessed. Unfortunately enabling kvm caused the unikernel to crash with a major cpu exception. All libraries that implement cryptographic operations require a way to get random data, which is either done through the /dev/random device or the getrandom syscall on Linux. We configured the libraries inside Unikraft to use the getrandom syscall, which on arm64 used an assembly instruction to generate a random value. However our target system (Rapsberry Pi 4B) does not support these arm64 instructions to generate randomness and would instead generate an exception because of the missing instruction. Fortunately Unikraft provides a way to accept a seed and use software based randomness intead of hardware randomness. Currently each time a unikernel is launched a random value is generated by the host operating system and passed to the unikernel. The unikernel uses this value until it shuts down. However, this can negatively impact security if we have a particularly long runnning unikernel.
 
 
-% - tls connection is possible, however there is no certificate checking yet
-% - kem is possible and is used to set a custom kem function
-% - problem: how to test if kem is working?
-% - signature and kem algorithms are displayed on startup
-% - do not use file system for test application because reconfiguration and unikernel is supposed to be minimal
+%% 
+\chapter{Evaluation}
 
-% - TODO use builtin libssl functions to load certificate
-% - TODO adjust container to be able to use liboqs with oqsprovider and s_server
-% - Optional port apps s_server and s_speed to unikraft and use them for benchmarking purposes, 
-% pobably have to turn on filesystem and virtual memory for this
+In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. 
+We will first give an overview of what benchmarks are done and how they are setup, and afterwards examine the results.
 
-% - TODO '-Wl,-rpath,$(LIBRPATH)' is not configured for the docker file, is not needed since we do not use the openssl bin, but if we want to we need to adjust this
+\section{Overview}
 
-networking with openssl s\_server/s\_client
+Primitives are split into three operations (with the exception of ECDHE which only has two operations Key Generation and Key Deduction), Key Generation, Key Encapsulation, and Key Decapsulation for the KEM primitives and Key Generation, Key Signing, and Key Verifying. 
 
-using different signature/kem algorithms
+\section{Speed}
 
-% to use kem algorithm:
-% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt -groups x25519_kyber512
-% https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
+To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. 
 
-% split up the sig oqs speed c implementation 
+Kyber has the best performance of all post-quantum ciphers even with larger keys. Kyber inside a container produces very similar and only produces a slight overhead. Inside a unikernel Kyber perfroams marignally worse, taking almost double the amount of time when compare to a native execution. BIKE is taking vastly more time than Kyber for all operation, about 400 times for encapsulation. Again containerization performs very similar. The unikernel has about 1.25 overhead. For HQC we get a better performance for generation though worse for encapsulation and decapsulation. Containerization is comparable to a native execution. On the unikernel we get a slightly slower result with an overhead of 1.3. FrodoKEM-SHAKE perform very similar to HQC but has better performance for de- and encapsulation. All execution styles take about the same amount of time. For FrodoKEM-AES the performance is much worse, about 3 times slower. On the Unikernel the perfromance is slightly better to both Container and native execution (which about the same) with a speedup of 10 percent. Our litmus test ECDHE performs similar to Kyber and we see that all execution styles are the same.
 
-% find a way to use send-to-pi efficiently again maybe rsync
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_speed.pdf}
+    \caption{Time (us) of Traditional and Post-quantum Primitives.}
+    \label{fig:table_primitives_speed}
+\end{figure}
 
-performance optimizations
-compiling with link time optimizitation
-bridge networking
-acceleration with kvm
+No going to the signature algorithms we can see that the first algorithms SPHINCS+ (the small variant) performs siginiticantly worse for all operations when compared to ECDSA. On a Container we get similar results to native execution and on a unikernel it performs marginally better with a speedup of 1.75. For the fast variant we get much faster speeds on keygen and sign operations however on the verify operations our results are slower. The overhead between different execution styles is similar to that of the small SPHINCS+ variant. The next signature algorithm Falcon performs better than SPHINCS+ but still significantly worse than ECDSA. Inside a unikernel we get an overhead of about 
 
-% # kvm on pi
-
-% - first getrandom was not implemented, patch proposed on discord, did not work bc depends on lots of other patches
-% - upgraded to latest version 18 of unikraft
-% - still throws cpu exception
-% - crashes in tcpip_init in the lwip network stack
-% - seems to come from a either semaphore down or wzr register
-% - was not the wzr register
-% - there were also dependency issues in the uk config
-% - building on the pi did not make a difference, same error occurs
-% - updating to the most recent commit of unikraft helped, commit Tue Mar 18 5050e9f11e57a17bd18d4f1a3478010b329c6855
-% - unikraft needs patch in poll -> poll_select
-
-
-
-alternative virtualization
-docker 
-native
-
-% networking for the different virtualization technologies requires different addresses explain this
+Inside the unikernel results differ quite a lot when compare to the container execution which always tends to match the performance of native execution. We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a algorithms needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
 
 
 benchmarks
@@ -356,6 +324,20 @@ benchmarks
 % system time wrong? 
 
 % TODO container does not load oqsprovider as additional provider, otherwise config file has to be specified for each cmd manually
+
+
+% # ecdsa rsa ecdhe
+% - included in the tls benchmark
+% - for oqs_speed use the native openssl interface -> its bad
+% - use openssl speed as a reference
+
+% - for memory benchmarking use top 
+
+% # automatic power measurement 
+
+% https://github.com/baryluk/fnirsi-usb-power-data-logger
+
+
 
 % # benchmarks
 
@@ -447,98 +429,15 @@ benchmarks
 
 
 
-% # TODOs
-% - [ ] Build vanilla ssl Unikernel
-% - [ ] Build oqs ssl Unikernel
-
-% ## Vanilla SSL Unikernel Doc: [ssl_uk]
-% - ~~ Build openssl directly into unikernel ~~
-% 	-> Building openssl again and again inefficient
-% 	-> Building openssl into Unikraft unikernel  
-% - Instead build openssl as prebuild binary into unikernel
-% 	-> Call openssl binary and header files during unikraft build in Makefile.uk
-% ``` Makefile.uk
-% APPOPENSSL_OBJS-y += $(APPOPENSSL_BASE)/openssl-3.3.0/libssl.a
-% ```
-% 	-> see [Unikraft Build System](https://unikraft.org/docs/internals/build-system)
-% - Build successfull, but nothing to do, as only the library was added
-% - ssl keygen through c file (chat gpt generated :D)
-% - Include c file with
-% ``` Makefile.uk
-% APPOPENSSL_SRCS-y += $(APPOPENSSL_BASE)/ssl_keygen_2024_no_time.c
-% ```
-% 	-> ssl header files missing. Include them with 
-
-% ``` Makefile.uk
-% APPOPENSSL_CINCLUDES += -I$(APPOPENSSL_BASE)/openssl-3.3.0/include/
-% ```
-% - pthread header missing
-% 	-> kraft menu shows it is included ...
-% 	-> pull from [lib-pthread-embedded](https://github.com/unikraft/lib-pthread-embedded)
-% 	-> include pthread like openssl above
-
-% ## OQS SSL Unikernel Doc
-
-% # different kems
-
-% to get different kem algorithms need to specify them as a group with the s_server
-% and need to allow the s_speed to use them, otherwise the tls handshake fails
-% specify default groups in the openssl.cnf like this:
-% DEFAULT_GROUPS  = x25519:x448:kyber512:bikel1:hqc128:frodo640aes:frodo640shake:kyber768:kyber1024
-
-% the algorithm names are inconsistent sometimes need upercase sometimes lowercase without dashes in liboqs
-% listed in https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md
-
-% for unikraft we use 9pfs and compile in the environment variable OPENSSL_CONF=/Unikraft/openssl.cnf 
-% note: 9pfs does link the mounted folder as root / directory that means no absolute paths for the pki files
-
-% # ecdsa rsa ecdhe
-% - included in the tls benchmark
-% - for oqs_speed use the native openssl interface -> its bad
-% - use openssl speed as a reference
-
-% - for memory benchmarking use top 
-
-% # automatic power measurement 
-
-% https://github.com/baryluk/fnirsi-usb-power-data-logger
-
-
-
-\chapter{Evaluation}
-
-In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. 
-We will first give an overview of what benchmarks are done and how they are setup, and afterwards examine the results.
-
-\section{Overview}
-
-Primitives are split into three operations (with the exception of ECDHE which only has two operations Key Generation and Key Deduction), Key Generation, Key Encapsulation, and Key Decapsulation for the KEM primitives and Key Generation, Key Signing, and Key Verifying. 
-
-\section{Speed}
-
-To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. Kyber has the best performance of all post-quantum ciphers even with larger keys. Kyber inside a container produces very similar and only produces a slight overhead. Inside a unikernel Kyber perfroams marignally worse, taking almost double the amount of time when compare to a native execution. BIKE is taking vastly more time than Kyber for all operation, about 400 times for encapsulation. Again containerization performs very similar. The unikernel has about 1.25 overhead. For HQC we get a better performance for generation though worse for encapsulation and decapsulation. Containerization is comparable to a native execution. On the unikernel we get a slightly slower result with an overhead of 1.3. FrodoKEM-SHAKE perform very similar to HQC but has better performance for de- and encapsulation. All execution styles take about the same amount of time. For FrodoKEM-AES the performance is much worse, about 3 times slower. On the Unikernel the perfromance is slightly better to both Container and native execution (which about the same) with a speedup of 10 percent. Our litmus test ECDHE performs similar to Kyber and we see that all execution styles are the same.
-
-No going to the signature algorithms we can see that the first algorithms SPHINCS+ (the small variant) performs siginiticantly worse for all operations when compared to ECDSA. On a Container we get similar results to native execution and on a unikernel it performs marginally better with a speedup of 1.75. For the fast variant we get much faster speeds on keygen and sign operations however on the verify operations our results are slower. The overhead between different execution styles is similar to that of the small SPHINCS+ variant. The next signature algorithm Falcon performs better than SPHINCS+ but still significantly worse than ECDSA. Inside a unikernel we get an overhead of about 
-
-
-
-Inside the unikernel results differ quite a lot when compare to the container execution which always tends to match the performance of native execution.        We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a algorithms needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
-
-
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/table_primitives_speed.pdf}
-    \caption{Time (us) of Traditional and Post-quantum Primitives.}
-    \label{fig:table_primitives_speed}
-\end{figure}
-
-
 \begin{figure}[h]
     \centering
 	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
     \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
 \end{figure}
+
+
+
+
 
 \begin{figure}[h]
     \centering
@@ -585,17 +484,9 @@ Inside the unikernel results differ quite a lot when compare to the container ex
 
 
 
-
+%% 
 \chapter{Conclusion}
 
-
-% \begin{figure}[htbp]
-% 	\begin{center}
-% 		\includegraphics[width=.5\textwidth]{aisec_logo.pdf}
-% 	\end{center}
-% 	\caption{AISEC Logo}
-% 	\label{fig:aisec-logo}
-% \end{figure}
 
 
 error handling
@@ -609,58 +500,87 @@ error handling
 % - Printf fails need: 
 % drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
 
+%%
 \printbibliography
 
+%%
 \chapter{Appendix}
 
 
 \section{Setup Commands}
 
+For the setup create a virtual bridge network and then run the setup script:
 
-% ```bash
-% sudo ip link add dev virbr0 type bridge
-% sudo ip address add 172.44.0.1/24 dev virbr0
-% sudo ip link set dev virbr0 up
+\begin{lstlisting}[style=shell]
 
-% sudo mkdir /etc/qemu
-% sudo echo "allow virbr0" > /etc/qemu/bridge.conf
+sudo ip link add dev virbr0 type bridge
+sudo ip address add 172.44.0.1/24 dev virbr0
+sudo ip link set dev virbr0 up
 
-% ./setup.sh
+sudo mkdir /etc/qemu
+sudo echo "allow virbr0" > /etc/qemu/bridge.conf
 
-% ```
+./setup.sh
 
-% ```bash
-% ./setup.sh 
-% ```
-%  If you are on x86_64/amd64 run `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes` as the setup script requires the entire setup to be build on arm64/aarch64. The script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Below are examples of how the s_server/s_time applications are used to measure the TLS connections. Before we can execute openssl s_server/s_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. (Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal)
+\end{lstlisting}
 
-% ```bash
-% Native/openssl req -x509 -new \
-% 			-newkey dilithium3 \
-% 			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
-% 			-nodes -subj "/CN=Test CA" -days 365
+Note: If you are on x86\_64/amd64 you need multi-platform support as the setup script requires the entire setup to be build on arm64/aarch64. Run the commmand below to enable multi-platform support:
 
-% Native/openssl req -new \
-% 			-newkey dilithium3 \
-% 			-keyout pki/server_dil.key -out pki/server_dil.csr \
-% 			-nodes -subj "/CN=testserver"
+\begin{lstlisting}[style=shell]
+docker run --privileged --rm tonistiigi/binfmt --install all
+\end{lstlisting}
 
-% Native/openssl x509 -req \
-% 			 -in pki/server_dil.csr -out pki/server_dil.crt \
-% 			 -CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
-% ```
-
-% ```bash
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile pki/CA_dil.crt
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile pki/CA_dil.crt
-
-% Native/openssl s_server -key pki/server_dil.key -cert pki/server_dil.crt -accept 443 -www
-% Native/openssl s_time -connect localhost:443 -www / -CAfile pki/CA_dil.crt
 
 \section{Usage Examples}
+
+The setup script will generate a link to an openssl binary with the correct virtualization e.g. Unikraft/openssl runs openssl inside a Unikernel. Before we can execute openssl s\_server/s\_time commands we need a public key infrastructure. The commands to establish such an infrastructure are also listed below. 
+
+\begin{lstlisting}[style=shell]
+Native/openssl req -x509 -new \
+			-newkey dilithium3 \
+			-keyout pki/CA_dil.key -out pki/CA_dil.crt \
+			-nodes -subj "/CN=Test CA" -days 365
+
+Native/openssl req -new \
+			-newkey dilithium3 \
+			-keyout pki/server_dil.key -out pki/server_dil.csr \
+			-nodes -subj "/CN=testserver"
+
+Native/openssl x509 -req \
+			-in pki/server_dil.csr -out pki/server_dil.crt \
+			-CA pki/CA_dil.crt -CAkey pki/CA_dil.key -CAcreateserial -days 365
+\end{lstlisting}
+
+Below are examples of how the s\_server/s\_time applications are used to measure the TLS connections.
+Note: Unikernels are reachable via 172.44.0.1/24 and Containers via host.docker.internal
+
+\begin{lstlisting}[style=shell]
+
+Native/openssl s_server  -key pki/server_dil.key -cert pki/server_dil.crt \
+                         -accept 443 -www
+Unikraft/openssl s_time  -connect 172.44.0.1:443 -CAfile pki/CA_dil.crt -www /
+
+Native/openssl s_server  -key pki/server_dil.key -cert pki/server_dil.crt \
+                         -accept 443 -www
+Container/openssl s_time -connect host.docker.internal:443 \
+                         -CAfile pki/CA_dil.crt -www / 
+
+Native/openssl s_server  -key pki/server_dil.key -cert pki/server_dil.crt \
+                         -accept 443 -www
+Native/openssl s_time    -connect localhost:443 -www / -CAfile pki/CA_dil.crt
+\end{lstlisting}
+To measure the primitive operation's speed the setup script provides benchmark scripts that measure keygen/sign/verify and keygen/encapsulate/decapsulate operations of the oqs library:
+
+\begin{lstlisting}[style=shell]
+Unikraft/benchmark sig --no_keygen --no_sign ECDSA
+Native/benchmark kem -d 5 --no_keygen ECDHE
+Container/benchmark kem --no_keygen --no_encaps Kyber512
+\end{lstlisting}
+
+To execute tests (only for Unikraft) run: 
+\begin{lstlisting}[style=shell]
+Unikraft/test
+\end{lstlisting}
 
 \section{Setup Images}
 
@@ -669,26 +589,23 @@ error handling
     \begin{subfigure}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/setup_img_01.png}
-        \caption{First Image}
-        \label{fig:subimage1}
     \end{subfigure}\hfill
     \begin{subfigure}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/setup_img_02.png}
-        \caption{Second Image}
-        \label{fig:subimage2}
     \end{subfigure}
-    \caption{Two Images Side by Side}
-    \label{fig:twoimages}
 \end{figure}
 
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{}
-% 	\includegraphics[width=0.5\textwidth]{}
-% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_03.png}
-% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_04.png}
-% 	\includegraphics[width=0.5\textwidth]{resources/setup_img_05w.png}
-%     \caption{Setup}
-% \end{figure}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/setup_img_03.png}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/setup_img_04.png}
+    \end{subfigure}
+\end{figure}
+
 \end{document}
