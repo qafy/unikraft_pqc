@@ -146,6 +146,8 @@ void deriveBenchmark(EVP_PKEY_CTX *derivationCtx, EVP_PKEY *keyPairPub, derivedK
 		handleDerivationErrors(1);
 	if (1 != (EVP_PKEY_derive(derivationCtx, dk->secret, &dk->length)))
 		handleDerivationErrors(2);
+
+	OPENSSL_free(dk->secret);
 }
 
 OQS_STATUS kem_vanilla(uint64_t duration, bool noKeygen, bool noSign, bool noVerify)
