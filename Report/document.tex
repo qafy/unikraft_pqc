@@ -154,14 +154,11 @@ At the moment, all institutions propose PQC suitable methods for exchanging keys
 
 Additionally, NIST also lists other ciphers which still have not been disqualified but have not been chosen for standardization so far, including: Saber, NTRU and NTRU Prime, Classic McEliece, BIKE, and FrodoKEM \cite{alagic2022status, alagic2025status}. Most are not preferred either because of worse performance or the stronger hardness assumptions of the underlying mathematical problems. So far, they have been listed as alternative algorithms by NIST and are still being improved, so they remain an option if a cipher chosen for standardization is broken. A subset of alternative ciphers is also included in other standards: 
 
-\textbf{FrodoKEM} was specified in \cite{ISO86890} by ISO and is also recommended by BFI \cite{unknown-author-2024-4}. ISO considers it a conservative choice over Kyber as it uses the unmodified and well-studied Learning-With-Errors problem instead of the modified version used by Kyber \cite{unknown-author-2024-4, FrodoKEM2024}. It has IND-CCA2 hardness and its performance overhead on NIST level 1 is 2.5 when compared with ECDHE \cite{alnahawi2024comprehensive}. FrodoKEM's Power consumption is roughly 14 times that of ECDHE \cite{tasopoulos2023energy}.
+\textbf{FrodoKEM} was specified in \cite{ISO86890} by ISO and is also recommended by BFI \cite{unknown-author-2024-4}. ISO considers it a conservative choice over Kyber as it uses the unmodified and well-studied Learning-With-Errors problem instead of the modified version used by Kyber \cite{unknown-author-2024-4, FrodoKEM2024}. It has IND-CCA2 hardness. Furthermore, FrodoKEM comes in two variants: FrodoKEM-AES and FrodoKEM-SHAKE which use either AES or SHAKE to generate a large parameter matrix A for later use in the algorithm. While FrodoKEM-SHAKE generally performs better, FrodoKEM-AES has the advantage that AES can be hardware accelerated \cite{NIST-FrodoKEM-20200930}. On average its performance overhead on NIST level 1 is 2.5 when compared with ECDHE \cite{alnahawi2024comprehensive}. FrodoKEM's Power consumption is roughly 14 times that of ECDHE \cite{tasopoulos2023energy}. 
 
-% TODO BIKE 
-% TODO differentiate between FRODOKEM-AES and FRODOKEM-SHAKE
+\textbf{BIKE} was part of all standardization rounds until the fourth round \cite{alagic2025status}. It is based on the the Quasi-Cyclic Moderate Density Parity-Check problem which is a code problem and it has IND-CCA2 hardness. On average its performance overhead on NIST level 1 is 2.55 when compared to ECDHE \cite{alnahawi2024comprehensive}. BIKES's Power consumption is roughly 8 times that of ECDHE \cite{tasopoulos2023energy}. 
 
-Now we have several choices as to what key exchange cipher we want to use. If we go with NIST's choices, we have two ciphers that perform similarly to old key exchange ciphers. However, their underlying mathematical problems are still relatively new and not as field-tested. On the other hand, ISO's choices rely on older, well-studied mathematical problems, which are less likely to be broken, but at the same time, they have a higher overhead. Fortunately, this overhead is manageable even on weaker hardware, e.g., it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. There is, however, a third option which offers a tradeoff between performance and security: Hybrid PQC. 
-
-We now have several methods to implement a key exchange, which will securely generate a shared secret that we can use for symmetric encryption. However, adversaries still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of post-quantum digital signatures.
+Now we have several choices as to what key exchange cipher we want to use. If we go with NIST's choices, we have two ciphers that perform similarly to old key exchange ciphers. However, their underlying mathematical problems are still relatively new and not as field-tested. On the other hand, ISO's choices rely on older, well-studied mathematical problems, which are less likely to be broken, but at the same time, they have a higher overhead. Fortunately, this overhead is manageable even on weaker hardware, e.g., it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. Now, adversaries still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of post-quantum digital signatures.
 
 
 \section{Providing Certificates with Post Quantum Cryptography}
@@ -173,9 +170,7 @@ It makes use of the Module-LWE and Module-SIS problems, which are based on the l
 
 \textbf{FALCON} (also called FN-DSA) was chosen to be standardized by NIST \cite{boutin-2025-2} as an alternative algorithm to Dilithium with similar performance. A standardization draft is expected to be released in 2026. It makes use of the NTRU problem, which is based on the lattice problem \cite{fouque2020falcon, alnahawi2024comprehensive}. Falcons' hardness is proof of unforgeability in the QROM, which is deemed to be comparable to Dilithium \cite{boneh2011random, alagic2022status}. Performance-wise, it is also similar to ECDSA \cite{doring2022post, alnahawi2024comprehensive}, though the power consumption is roughly 2.7 times higher than with ECDSA \cite{tasopoulos2023energy}.
 
-\textbf{SPHINCS+} (alo called SLH-DSA) was specified in \cite{unknown-author-2024-2} by NIST also as an alternative algorithm. It makes use of a hash-based problem, and its hardness is solely based on the security of hash functions, which pose adequate security \cite{alagic2022status}. The performance of SPHINCS+ is an order of magnitude slower than ECDSA; however, when comparing different works, there is no clear agreement on the slowdown. Many different results have been published, likely because of different setups and the complexity of SPHINCS+, which has 12 parameters \cite{alnahawi2024comprehensive}. The same goes for energy consumption, which is much higher than other algorithms \cite{tasopoulos2023energy}. Because of this high overhead, SPHINCS+ is deemed a fallback in case a weakness is discovered in the other mainly lattice-based algorithms \cite{alagic2022status}.
-
-% TODO differentiate between different version small and fast
+\textbf{SPHINCS+} (alo called SLH-DSA) was specified in \cite{unknown-author-2024-2} by NIST also as an alternative algorithm. It makes use of a hash-based problem, and its hardness is solely based on the security of hash functions, which pose adequate security \cite{alagic2022status}. The performance of SPHINCS+ is an order of magnitude slower than ECDSA; however, when comparing different works, there is no clear agreement on the slowdown. Many different results have been published, likely because of different setups and the complexity of SPHINCS+, which has 12 parameters \cite{alnahawi2024comprehensive}. The same goes for energy consumption, which is much higher than other algorithms \cite{tasopoulos2023energy}. Because of this high overhead, SPHINCS+ is deemed a fallback in case a weakness is discovered in the other mainly lattice-based algorithms \cite{alagic2022status}. The developers of SPHINCS+ also released two different versions, SPHICS+f and SPHINCS+s which have tradeoff between execution time and key size.
 
 \section{Unikernels}
 
@@ -186,16 +181,12 @@ It makes use of the Module-LWE and Module-SIS problems, which are based on the l
 \end{figure}
 
 
-Unikernels provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following sections, we list known unikernels and their features that are crucial for our work. \cite{madhavapeddy_unikernels_2013}
+Unikernels \cite{madhavapeddy_unikernels_2013} provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following paragraph, we show Unikraft, an implementation of unikernels, and their features that are crucial for our work. 
 
-Unikraft is a unikernel known for its superior performance.
-Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft is POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. \footnote{\url{https://asplos22.unikraft.org/syscall_shim-bincompat/}}
-To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions.\footnote{\url{https://unikraft.org/docs/internals/syscall-shim}} No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and can a rebooted quickly.
-\cite{Kuenzer_2021}
+Unikraft \cite{Kuenzer_2021} is a unikernel known for its superior performance. Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft aims to be POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions. No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and in the case of an error they are rebooted quickly.
 
-As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p protocol.\footnote{\url{https://wiki.qemu.org/Documentation/9psetup}}
-Unikraft supports networking via the LWIP library\footnote{\url{https://www.nongnu.org/lwip/2_1_x/index.html}} which was originally developed for embedded systems but also has support for POSIX networking. Security mechanisms such as encryption and an SSL connection are done with OpenSSL\footnote{\url{https://github.com/unikraft/lib-openssl}}.
-
+Unikraft supports networking via the lwIP library which provides a TCP and an IP stack. lwIP was originally developed for embedded systems but also has support for POSIX networking which means it has a good tradeoff between compatibility and resource usage. Security mechanisms such as encryption and an SSL connection are done with OpenSSL though currently Unikraft only supports major version 1 of OpenSSL which is not sufficient for our purposes as we will see later.
+As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p filesystem protocol which allows us to include external folders of the host system into the unikernel.
 
 %%
 \chapter{Demonstrator}
@@ -290,7 +281,7 @@ Primitives are split into three operations (with the exception of ECDHE which on
 
 \section{Speed}
 
-To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and disregard the performance between different virtualization mechanisms. 
+To test the speed of the primitive operations we use the provided liboqs benchmarks and adapt them to run inside the container and the unikernel. We also add primitives from classical PKC that is implemented in OpenSSL, mainly ECDHE for key exchange and ECDSA, RSA for digital signatures. The benchmark runs for a fixed amount of time (5 seconds) and compute the amount of operations the application was able to do in this timespan. We compute the result for all three operations of the primitives (with the Exception of ECDHE). The results are displayed in \ref{fig:table_primitives_speed}. We first compare results between different primitives and then we compare the performance between different virtualization mechanisms. 
 
 Kyber has the best performance of all post-quantum ciphers even with larger keys. Kyber inside a container produces very similar and only produces a slight overhead. Inside a unikernel Kyber perfroams marignally worse, taking almost double the amount of time when compare to a native execution. BIKE is taking vastly more time than Kyber for all operation, about 400 times for encapsulation. Again containerization performs very similar. The unikernel has about 1.25 overhead. For HQC we get a better performance for generation though worse for encapsulation and decapsulation. Containerization is comparable to a native execution. On the unikernel we get a slightly slower result with an overhead of 1.3. FrodoKEM-SHAKE perform very similar to HQC but has better performance for de- and encapsulation. All execution styles take about the same amount of time. For FrodoKEM-AES the performance is much worse, about 3 times slower. On the Unikernel the perfromance is slightly better to both Container and native execution (which about the same) with a speedup of 10 percent. Our litmus test ECDHE performs similar to Kyber and we see that all execution styles are the same.
 
@@ -301,62 +292,35 @@ Kyber has the best performance of all post-quantum ciphers even with larger keys
     \label{fig:table_primitives_speed}
 \end{figure}
 
-No going to the signature algorithms we can see that the first algorithms SPHINCS+ (the small variant) performs siginiticantly worse for all operations when compared to ECDSA. On a Container we get similar results to native execution and on a unikernel it performs marginally better with a speedup of 1.75. For the fast variant we get much faster speeds on keygen and sign operations however on the verify operations our results are slower. The overhead between different execution styles is similar to that of the small SPHINCS+ variant. The next signature algorithm Falcon performs better than SPHINCS+ but still significantly worse than ECDSA. Inside a unikernel we get an overhead of about 
+Now going to the signature algorithms we can see that the first algorithms SPHINCS+ (the small variant) performs siginiticantly worse for all operations when compared to ECDSA. On a Container we get similar results to native execution and on a unikernel it performs marginally better with a speedup of 1.75. For the fast variant we get much faster speeds on keygen and sign operations however on the verify operations our results are slower. The overhead between different execution styles is similar to that of the small SPHINCS+ variant. The next signature algorithm Falcon performs better than SPHINCS+ but still significantly worse than ECDSA. Inside a unikernel we get an overhead of about 
 
-Inside the unikernel results differ quite a lot when compare to the container execution which always tends to match the performance of native execution. We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a algorithms needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native on container version. 
+Inside the unikernel results differ quite a lot when compare to the container execution which always tends to match the performance of native execution. We suspect the reason for this is that we do not use hardware generated entropy when using the unikernel it only receives a seed upon booting which is used for its entire lifespan. If there a algorithms needs lots of randomness and makes lots of calls to getrandom it will create a larger overhead on the native and container versions. 
 
+To test the speed of the TLS connections we use the openssl s\_server and s\_time application and adapt them to run inside the container and the unikernel. First we generate certificate chains with the selected digital signature algorithms and aftewards we run s\_time for a fixed amount of time (30 seconds) and compute the amount of operations the application was able to do in this timespan. We only look at connection establishment of a new connection and neglect connections with session reuse though the results are still available in the raw data. The results are displayed in \ref{fig:bar_tls_speed}. We limit ourselvles to a subset of combinations of different digital signature and key exchange algorithms, we take the same subset as \cite{tasopoulos2023energy} for a better comparison. We first compare the results between different primitives and then between different virtualization mechanisms.
 
-benchmarks
-% # benchmarks
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
+    \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
+    \label{fig:bar_tls_speed}
+\end{figure}
 
-% internal benchmarks done in oqs_uk_speed also taken from liboqs, test the speed of KEM and Signature algorithms
+The first combination is Dilithium and Kyber which have a very similar performance when compared with a regular TLS handshake with ECDSA and ECDHE. When comparing different virtualization mechanisms we can now see that native execution has quite an advantage over virtualization (as it should). Docker and Unikraft are almost on par performancewise with Docker only having a slight advantage. Now if we look at the results on different NIST levels of Dilithium and Kyber we can see that the performance only barely decreases but we get added security. The difference between virtualization mechnasism stays consistent. If we look at the combination Falcon and Kyber we can see that the results are slightly lower than with Dilithium and Kyber and their performance charactersistics stays the same on different NIST levels and different virtualization mechanisms. Taking a look at the combination Dilithium and BIKE we can see that we have a low amount of connections with an overhead of roughly 27.6. Here Docker performs minimally better and the native execution and unikernel execution are on par. For Dilithium and HQC we get a better result but still a low performance with an overhead of 9.1. Between virtualization mechansims they perform similar to Dilithium and BIKE. If we look at Dilithium and FrodoKEM we get a different results depending on the symmetric encryption algorithm that FrodoKEM uses. If we use AES we get an overhead of 13.2 and if we use SHAKE we get an overhead of 5.3. Again the performance of all virtualization mechanisms is very similar, for the AES variant the unikernel has a slightly higher result and Docker the lowest. For SHAKE the native execution has the highest amount of connections and Docker and Unikraft are on par.
 
-% TODO match the configs of openssl + liboqs from container, native, Unikernel
+Now most of the overhead of the ciphers between different virtualization mechanisms is less noticeable. We suspect that it is because we only execute the PQC algorithms once per connection and for each connection the network stack creates and additional overhead that is now also visible in the benchmark. This is also the reason unikraft is faster now.
+For the combinations which contain BIKE and HQC Docker outperforms other execution styles. We suspect this is because we have a high overhead caused by the PQC algorithm that the added overhead of networking is neglible in this case. The two variants docker and native perform the same and the higher performance for Docker is a minimal deviation which only shows because of logarithmic scaling.
 
-% # openssl binary
+\section{Memory}
 
-% enabled 9pfs to access config
-% statically add oqsprovider
-% added s_server, s_client, s_time parts of openssl
-% 64M is not enough memory, increased to 128M
-
-% Certificate verification shows that certificate is only valid later
-% system time wrong? 
-
-% TODO container does not load oqsprovider as additional provider, otherwise config file has to be specified for each cmd manually
-
-
-% # ecdsa rsa ecdhe
-% - included in the tls benchmark
-% - for oqs_speed use the native openssl interface -> its bad
-% - use openssl speed as a reference
-
-% - for memory benchmarking use top 
-
-% # automatic power measurement 
-
-% https://github.com/baryluk/fnirsi-usb-power-data-logger
+To test the memory consumption of all virtualization mechanisms we ran the regular benchmark again for both primitive opertons and TLS connections and during execution we took regular usage sample of the program with a memory profiler (top) for a fixed amount of time (5 secondds for primitive execution, 30 seconds for TLS connections). We then calculated the average amount of memory that was used during execution. We only considered the actual physical memory that was used and reported by top. Usage of virtual memory are also available in the raw results. Again we fist examine the results of only the primitive exeuction and then consider TLS connections.
 
 
 
-% # benchmarks
-
-% TODO find a way to get the ip address from the dock
-
-% TODO for power measurement, draw a diagram of the connections (resistor etc)
-
-% TODO inform about basics electrical engineering, voltage splitter
-
-% TODO also check memory consumption, look for good profiler for this
-
-
-% most important kyber, falcon, dilithium, sphincs
-% interesting lms xms
-% less interesting frodokem, bike
-
-
-% TODO find a way to reliably kill the openssl processes, with s_client you have to use Q in stdin to terminate it, Unikraft does not have stdin, find a way to terminate this as well, s_server does neet ctrl-c, the binaries we provide (Unikraft/openssl) are scripts that then execute the right configuration with e.g. qemu, if we cancel this script maybe qemu is not termianted as well
-
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_memory.pdf}
+    \caption{Memory (KiB) of Traditional and Post-quantum Primitives.}
+\end{figure}
 
 % # first results of power measurement
 
@@ -399,41 +363,6 @@ benchmarks
 % - do not use client/server differences are mostly consistent
 % - instead use unikernel/container/native for different colors
 
-% TODO 
-
-% does not work: , lms, xms, frodokem, bike
-% works: falcon, dilithium, sphincs, kyber
-% interesting 
-% less interesting 
-
-% lms xms are not in the liboqs source code
-% the paper only uses ciphers that work in our implementationm
-
-% is set to off by default
-% https://github.com/open-quantum-safe/liboqs/blob/main/CONFIGURE.md
-% https://github.com/open-quantum-safe/liboqs/blob/main/.CMake/alg_support.cmake
-
-% if we strictly follow the paper then we do not need the additional ciphers
-
-% TODO do proper error handling in the python script if a subprocess fails
-
-% TODO do we need rsa, ecdhe as a comparison?
-
-% Big todos:
-% find a way to select different kems
-% - get everything running flawlessly on the pi
-% - include default comparisons rsa ecdhe
-% - update readme to successfully launch the project
-% - add memory benchmark
-% - write report
-
-
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/bar_tls_speed.pdf}
-    \caption{TLS Connections of Traditional and PQ TLS 1.3 handshakes}
-\end{figure}
 
 
 
@@ -445,13 +374,8 @@ benchmarks
     \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
 \end{figure}
 
-\section{Memory}
 
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/table_primitives_memory.pdf}
-    \caption{Memory (KiB) of Traditional and Post-quantum Primitives.}
-\end{figure}
+
 
 
 
