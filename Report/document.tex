@@ -89,9 +89,7 @@ We build a test setup in this repository which contains a configuration for a Un
 
 In this section we present necessary background information to fully grasp the impact of Post-Quantum Cryptography on current crypography standards. Specifically the changes that need to be made to a standard implementation such as OpenSSL to count as post-quantum secure. We then introduce the notion of a Unikernel as an alternative virtualization method to containers. 
 
-
 \section{TLS Protocol}
-
 
 \begin{figure}
     \centering
@@ -102,13 +100,11 @@ In this section we present necessary background information to fully grasp the i
 
 Transport Layer Security (TLS) is a network protocol that works on top of the TCP protocol. Its main goal is to ensure confidentiality, authenticity, and integrity. We now examine the inner workings of TLS and single out those cryptographic operations/primitives that are not strong enough to withstand a Post-Quantum attack and need to be replaced by newer PQC. We will do so by observing a typical connection establishment of the TLS 1.3 protocol, which is defined in \cite{rescorla2018transport}. As TLS is an extensive protocol with many extensions, we examine a connection where only the server authenticates itself, and the server and client do not have any pre-shared keys. A graphical overview is presented in Figure \ref{fig:tls_handshake}.
 
-
-
 The TLS handshake starts once a TCP handshake is done and establishes a stateful connection. It begins by sending a \textit{ClientHello} message, which contains several attribute fields. We omit most fields and only focus on the ones important for encryption. The first encryption-related field is the \textit{cipher\_suites} field, which contains a list of \textbf{symmetric ciphers} that the client supports. The next two fields are the \textit{signature\_algorithms} and \textit{signature\_algorithms\_cert} fields that contain digital signature algorithms supported by the client. The final two fields are the \textit{supported\_groups} and \textit{key\_share} fields. These include all supported \textbf{key exchange algorithms} and the corresponding key material, which is used to share a secret key that both client and server can use for symmetric encryption. Upon receiving the message, the server selects a key exchange algorithm from the list of supported groups and calculates the shared secret.
 
 The server responds with a \textit{ServerHello} message that contains the \textit{key\_share} field with its own key material so that the client can deduce the shared secret as well. The message also contains the selected algorithm for symmetric encryption in the \textit{cipher\_suite} field. Afterwards, the server sends the \textit{EncryptedExtensions} message that contains additional extensions (e.g., the server name or the TCP segment size). Next, the server authenticates itself by sending the \textit{Certificate} and \textit{CertificateVerify} messages that contain the server's certificate chain and verify that the chain belongs to the sender of the previous messages. They do so by calculating a \textbf{hash} over the handshake context and the certificate chain and then calculating a \textbf{digital signature} over the hash with the private key corresponding to the server's certificate. The client then verifies the digital signature by climbing up the certificate chain and verifying the top with its root certificate. The last two messages are the \textit{Finished} messages, which both the client and the server send. They signal that neither server nor client has anything further to add to the handshake, and they contain a \textbf{MAC} of the entire handshake to ensure nothing was omitted. Once they are exchanged, the TLS connection is established, and it is now possible to exchange user data. From now on, the shared secret is used for encryption, for both user data and status messages of the TLS protocol. 
 
-We can see that TLS makes use of several cryptographic operations: symmetric encryption, key exchange algorithms, digital signatures, hash functions, and MACs. As examined by \cite{chen2016report}, we can see that multiple of them are not secure against quantum-capable attackers:  Classical key exchange algorithms are based on the Diffie-Hellman algorithm, which uses the discrete logarithm problem for security \cite{maurer2000diffie}. However, it was discovered that quantum computers can efficiently solve this problem, making it insecure \cite{shor1999polynomial}. The same goes for digital signatures that typically use ECDSA and RSA algorithms, which are again based on the discrete logarithm problem or the integer factorization problem, that are weak against quantum computers \cite{mahto2017rsa, shor1999polynomial}. For symmetric encryption, the impact is not as drastic, as no efficient solution to the underlying problems has been found yet. Though \cite{bennett1997strengths} discovered that it is possible to speed up general search algorithms quadratically with quantum computers, which means that we can also search faster for a symmetric key. However, if we double the key size, we can maintain the same security as before. The same applies to hash functions \cite{alnahawi2024comprehensive}. They are also considered secure, given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions, which means they are also considered secure \cite{bhaumik2024committing}. An overview of the different cryptographic operations and their security is shown in TABLE \ref{tab:ops_security}. Fortunately, we can see that weak operations are primarily used in the handshake, as later everything is encrypted with the shared secret, and they are limited to key exchange and digital signatures, which means we have to find alternatives for those two operations. 
+We can see that TLS makes use of several cryptographic operations: symmetric encryption, key exchange algorithms, digital signatures, hash functions, and MACs. As examined by \cite{chen2016report}, we can see that multiple of them are not secure against quantum-capable attackers:  Classical key exchange algorithms are based on the Diffie-Hellman algorithm, which uses the discrete logarithm problem for security \cite{maurer2000diffie}. However, it was discovered that quantum computers can efficiently solve this problem, making it insecure \cite{shor1999polynomial}. The same goes for digital signatures that typically use ECDSA and RSA algorithms, which are again based on the discrete logarithm problem or the integer factorization problem, that are weak against quantum computers \cite{mahto2017rsa, shor1999polynomial}. For symmetric encryption, the impact is not as drastic, as no efficient solution to the underlying problems has been found yet. Though \cite{bennett1997strengths} discovered that it is possible to speed up general search algorithms quadratically with quantum computers, which means that we can also search faster for a symmetric key. However, if we double the key size, we can maintain the same security as before. The same applies to hash functions \cite{alnahawi2024comprehensive}. They are also considered secure, given that they have a larger output. Message authentication codes are based either on symmetric ciphers or hash functions, which means they are also considered secure \cite{bhaumik2024committing}. An overview of the different cryptographic operations and their security is shown in Table \ref{tab:ops_security}. Fortunately, we can see that weak operations are primarily used in the handshake, as later everything is encrypted with the shared secret, and they are limited to key exchange and digital signatures, which means we have to find alternatives for those two operations. 
 
 \begin{table}[h]
     \centering
@@ -137,7 +133,6 @@ Key exchange algorithms need to be migrated immediately because of the possibili
 
 The same applies to authentication via certificates: Adversaries can impersonate a peer by breaking its public keypair and issuing false certificates before the lifetime of the keypair ends. This attack also depends on the TLS handshake at the beginning of a TLS session. However, an adversary needs to actively participate in the connection, impersonate a peer, and only perform the attack while the session is ongoing, making it less of a problem for current TLS connections. Nevertheless, early adoption is still important as authentication with certificates is based on chaining with global root certificates on top of the chain having a life span of 20 years \cite{ietf-uta-pqc-app-00}. This means that if quantum-based attacks become feasible in this time span, root certificates that are trusted by and stored on the majority of devices need to be removed.
 
-
 \section{Post-Quantum Cryptography}
 
 Now that we have seen how the TLS protocol works and what cryptographic operations it uses, we want to look at PQC cryptographic operations that replace key exchange and signature algorithms done with classical PKC. In this section, we will examine different key exchange algorithms regarding security and efficiency. We focus mainly on algorithms that have been standardized, as they are the most evaluated and the most likely to be considered for implementation in libraries such as OpenSSL. 
@@ -160,7 +155,6 @@ Additionally, NIST also lists other ciphers which still have not been disqualifi
 
 Now we have several choices as to what key exchange cipher we want to use. If we go with NIST's choices, we have two ciphers that perform similarly to old key exchange ciphers. However, their underlying mathematical problems are still relatively new and not as field-tested. On the other hand, ISO's choices rely on older, well-studied mathematical problems, which are less likely to be broken, but at the same time, they have a higher overhead. Fortunately, this overhead is manageable even on weaker hardware, e.g., it was shown by \cite{wagner-2025} that it is possible to implement even Classic McEliece with its large key sizes on an embedded system. Now, adversaries still have the ability to spoof an active connection by issuing false certificates, which is why we also need to make use of post-quantum digital signatures.
 
-
 \section{Providing Certificates with Post Quantum Cryptography}
 
 Just like we did with key exchange algorithms, we will examine different digital signature algorithms in terms of security and efficiency, and we will focus on ciphers that have been standardized. Functionally, post-quantum digital signatures behave exactly as classical signatures, which means they can act as a drop-in replacement in the TLS protocol. Again, we compare their efficiency to ECDSA in a TLS 1.3 handshake. ECDSA is currently a supported algorithm in the TLS 1.3 standard and is widely used for comparison in other work. 
@@ -180,13 +174,13 @@ It makes use of the Module-LWE and Module-SIS problems, which are based on the l
     \caption{Different Virtualization Techniques}
 \end{figure}
 
-
 Unikernels \cite{madhavapeddy_unikernels_2013} provide an alternative to normal virtualization, as they are configured at compile time of the software that is to be executed on the virtual machine. The build system searches for dependencies of the software on the operating system and, afterward, only includes operating system parts that are used by the software. This leads to a smaller attack vector as most software does not use all capabilities of a general-purpose operating system such as Linux, and it can potentially increase performance as unnecessary parts of the operating system do not need to run in the background. Unfortunately, this comes with the drawback of having a static image that needs to be recompiled when the software needs to be changed. In the following paragraph, we show Unikraft, an implementation of unikernels, and their features that are crucial for our work. 
 
 Unikraft \cite{Kuenzer_2021} is a unikernel known for its superior performance. Unikraft achieves this by having a flat and modular software hierarchy, which it does by grouping up basic functionalities like memory management and networking into micro-libraries. These micro-libraries can then be configured at compile-time so that only necessary components are running alongside the main application. Furthermore, Unikraft aims to be POSIX- and Linux-compatible and executes binaries that are compiled for a Linux environment. To achieve this Unikraft implements a shim layer for syscalls, which replaces actual system calls with library functions. No system calls also means that there is no kernel mode. Everything is done in the same address space and there is no overhead for switching between a user and kernel mode. This does decrease security; however, since unikernels are specifically compiled for one use case there is only the main application that can cause damage to the system. Additionally, unikernels are intended to be run inside a virtual environment, which allows mistakes and in the case of an error they are rebooted quickly.
 
 Unikraft supports networking via the lwIP library which provides a TCP and an IP stack. lwIP was originally developed for embedded systems but also has support for POSIX networking which means it has a good tradeoff between compatibility and resource usage. Security mechanisms such as encryption and an SSL connection are done with OpenSSL though currently Unikraft only supports major version 1 of OpenSSL which is not sufficient for our purposes as we will see later.
 As a filesystem, Unikraft currently supports ramdisks as a static filesystem and external filesystems via the 9p filesystem protocol which allows us to include external folders of the host system into the unikernel.
+
 
 %%
 \chapter{Demonstrator}
@@ -263,7 +257,6 @@ We can now make a TLS connection, however we cannot check certificates yet. The 
 
 To use post-quantum kem algorithms we still need to make some changes. The TLS procol lets a client choose a list of key exchange groups that its supports before making the server choose between those solutions. By only issuing one allowed group as server we can force the client to use this specific group. To make sure the client accepts we also need to configure the supported groups. We can do so by changing the OpenSSL config file. Fortunately we now have filesystem support which means we can load a custom config file. To add the post-quantum groups we need to add them to the DEFAULT\_GROUPS field in the config file (Note: the group names are inconsistent, look here\footnote{\url{https://github.com/open-quantum-safe/oqs-provider/blob/main/ALGORITHMS.md}} for proper names). Now we can also choose custom key exchange algorithms include post-quantum KEM.
 
-
 \section{Performance Optimizations}
 
 During development we examined how to reduce the unikernel's overhead. The first configuration we tried was compiling the unikernel with link-time optimization though this did not seem to show any obvious improvements for smaller tests we executed manually. Because of this and because link-time opzimization is still experimental we decided not to enable it in the benchmarks. The second configuration that we considered was hardware acceleration with kvm. We deem kvm an important optimization as otherwise our hypervisor QEMU would fall back to code emulation via tiny code generator which has a vast overhead. kvm utilizes hardware extensions to run a virtual machine directly on the hardware and only switch to the hypervisor when specific instructions are executed or specific data sections are accessed. Unfortunately enabling kvm caused the unikernel to crash with a major cpu exception. All libraries that implement cryptographic operations require a way to get random data, which is either done through the /dev/random device or the getrandom syscall on Linux. We configured the libraries inside Unikraft to use the getrandom syscall, which on arm64 used an assembly instruction to generate a random value. However our target system (Rapsberry Pi 4B) does not support these arm64 instructions to generate randomness and would instead generate an exception because of the missing instruction. Fortunately Unikraft provides a way to accept a seed and use software based randomness intead of hardware randomness. Currently each time a unikernel is launched a random value is generated by the host operating system and passed to the unikernel. The unikernel uses this value until it shuts down. However, this can negatively impact security if we have a particularly long runnning unikernel.
@@ -272,12 +265,7 @@ During development we examined how to reduce the unikernel's overhead. The first
 %% 
 \chapter{Evaluation}
 
-In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. 
-We will first give an overview of what benchmarks are done and how they are setup, and afterwards examine the results.
-
-\section{Overview}
-
-Primitives are split into three operations (with the exception of ECDHE which only has two operations Key Generation and Key Deduction), Key Generation, Key Encapsulation, and Key Decapsulation for the KEM primitives and Key Generation, Key Signing, and Key Verifying. 
+In this chapter we evaluate the performance of our implementation and compare it to a native implementation and a containerized version running on the same hardware. We will first give an overview of what benchmarks are done and how they are setup, and afterwards examine the results. Generally we differentiate between a primitive benchmark and a TLS benchmark. Primitives are split into three operations (with the exception of ECDHE which only has two operations Key Generation and Key Deduction), Key Generation, Key Encapsulation, and Key Decapsulation for the KEM primitives and Key Generation, Key Signing, and Key Verifying. We measure each operation seperately. For TLS we chose a subset of combinations of key exchange and signature algorithms and measure the connection speed.
 
 \section{Speed}
 
@@ -312,9 +300,11 @@ For the combinations which contain BIKE and HQC Docker outperforms other executi
 
 \section{Memory}
 
-To test the memory consumption of all virtualization mechanisms we ran the regular benchmark again for both primitive opertons and TLS connections and during execution we took regular usage sample of the program with a memory profiler (top) for a fixed amount of time (5 secondds for primitive execution, 30 seconds for TLS connections). We then calculated the average amount of memory that was used during execution. We only considered the actual physical memory that was used and reported by top. Usage of virtual memory are also available in the raw results. Again we fist examine the results of only the primitive exeuction and then consider TLS connections.
+To test the memory consumption of all virtualization mechanisms we ran the regular benchmark again for both primitive opertons and TLS connections and during execution we took regular usage sample of the program with a memory profiler (top) for a fixed amount of time (5 secondds for primitive execution, 30 seconds for TLS connections). We then calculated the average amount of memory that was used during execution. We only considered the actual physical memory that was used and reported by top. Usage of virtual memory are also available in the raw results. Again we fist examine the results of only the primitive execution and then consider TLS connections.
 
+If we look at the native execution of the algorithms we can see that all of them roughly use the same amount of memory between 3.2 and 3.7 MB. The same is happening when using a container where we get between 28 and 30 MB of memory usage. The unikernel also uses a consistent amount of memory between 58 and 60 MB, however when running classical key exchange or digital signature algorithms we get a higher memory usage between 76 and 80 MB. 
 
+The impact of different algorithms is minimal and the fluctuations in the results mostly stem from the operating system,  because of different allocation strategies or entropy generation. We can confirm this by looking at different NIST levels of the same algorithm which show less memory usage for higher NIST levels. This applies to the native and containerized solutions. The unikraft solution uses considerably more memory when working with non-post-quantum algorithms. For non-post-quantum algorithms we use the OpenSSL library (instead of liboqs), which has a higher complexity when setting up a key-exchange or digital signature including allocation of many OpenSSL specific objects. We suspect that Unikraft's and or QEMU's allocators are not able to handle this as efficiently as the native and containerized solutions. 
 
 \begin{figure}[h]
     \centering
@@ -322,107 +312,48 @@ To test the memory consumption of all virtualization mechanisms we ran the regul
     \caption{Memory (KiB) of Traditional and Post-quantum Primitives.}
 \end{figure}
 
-% # first results of power measurement
-
-% - on idle takes about 1.5-1.6W with ssh and vscode server running
-% - with Native/s_server Native/s_time increases to 1.9-2.0W
-% - with Native/s_server Unikraft/s_time increases to 2.6-2.7W
-% - with Native/s_server Container/s_time  increases to 2.9-3.0W
-
-% - remeassuring for Native now takes 2.8-2.9W
-% - Unikraft measurement stays consistent 2.6-2.7W
-% - remeassuring Container now also takes 2.8-2.9W, slightly higher than Native 
-
-% - Theory: power consumption is nic bound
-% - unikraft has less connections so can also only do less io operations
-% - /dev/null does decrease power consumption, probably because of the many stdio calls s_time does
-% - not tested with kvm yet so performance improvement still possible
-% - need to enable kvm
-
-% - kvm works without processor generated randomness TODO find if this can be enabled again
-% - results with kvm are very similar to Container, about 2.8-2.9W
-% - results differ, for session renogiation power usage is lower, especially on Unikernel
-% - between the different modes power usage is higher
-
-
-% # how the paper meassured energy
-
-% - KEMs: ECDHE as reference, Kyber512, Bike-1, HQC-128, FrodoKEM1-AES, FrodoKEM1-SHAKE, Kyber768, Kyber1024
-% - Sigs: RSA-2048, ECDSA, Sphincs128-small-simple, Sphincs128-fast-simple, Falcon512, Dilithium2, Dilithium3, Falcon1024
-% - TODO what is NIST security level
-% - measure execution time, power consumption in W
-% - do we need exact Jool, because with current power measurements we can not execute this
-
-% - then the same thing for a handshake
-% - average energy consumption all handshakes is 
-
-% - use the paper as template
-% - make a table for the primitives and for the tls handshake
-% - make one bar chart that shows the different power usage
-% - use average wattage instead of joule if possible, we cannot measure joule
-% - do not use client/server differences are mostly consistent
-% - instead use unikernel/container/native for different colors
-
-
-
-
-
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/table_tls.pdf}
-    \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
-\end{figure}
-
-
-
-
-
+For TLS connections the results are similar. For native execution we get between 12 and 14 MB, for container execution between 28 and 30 MB, and for unikernel execution we get between 110 and 120 MB of memory usage. The exact results are listed in the Appendix.
 
 \section{Energy}
 
+In our setup measuring energy consumption is not automatic and we need perform several steps in order to get the results.
+We perform energy measurement with an external hardware, the FNIRSI® FNB58 USB Fast Charge Tester, which we connect to our target system and an additional computer to record the energy consumption of the target system. We manually start recording on our second computer and then we start our benchmark. The benchmark executes all primitive operations and TLS connections for a fixed amount of time (5 seconds for each primitive operation and 30 seconds for TLS connections a combination of algorithms). After the benchmark is finished we now have all the results as a list of measured values (Voltage, Power, Energy) and associated timestamps. 
+
 \begin{figure}[h]
     \centering
-	\includegraphics[width=1\textwidth]{resources/table_primitives_power.pdf}
-    \caption{Power Consumption (mW) of Traditional and Post-quantum Primitives.}
+	\includegraphics[width=1\textwidth]{resources/analyze_wattage.pdf}
+    \caption{Analyzing the Output of the Fnirsi Recording Script.}
+    \label{fig:analyze_wattage}
 \end{figure}
 
+Now we need to find out which values belong to the timespan during which executed a specific algorithm. We did this by bringing the results in to a visual format and then finding a way to reliably predict the start and the end of each algorithm. We can see in Figure \ref{fig:analyze_wattage} the wattage in green and the current in yellow. On our target system the voltage was around 5 volts with minor fluctuations. The goal is to detect when an algorithm is starting and when it stops. We decided to use delta of current to register a started algorithm when the change is large enough. We chose the current because it has less fluctuations compared to the wattage and we applied a batch average of 3 because the current still has fluctuations. During execution of the benchmark we also saved the start and stop times of each algorithm (marked in grey) so that we can narrow down our search for the proper starting time. With this approach we were able to measure the power and energy consumption of each algorithm indiviually and together with a TLS connection. It is important that we do not consider energy consumption per executed algorithm but instead we consider the average energy consumption over the runtime of our benchmark. If we consider per-execution energy consumption our results will look very similar to speed benchmark. If we consider the energy consumption for a runtime we can test the actual behaviour of an algorithm more accurately.
+
+If we look at the key exchange algorithms we can see that the energy consumption of all primitives is generally really similar. Energy consumption is in range of 16 to 18J for the native execution for all operations. ECDHE has the lowest power consumption with 16.3J/15.5J and highest power consumption was reported by BIKE and HQC with 17.3J for all operations. If we compare different virtualization mechanisms we can see that on average the unikernel performs very similar to and sometimes even outperforms the native execution (in case of HQC). Containerization has a slight overhead with on average 1-2 additional Jouls. If we look at digital signature algorithms the results are very similar to the key exchange algorithms. We also have about the same amount of energy consumption for each algorithm except for SPHINCS+s. And we have the same overhead when comparing different virtualization mechanisms. SPHINCS+s on the other hand has a big overhead jumping to 27-23J for all operations. Container execution again has a slight overhead for SPHINCS+s while unikernel execution requires less energy than the native execution.
+
+For the high energy consumption of SPHINCS+s we suspect that this is because the s-variant of SPHINCS+ was designed for space optimality that during the algorithm only a small of memory is used which means we get higher IPC and can thus also consume more energy. Furthermore as mentioned in the speed comparison, SPHINCS+ requires more entropy than other algorithms. Entropy which we only have to gather on native exeuction and inside the container since the unikernel does not have the capability to generate randomness itself but relies on the host sytem. We suspect that because of this we make gather less entropy for the unikernel and thus also require less energy. We also collected power consumption of the target system though because the results were very similar to the previous results we will not discuss them further. They are listed in the Appendix.
+ 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=1\textwidth]{resources/table_primitives_energy.pdf}
     \caption{Energy Consumption (J) of Traditional and Post-quantum Primitives.}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=1\textwidth]{resources/bar_tls_power.pdf}
-    \caption{Power Consumption of Traditional and PQ TLS 1.3 handshakes}
-\end{figure}
+Finally we look at the energy consumption of TLS connections. We also measure the consumption over a fixed timespan and do not measure energy consumption per connection. We can see in Figure \ref{fig:bar_tls_energy} that again when comparing different combinations of algorithms the results are very similar. However when comparing different virtualization mechansims we get a more noticable result. Unikernel execution can have an overhead of up to 10J in the case of Dilithium and Kyber. For algorithms that were considered faster we generally get a higher overhead when using unikernel execution compared to container execution (e.g. with Dilithium, Falcon and Kyber). For slower algorithms container execution has a higher overhead than unikernel exeuction (e.g. with BIKE, HQC, FrodoKEM). The most efficient algorithm in terms of energy consumption is FrodoKEM-AES and the most inefficient SPHINCS+s. Again, we also tested power consumption though the results are similar to energy consumption which is why they are not discussed and can be found in the Appendix.
 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=1\textwidth]{resources/bar_tls_energy.pdf}
     \caption{Energy Consumption of Traditional and PQ TLS 1.3 handshakes}
+    \label{fig:bar_tls_energy}
 \end{figure}
-
 
 
 
 %% 
 \chapter{Conclusion}
 
+In this work we implemented a framework to test post-quantum algorithms with different virtualization mechanisms in terms of speed, memory usage, and energy consumption. Our primary focus was on the performance of the unikernel. We discovered that for raw execution of the post-quantum algorithms the results for virtualization mechanisms actually differ. However when conidering them inside a TLS connection, their primary use, the difference becomes less noticeable to the point where it does not matter to differentiate between different virtualization mechanisms. In terms of speed the unikernel is slightly slower than a container execution when averaging the test results. Memory usage is generally higher, and power consumption is roughly the same as container execution. Additonally, since unikernels have a much higher overhead for development and maintenance we do not recommend the general usage of a unikernel in resource-constrained environents with post-quantum cryptography. If we have a scenario where we need fast boot times of a virtual machine (e.g. AWS Lambda) then a unikernel does make sense.
 
-
-error handling
-
-% error handling the unikernel
-% # .config
-% - select none in arm cpu
-% - select kvm for platform
-% - enable exactly one tty
-
-% - Printf fails need: 
-% drivers->console->pl011 and enable early console. For qemu-system-aarch64/virt the pl011 is at 0x09000000
 
 %%
 \printbibliography
@@ -505,6 +436,26 @@ To execute tests (only for Unikraft) run:
 \begin{lstlisting}[style=shell]
 Unikraft/test
 \end{lstlisting}
+
+\section{Additional Results}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_tls.pdf}
+    \caption{Time, Power, Energy, and Memory consumption of Traditional and PQ TLS 1.3 Handshake.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/table_primitives_power.pdf}
+    \caption{Power Consumption (mW) of Traditional and Post-quantum Primitives.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=1\textwidth]{resources/bar_tls_power.pdf}
+    \caption{Power Consumption of Traditional and PQ TLS 1.3 handshakes}
+\end{figure}
 
 \section{Setup Images}
 
