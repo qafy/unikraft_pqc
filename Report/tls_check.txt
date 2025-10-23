@@ -1,0 +1,100 @@
+Container is indeed a little bit better for these specific ciphers. My theory is because of musl, we compiled the
+oqs benchmark with musl but for tsl we need to use the system library for dynamic loading networking etc
+in this case the docker container might perform better because of a different standart library
+
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups bikel1 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_time -connect localhost:443 -www / -CAfile /home/user/Desktop/epqciuoe/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+191 connections in 19.24s; 9.93 connections/user sec, bytes read 1378829
+191 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+193 connections in 19.26s; 10.02 connections/user sec, bytes read 905749
+193 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups bikel1 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile /workspace/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+212 connections in 17.48s; 12.13 connections/user sec, bytes read 1530428
+212 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+217 connections in 17.72s; 12.25 connections/user sec, bytes read 1018381
+217 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups bikel1 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+190 connections in 0.00s; inf connections/user sec, bytes read 1371610
+190 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+190 connections in 0.00s; inf connections/user sec, bytes read 891670
+190 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups hqc128 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_time -connect localhost:443 -www / -CAfile /home/user/Desktop/epqciuoe/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+596 connections in 17.53s; 34.00 connections/user sec, bytes read 4302524
+596 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+615 connections in 17.48s; 35.18 connections/user sec, bytes read 2886195
+615 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups hqc128 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile /workspace/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+626 connections in 15.95s; 39.25 connections/user sec, bytes read 4519094
+626 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+655 connections in 16.02s; 40.89 connections/user sec, bytes read 3073915
+655 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups hqc128 -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+581 connections in 0.00s; inf connections/user sec, bytes read 4194239
+581 connections in 31 real seconds, 7219 bytes read per connection
+Now timing with session id reuse.
+592 connections in 0.00s; inf connections/user sec, bytes read 2778256
+592 connections in 31 real seconds, 4693 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640aes -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_time -connect localhost:443 -www / -CAfile /home/user/Desktop/epqciuoe/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+410 connections in 15.10s; 27.15 connections/user sec, bytes read 2963890
+410 connections in 31 real seconds, 7229 bytes read per connection
+Now timing with session id reuse.
+426 connections in 15.44s; 27.59 connections/user sec, bytes read 2003478
+426 connections in 31 real seconds, 4703 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640aes -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile /workspace/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+403 connections in 15.07s; 26.74 connections/user sec, bytes read 2913287
+403 connections in 31 real seconds, 7229 bytes read per connection
+Now timing with session id reuse.
+420 connections in 15.29s; 27.47 connections/user sec, bytes read 1975260
+420 connections in 31 real seconds, 4703 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640aes -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+428 connections in 0.00s; inf connections/user sec, bytes read 3094012
+428 connections in 31 real seconds, 7229 bytes read per connection
+Now timing with session id reuse.
+434 connections in 0.00s; inf connections/user sec, bytes read 2041102
+434 connections in 31 real seconds, 4703 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640shake -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_time -connect localhost:443 -www / -CAfile /home/user/Desktop/epqciuoe/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+1077 connections in 15.78s; 68.25 connections/user sec, bytes read 7789941
+1077 connections in 31 real seconds, 7233 bytes read per connection
+Now timing with session id reuse.
+1120 connections in 15.35s; 72.96 connections/user sec, bytes read 5271840
+1120 connections in 31 real seconds, 4707 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640shake -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Container/openssl s_time -connect host.docker.internal:443 -www / -CAfile /workspace/Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+989 connections in 15.39s; 64.26 connections/user sec, bytes read 7153437
+989 connections in 31 real seconds, 7233 bytes read per connection
+Now timing with session id reuse.
+1052 connections in 15.19s; 69.26 connections/user sec, bytes read 4951764
+1052 connections in 31 real seconds, 4707 bytes read per connection
+/home/user/Desktop/epqciuoe/Benchmark/../Native/openssl s_server -key /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.key -cert /home/user/Desktop/epqciuoe/Benchmark/pki/server_Dilithium2.crt -groups frodo640shake -accept 443 -www
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/openssl s_time -connect 172.44.0.1:443 -www / -CAfile Benchmark/pki/CA_Dilithium2.crt -time 30
+Collecting connection statistics for 30 seconds
+1001 connections in 0.00s; inf connections/user sec, bytes read 7240233
+1001 connections in 31 real seconds, 7233 bytes read per connection
+Now timing with session id reuse.
+1030 connections in 0.00s; inf connections/user sec, bytes read 4848210
+1030 connections in 31 real seconds, 4707 bytes read per connection

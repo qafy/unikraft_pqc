@@ -1,0 +1,91 @@
+The results are the same, unikraft is better for both shake and aes so this probably is part of the frodokem algorithm not
+because of symmetric encryption
+
+
+home/user/Desktop/epqciuoe/Benchmark/../Native/benchmark kem -d 5 FrodoKEM-640-AES
++ '[' kem == pid ']'
++ taskset --cpu-list 1 /home/user/Desktop/epqciuoe/Native/oqs_speed/benchmark kem -d 5 FrodoKEM-640-AES
+KEM Speed test
+==========
+Started at 2025-07-24 18:39:04
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-AES                     |            |                |                 |            |                           |           
+keygen                               |        295 |          5.007 |       16971.414 |    471.195 |                  16971286 |     471190
+encaps                               |        290 |          5.002 |       17248.355 |     14.021 |                  17248244 |      14018
+decaps                               |        290 |          5.002 |       17248.879 |     12.506 |                  17248797 |      12462
+Ended at 2025-07-24 18:39:19
+
+/home/user/Desktop/epqciuoe/Benchmark/../Container/benchmark kem -d 5 FrodoKEM-640-AES
+KEM Speed test
+==========
+Started at 2025-07-24 16:39:19
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-AES                     |            |                |                 |            |                           |           
+keygen                               |        294 |          5.010 |       17041.901 |    739.816 |                  17041789 |     739830
+encaps                               |        288 |          5.006 |       17381.170 |    939.085 |                  17381076 |     939046
+decaps                               |        290 |          5.017 |       17300.200 |    929.899 |                  17300119 |     929921
+Ended at 2025-07-24 16:39:35
+
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/benchmark kem -d 5 FrodoKEM-640-AES
++ '[' -e /dev/kvm ']'
++ KVM_SUPPORT=-enable-kvm
+++ hexdump -vn32 '-e8/4 "0x%08X "' /dev/urandom
++ SEED='0x6B96B41B 0xBD772AF2 0xC3077DDD 0x1C9FFC5E 0xDD190AA1 0x1CBAFF2C 0x9D871C87 0xCCAA40A0'
++ '[' kem == pid ']'
++ qemu-system-aarch64 -append 'ssl_uk random.seed=[0x6B96B41B 0xBD772AF2 0xC3077DDD 0x1C9FFC5E 0xDD190AA1 0x1CBAFF2C 0x9D871C87 0xCCAA40A0] -- kem -d 5 FrodoKEM-640-AES' -kernel /home/user/Desktop/epqciuoe/Unikraft/oqs_uk_speed/build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic -enable-kvm
+KEM Speed test
+==========
+Started at 1970-01-01 00:00:00
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-AES                     |            |                |                 |            |                           |           
+keygen                               |        324 |          5.012 |       15470.519 |     52.015 |                  15470395 |      52006
+encaps                               |        317 |          5.015 |       15819.729 |     25.724 |                  15819568 |      25684
+decaps                               |        317 |          5.013 |       15814.041 |     40.297 |                  15813860 |      40261
+Ended at 1970-01-01 00:00:15
+
+/home/user/Desktop/epqciuoe/Benchmark/../Native/benchmark kem -d 5 FrodoKEM-640-SHAKE
++ '[' kem == pid ']'
++ taskset --cpu-list 1 /home/user/Desktop/epqciuoe/Native/oqs_speed/benchmark kem -d 5 FrodoKEM-640-SHAKE
+KEM Speed test
+==========
+Started at 2025-07-24 18:39:50
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-SHAKE                   |            |                |                 |            |                           |           
+keygen                               |        857 |          5.004 |        5838.975 |    238.107 |                   5838872 |     238119
+encaps                               |        760 |          5.002 |        6581.030 |     52.777 |                   6580930 |      52784
+decaps                               |        768 |          5.003 |        6514.142 |     19.715 |                   6514032 |      19715
+Ended at 2025-07-24 18:40:05
+
+/home/user/Desktop/epqciuoe/Benchmark/../Container/benchmark kem -d 5 FrodoKEM-640-SHAKE
+KEM Speed test
+==========
+Started at 2025-07-24 16:40:07
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-SHAKE                   |            |                |                 |            |                           |           
+keygen                               |        858 |          5.005 |        5833.690 |    400.862 |                   5833576 |     400852
+encaps                               |        761 |          5.006 |        6578.497 |     33.021 |                   6578371 |      32988
+decaps                               |        768 |          5.000 |        6510.517 |     37.699 |                   6510419 |      37699
+Ended at 2025-07-24 16:40:22
+
+/home/user/Desktop/epqciuoe/Benchmark/../Unikraft/benchmark kem -d 5 FrodoKEM-640-SHAKE
++ '[' -e /dev/kvm ']'
++ KVM_SUPPORT=-enable-kvm
+++ hexdump -vn32 '-e8/4 "0x%08X "' /dev/urandom
++ SEED='0x07023A76 0x279203F9 0x2033AB69 0xDA23E89C 0xBB4E51D4 0xD03B6B6F 0x20685679 0x319B4C04'
++ '[' kem == pid ']'
++ qemu-system-aarch64 -append 'ssl_uk random.seed=[0x07023A76 0x279203F9 0x2033AB69 0xDA23E89C 0xBB4E51D4 0xD03B6B6F 0x20685679 0x319B4C04] -- kem -d 5 FrodoKEM-640-SHAKE' -kernel /home/user/Desktop/epqciuoe/Unikraft/oqs_uk_speed/build/ssl_uk_qemu-arm64 -machine virt -cpu max -m 64M -nographic -enable-kvm
+KEM Speed test
+==========
+Started at 1970-01-01 00:00:00
+Operation                            | Iterations | Total time (s) | Time (us): mean | pop. stdev | High-prec time (ns): mean | pop. stdev
+------------------------------------ | ----------:| --------------:| ---------------:| ----------:| -------------------------:| ----------:
+FrodoKEM-640-SHAKE                   |            |                |                 |            |                           |           
+keygen                               |        871 |          5.005 |        5746.480 |     37.907 |                   5746338 |      37869
+encaps                               |        767 |          5.003 |        6523.282 |     16.695 |                   6523144 |      16652
+decaps                               |        770 |          5.004 |        6499.064 |     27.238 |                   6498914 |      27216
+Ended at 1970-01-01 00:00:15
