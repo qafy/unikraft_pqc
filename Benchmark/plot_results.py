@@ -11,12 +11,12 @@ SCRIPT_DIR = os.path.dirname(SCRIPT_PATH)
 
 
 def main():
-    plot_table_primitives()
-    plot_table_tls()
-    plot_bar_tls_speed()
-    plot_bar_tls_power()
-    plot_bar_tls_energy()
-
+    # plot_table_primitives()
+    # plot_table_tls()
+    # plot_bar_tls_speed()
+    # plot_bar_tls_power()
+    # plot_bar_tls_energy()
+    plot_bar_primitives_speed()
 
 
 
@@ -1045,6 +1045,200 @@ def plot_bar_tls_mem():
     plt.tight_layout()
     plt.show()
 
+
+def plot_bar_primitives_speed():
+
+    sigs = [
+    "SPHINCS+-SHA2-128s-simple",
+    "SPHINCS+-SHA2-128f-simple",
+    "Falcon-512",
+    "Dilithium2",
+    "Dilithium3",
+    "Falcon-1024",
+    "ECDSA",
+    "RSA-2048",
+    ]
+    kems = [
+        "Kyber512",
+        "Kyber768",
+        "Kyber1024",
+        "BIKE-L1",
+        "HQC-128",
+        "FrodoKEM-640-AES",
+        "FrodoKEM-640-SHAKE",
+        "ECDHE",
+    ]
+    #categories.reverse()
+    with open(os.path.join(SCRIPT_DIR, "results/primitives_speed.json"), "r") as f:
+        data = json.load(f)["primitive"]
+        
+    native_values_keygen_sig = [
+        data["native"]["sig"][x]["keygen"]["mean_us"] for x in sigs
+    ]
+    
+    native_values_encaps_sig = [
+        data["native"]["sig"][x]["encaps"]["mean_us"] for x in sigs
+    ]
+    
+    native_values_decaps_sig = [
+        data["native"]["sig"][x]["decaps"]["mean_us"] for x in sigs
+    ]
+    
+    unikraft_values_keygen_sig = [
+        data["unikraft"]["sig"][x]["keygen"]["mean_us"] for x in sigs
+    ]
+    
+    unikraft_values_encaps_sig = [
+        data["unikraft"]["sig"][x]["encaps"]["mean_us"] for x in sigs
+    ]
+    
+    unikraft_values_decaps_sig = [
+        data["unikraft"]["sig"][x]["decaps"]["mean_us"] for x in sigs
+    ]
+    
+    docker_values_keygen_sig = [
+        data["docker"]["sig"][x]["keygen"]["mean_us"] for x in sigs
+    ]
+    
+    docker_values_encaps_sig = [
+        data["docker"]["sig"][x]["encaps"]["mean_us"] for x in sigs
+    ]
+    
+    docker_values_decaps_sig = [
+        data["docker"]["sig"][x]["decaps"]["mean_us"] for x in sigs
+    ]
+    
+    # unikraft_values = [
+    #     data["unikraft"][x]["initial"]["real"]["connections"] for x in categories
+    # ]
+    # docker_values = [
+    #     data["docker"][x]["initial"]["real"]["connections"] for x in categories
+    # ]
+
+    bar_width = 0.06
+    bar_dist = 0.03
+
+    x = np.arange(0, len(sigs), 1)
+    plt.figure(figsize=(12, 5))
+
+
+    plt.bar(x - bar_width - bar_dist, width=bar_width, height=native_values_keygen_sig, color="#1E88E5", edgecolor="black")
+    plt.bar(x, width=bar_width, height=native_values_encaps_sig, label="Native   (keygen/sign/verify)", color="#1E88E5", edgecolor="black")
+    plt.bar(x + bar_width + bar_dist, width=bar_width,height=native_values_decaps_sig, color="#1E88E5", edgecolor="black")
+
+    plt.bar(x + bar_width + 0.5 * bar_width + 3 * bar_dist, width=bar_width, height=unikraft_values_keygen_sig, label="Unikraft (keygen/sign/verify)", color="#D81B60", edgecolor="black")
+    plt.bar(x + 2 * bar_width + 0.5 * bar_width + 4 * bar_dist, width=bar_width, height=unikraft_values_encaps_sig, color="#D81B60", edgecolor="black")
+    plt.bar(x + 3 * bar_width + 0.5 * bar_width + 5 * bar_dist, width=bar_width,height=unikraft_values_decaps_sig, color="#D81B60", edgecolor="black")
+    
+    plt.bar(x - 3 * bar_width - 0.5 * bar_width - 5 * bar_dist, width=bar_width, height=docker_values_keygen_sig, color="#FFC107", edgecolor="black")
+    plt.bar(x - 2 * bar_width - 0.5 * bar_width - 4 * bar_dist, width=bar_width, height=docker_values_encaps_sig, color="#FFC107", edgecolor="black")
+    plt.bar(x - bar_width - 0.5 * bar_width - 3 * bar_dist, width=bar_width,height=docker_values_decaps_sig, label="Docker  (keygen/sign/verify)", color="#FFC107", edgecolor="black")
+    
+    
+    plt.ylabel("Execution Time (us)")
+    #plt.title("Figure 1: TLS Connections of Traditional and PQ TLS 1.3 handshakes")
+    
+    sigs = [
+    "SPHINCS+s",
+    "SPHINCS+f",
+    "Falcon-512",
+    "Dilithium2",
+    "Dilithium3",
+    "Falcon-1024",
+    "ECDSA",
+    "RSA-2048",
+    ]
+       
+    plt.xticks(range(len(sigs)), sigs)
+    
+    plt.yscale("log")
+    #plt.ylim(100, 20000)
+    
+    plt.legend()
+    plt.tight_layout()
+    
+    plt.savefig("bar_sig_speed.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
+    plt.show()
+    
+    with open(os.path.join(SCRIPT_DIR, "results/primitives_speed.json"), "r") as f:
+        data = json.load(f)["primitive"]
+        
+    native_values_keygen_kem = [
+        data["native"]["kem"][x]["keygen"]["mean_us"] for x in kems
+    ]
+    
+    native_values_encaps_kem = [
+        data["native"]["kem"][x]["encaps"]["mean_us"] for x in kems
+    ]
+    
+    native_values_decaps_kem = [
+        data["native"]["kem"][x]["decaps"]["mean_us"] for x in kems
+    ]
+    
+    unikraft_values_keygen_kem = [
+        data["unikraft"]["kem"][x]["keygen"]["mean_us"] for x in kems
+    ]
+    
+    unikraft_values_encaps_kem = [
+        data["unikraft"]["kem"][x]["encaps"]["mean_us"] for x in kems
+    ]
+    
+    unikraft_values_decaps_kem = [
+        data["unikraft"]["kem"][x]["decaps"]["mean_us"] for x in kems
+    ]
+    
+    docker_values_keygen_kem = [
+        data["docker"]["kem"][x]["keygen"]["mean_us"] for x in kems
+    ]
+    
+    docker_values_encaps_kem = [
+        data["docker"]["kem"][x]["encaps"]["mean_us"] for x in kems
+    ]
+    
+    docker_values_decaps_kem = [
+        data["docker"]["kem"][x]["decaps"]["mean_us"] for x in kems
+    ]
+    
+    plt.figure(figsize=(12, 5))
+
+    plt.bar(x - bar_width - bar_dist, width=bar_width, height=native_values_keygen_kem, color="#1E88E5", edgecolor="black")
+    plt.bar(x, width=bar_width, height=native_values_encaps_kem, label="Native   (keygen/sign/verify)", color="#1E88E5", edgecolor="black")
+    plt.bar(x + bar_width + bar_dist, width=bar_width,height=native_values_decaps_kem, color="#1E88E5", edgecolor="black")
+
+    plt.bar(x + bar_width + 0.5 * bar_width + 3 * bar_dist, width=bar_width, height=unikraft_values_keygen_kem, label="Unikraft (keygen/sign/verify)", color="#D81B60", edgecolor="black")
+    plt.bar(x + 2 * bar_width + 0.5 * bar_width + 4 * bar_dist, width=bar_width, height=unikraft_values_encaps_kem, color="#D81B60", edgecolor="black")
+    plt.bar(x + 3 * bar_width + 0.5 * bar_width + 5 * bar_dist, width=bar_width,height=unikraft_values_decaps_kem, color="#D81B60", edgecolor="black")
+    
+    plt.bar(x - 3 * bar_width - 0.5 * bar_width - 5 * bar_dist, width=bar_width, height=docker_values_keygen_kem, color="#FFC107", edgecolor="black")
+    plt.bar(x - 2 * bar_width - 0.5 * bar_width - 4 * bar_dist, width=bar_width, height=docker_values_encaps_kem, color="#FFC107", edgecolor="black")
+    plt.bar(x - bar_width - 0.5 * bar_width - 3 * bar_dist, width=bar_width,height=docker_values_decaps_kem, label="Docker  (keygen/sign/verify)", color="#FFC107", edgecolor="black")
+    
+    plt.ylabel("Execution Time (us)")
+    
+    kems = [
+        "Kyber512",
+        "Kyber768",
+        "Kyber1024",
+        "BIKE-L1",
+        "HQC-128",
+        "FrodoKEM-AES",
+        "FrodoKEM-SHAKE",
+        "ECDHE",
+    ]
+        
+    
+    plt.xticks(range(len(kems)), kems)
+    
+    plt.yscale("log")
+    #plt.ylim(100, 20000)
+    
+    plt.legend()
+    plt.tight_layout()
+    
+    plt.savefig("bar_kem_speed.pdf", format="pdf", dpi=300, bbox_inches="tight", pad_inches= 0.1)
+    plt.show()
+    
+    
 def format_axes(fig):
     for i, ax in enumerate(fig.axes):
         ax.tick_params(labelbottom=False, labelleft=False, labelright=False)

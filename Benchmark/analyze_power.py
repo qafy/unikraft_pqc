@@ -510,7 +510,7 @@ def plot_power_primitives():
     ) as f:
         json.dump(data_json, f)
 
-    plt.title("Wattage")
+    #plt.title("Wattage")
     plt.xlabel("Time (seconds)")
     plt.ylabel("Wattage")
 
