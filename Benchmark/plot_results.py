@@ -1202,16 +1202,16 @@ def plot_bar_primitives_speed():
     plt.figure(figsize=(12, 5))
 
     plt.bar(x - bar_width - bar_dist, width=bar_width, height=native_values_keygen_kem, color="#1E88E5", edgecolor="black")
-    plt.bar(x, width=bar_width, height=native_values_encaps_kem, label="Native   (keygen/sign/verify)", color="#1E88E5", edgecolor="black")
+    plt.bar(x, width=bar_width, height=native_values_encaps_kem, label="Native   (keygen/encaps/decaps)", color="#1E88E5", edgecolor="black")
     plt.bar(x + bar_width + bar_dist, width=bar_width,height=native_values_decaps_kem, color="#1E88E5", edgecolor="black")
 
-    plt.bar(x + bar_width + 0.5 * bar_width + 3 * bar_dist, width=bar_width, height=unikraft_values_keygen_kem, label="Unikraft (keygen/sign/verify)", color="#D81B60", edgecolor="black")
+    plt.bar(x + bar_width + 0.5 * bar_width + 3 * bar_dist, width=bar_width, height=unikraft_values_keygen_kem, label="Unikraft (keygen/encaps/decaps)", color="#D81B60", edgecolor="black")
     plt.bar(x + 2 * bar_width + 0.5 * bar_width + 4 * bar_dist, width=bar_width, height=unikraft_values_encaps_kem, color="#D81B60", edgecolor="black")
     plt.bar(x + 3 * bar_width + 0.5 * bar_width + 5 * bar_dist, width=bar_width,height=unikraft_values_decaps_kem, color="#D81B60", edgecolor="black")
     
     plt.bar(x - 3 * bar_width - 0.5 * bar_width - 5 * bar_dist, width=bar_width, height=docker_values_keygen_kem, color="#FFC107", edgecolor="black")
     plt.bar(x - 2 * bar_width - 0.5 * bar_width - 4 * bar_dist, width=bar_width, height=docker_values_encaps_kem, color="#FFC107", edgecolor="black")
-    plt.bar(x - bar_width - 0.5 * bar_width - 3 * bar_dist, width=bar_width,height=docker_values_decaps_kem, label="Docker  (keygen/sign/verify)", color="#FFC107", edgecolor="black")
+    plt.bar(x - bar_width - 0.5 * bar_width - 3 * bar_dist, width=bar_width,height=docker_values_decaps_kem, label="Docker  (keygen/encaps/decaps)", color="#FFC107", edgecolor="black")
     
     plt.ylabel("Execution Time (us)")
     

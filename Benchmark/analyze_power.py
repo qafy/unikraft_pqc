@@ -82,7 +82,7 @@ def plot_power_tls():
     plt.plot(
         timestamps, amps_smooth, linestyle="-", color="orange", label="Amps Smooth"
     )
-
+    plt.legend()
     start_point_found = False
     x = 0
     x2 = 0
@@ -319,12 +319,12 @@ def plot_power_primitives():
     dy_new = dy_new / 100
     plt.figure(figsize=(10, 5))
     # plt.plot(x_new, y_new, '-', color='purple', label='Amps Interpolated')
-    plt.plot(x_new, dy_new, "-", color="pink", label="Amps Derivative")
-    plt.plot(timestamps, wattage, linestyle="-", color="g", label="Wattage")
+    plt.plot(x_new, dy_new, "-", color="pink")
+    plt.plot(timestamps, wattage, linestyle="-", color="g", label="Wattage (W)")
     plt.plot(
-        timestamps, amps_smooth, linestyle="-", color="orange", label="Amps Smooth"
+        timestamps, amps_smooth, linestyle="-", color="orange", label="Current (A)"
     )
-
+    plt.legend()
     start_point_found = False
     x = 0
     x2 = 0
@@ -339,11 +339,11 @@ def plot_power_primitives():
     )
 
     time_start = timestamp(
-        data_json["native"]["sig"]["SPHINCS+-SHA2-128s-simple"]["keygen"][
+        data_json["native"]["sig"]["SPHINCS+-SHA2-128f-simple"]["keygen"][
             "timestamp_start"
         ]
     )
-    shift = 26
+    shift = 146
     for sig in sigs:
         for virt in ["unikraft", "docker", "native"]:
             for mode in ["keygen", "encaps", "decaps"]:
@@ -357,7 +357,7 @@ def plot_power_primitives():
                     [0, 1],
                     color="grey",
                     linewidth=2,
-                    label="Colored Line",
+                    #label="Colored Line",
                 )
                 plt.gca().add_line(line)
                 recorded_times[data_json[virt]["sig"][sig][mode]["order"]] = time_x
@@ -512,7 +512,7 @@ def plot_power_primitives():
 
     #plt.title("Wattage")
     plt.xlabel("Time (seconds)")
-    plt.ylabel("Wattage")
+    #plt.ylabel("Wattage")
 
     plt.yticks(np.arange(0, 10, 1))
     # plt.xticks(np.arange(0, 1500, 1))
