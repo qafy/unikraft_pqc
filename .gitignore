@@ -3,6 +3,16 @@ Unikraft/ssl_uk_bin/build
 Unikraft/oqs_uk_speed/build
 Unikraft/ssl_uk_test/build
 
+# Generic build artifacts (avoid accidentally committing binaries)
+**/build/
+**/*.o
+**/*.a
+**/*.so
+**/*.dylib
+**/*.tar
+**/*.tar.gz
+**/*.zip
+
 **/.DS_Store
 **.old
 
